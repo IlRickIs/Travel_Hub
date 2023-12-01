@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Travel Hub</string>
+    <string name="app_login_user_hint">Username or Email</string>
+    <string name="app_login_pwd_hint">Password</string>
 </resources>
