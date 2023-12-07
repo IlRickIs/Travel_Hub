@@ -2,8 +2,11 @@
     <string name="app_name">Travel Hub</string>
     <string name="app_login_user_hint">Username or Email</string>
     <string name="app_login_pwd_hint">Password</string>
-    <string name="diary_voce"> Diary </string>
-    <string name="map_voce">Map</string>
-    <string name="profile_voce">Profile</string>
-    <string name="home_voce">Home</string>
+    <string name="community_nav">Community</string>
+    <string name="map_nav">Map</string>
+    <string name="profile_nav">Profile</string>
+    <string name="home_nav">Home</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_nav">Add</string>
 </resources>
