@@ -5,5 +5,15 @@
     <color name="orange">#f8703d</color>
     <color name="green">#51583b</color>
     <color name="beige">#fee9d3</color>
-    <color name="textcolorhint">#78909C</color>
+    <color name="blue"> #48b6ee </color>
+    <color name="text_color_hint">#78909C</color>
+    <color name="grey_separator">#585F65</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+
+    <color name="login_bg"> #ffe9d1 </color>
+
+    <color name="google_login_button">#eceff1</color>
+    <color name="google_login_text">#616161</color>
 </resources>

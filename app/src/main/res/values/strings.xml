@@ -9,4 +9,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_nav">Add</string>
+    <string name="forgot_password">forgot password?</string>
+    <string name="login">login</string>
+    <string name="txt_or">or</string>
+    <string name="google_login">login with Google</string>
+    <string name="register">register</string>
+    <string name="new_account">new to Travel Hub?</string>
 </resources>
