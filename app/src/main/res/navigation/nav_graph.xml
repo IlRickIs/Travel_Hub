@@ -7,27 +7,27 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="it.unimib.travelhub.HomeFragment"
+        android:name="it.unimib.travelhub.ui.main.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="it.unimib.travelhub.ProfileFragment"
+        android:name="it.unimib.travelhub.ui.main.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/mapFragment"
-        android:name="it.unimib.travelhub.MapFragment"
+        android:name="it.unimib.travelhub.ui.main.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
     <fragment
         android:id="@+id/communityFragment"
-        android:name="it.unimib.travelhub.CommunityFragment"
+        android:name="it.unimib.travelhub.ui.main.CommunityFragment"
         android:label="fragment_community"
         tools:layout="@layout/fragment_community" />
     <fragment
         android:id="@+id/addFragment"
-        android:name="it.unimib.travelhub.AddFragment"
+        android:name="it.unimib.travelhub.ui.main.AddFragment"
         android:label="fragment_add"
         tools:layout="@layout/fragment_add" />
 </navigation>

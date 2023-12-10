@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.login;
+package it.unimib.travelhub.ui.welcome;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import it.unimib.travelhub.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
