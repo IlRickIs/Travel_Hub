@@ -34,6 +34,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.datastore:datastore-preferences-rxjava2:1.0.0")
     val navVersion = "2.7.5"
 
     implementation("androidx.navigation:navigation-fragment:$navVersion")
@@ -44,7 +45,13 @@ dependencies {
     implementation("com.google.android.gms:play-services-base:18.2.0")
     implementation("commons-validator:commons-validator:1.7")
 
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-rxjava2:1.0.0")
+    implementation("androidx.datastore:datastore-rxjava3:1.0.0")
+
+    implementation("com.google.code.gson:gson:2.10.1")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

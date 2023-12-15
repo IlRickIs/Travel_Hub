@@ -31,7 +31,6 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_welcome_fragment"
-        android:name="it.unimib.travelhub.ui.welcome.LoginFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:defaultNavHost="true"
@@ -39,5 +38,8 @@
         app:layout_constraintRight_toRightOf="@id/guideline6"
         app:layout_constraintTop_toTopOf="@id/guideline3"
         tools:layout="@layout/fragment_login"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         app:navGraph="@navigation/welcome_graph"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
