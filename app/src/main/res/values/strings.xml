@@ -16,4 +16,5 @@
     <string name="register">Register</string>
     <string name="new_account">New to Travel Hub?</string>
     <string name="error_email">Email format not valid</string>
+    <string name="check_login_data_message">data may be wrong</string>
 </resources>
