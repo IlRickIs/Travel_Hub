@@ -1,5 +1,6 @@
 package it.unimib.travelhub.ui.welcome;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,8 +16,6 @@ import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import org.apache.commons.validator.routines.EmailValidator;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -26,17 +25,15 @@ import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.util.IValidator;
 import it.unimib.travelhub.util.ServiceLocator;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
-import it.unimib.travelhub.util.SharedPreferencesUtil;
+import it.unimib.travelhub.util.ValidationResult;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
-
-
-
+import it.unimib.travelhub.GlobalClass;
 public class LoginFragment extends Fragment {
 
-    IValidator myValidator = ServiceLocator.getInstance().getCredentialsValidator();
+    IValidator myValidator = ServiceLocator.getInstance().getCredentialsValidator(GlobalClass.getContext());
 
     private static final String TAG = LoginFragment.class.getSimpleName();
     private FragmentLoginBinding binding;
@@ -111,7 +108,6 @@ public class LoginFragment extends Fragment {
                         R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
@@ -121,8 +117,9 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean isEmailOk(String email) {
-        if (!myValidator.validateMail(email)) {
-            binding.txtInputEditUser.setError(getString(R.string.error_email));
+        ValidationResult validation = myValidator.validateMail(email);
+        if (!validation.isSuccess()) {
+            binding.txtInputEditUser.setError(validation.getMessage().toString());
             return false;
         } else {
             binding.txtInputEditUser.setError(null);
@@ -131,7 +128,14 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean isPasswordOk(String password) {
-        return true;
+        ValidationResult validation = myValidator.validatePassword(password);
+        if(!validation.isSuccess()){
+            binding.txtInputEditPwd.setError(validation.getMessage().toString());
+            return false;
+        }else{
+            binding.txtInputEditPwd.setError(null);
+            return true;
+        }
     }
 
     private void saveLoginData(String email, String password) {

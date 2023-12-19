@@ -1,5 +1,4 @@
 TODO:
 - make login page layout responsive
-- make mail validation
-- make pwd validation
 - make register layout
+- change error position in passwordEdit in loginFragment

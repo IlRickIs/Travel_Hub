@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Travel Hub</string>
+    <string name="app_login_user_hint">Username or Email</string>
+    <string name="app_login_pwd_hint">Password</string>
+    <string name="community_nav">Community</string>
+    <string name="map_nav">Map</string>
+    <string name="profile_nav">Profile</string>
+    <string name="home_nav">Home</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_nav">Add</string>
+
+    <string name="forgot_password">Password dimenticata?</string>
+    <string name="login">login</string>
+    <string name="txt_or">or</string>
+    <string name="google_login">login with Google</string>
+    <string name="register">Register</string>
+    <string name="new_account">New to Travel Hub?</string>
+
+    <string name="error_email">Formato mail non valido</string>
+    <string name="check_login_data_message">i dati potrebbero non essere corretti</string>
+    <string name="pwd_error_numberOfcharacters">La password deve essere lunga almeno 6 caratteri</string>
+    <string name="pwd_error_capitalLetter">La password deve contenere almeno una lettera maiuscola</string>
+    <string name="pwd_error_lowerCaseLetter">La password deve contenere almeno una lettera minuscola</string>
+    <string name="pwd_error_number">La password deve contenere almeno un numero</string>
+    <string name="pwd_error_specialCharacter">La password deve contenere almeno un carattere speciale</string>
+    <string name="pwd_valid">La password è valida</string>
+    <string name="mail_valid">La mail è valida</string>
+
+</resources>

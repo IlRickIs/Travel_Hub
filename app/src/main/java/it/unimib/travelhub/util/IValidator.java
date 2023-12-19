@@ -1,6 +1,6 @@
 package it.unimib.travelhub.util;
 
 public interface IValidator {
-    public boolean validateMail(String mail);
-    public boolean validatePassword();
+    public ValidationResult validateMail(String mail);
+    public ValidationResult validatePassword(String password);
 }
