@@ -7,7 +7,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,7 +60,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -104,11 +108,18 @@ public class LoginFragment extends Fragment {
                         R.id.action_loginFragment_to_mainActivity);
 
             } else {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "Email and password are NOT ok");
             }
         });
+
+        binding.buttonRegister.setOnClickListener(V ->
+        {
+            NavController navController = Navigation.findNavController(view);
+            NavDirections val = LoginFragmentDirections.actionLoginFragmentToRegisterFragment();
+            navController.navigate(val);
+        });
     }
+
 
     @Override
     public void onDestroy() {
@@ -130,10 +141,12 @@ public class LoginFragment extends Fragment {
     private boolean isPasswordOk(String password) {
         ValidationResult validation = myValidator.validatePassword(password);
         if(!validation.isSuccess()){
-            binding.txtInputEditPwd.setError(validation.getMessage().toString());
+            //binding.txtInputLayoutPwd.setError(validation.getMessage().toString());
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    validation.getMessage().toString(), Snackbar.LENGTH_SHORT).show();
             return false;
         }else{
-            binding.txtInputEditPwd.setError(null);
+            //binding.txtInputLayoutPwd.setError(null);
             return true;
         }
     }

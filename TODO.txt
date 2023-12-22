@@ -1,4 +1,3 @@
 TODO:
 - make login page layout responsive
 - make register layout
-- change error position in passwordEdit in loginFragment

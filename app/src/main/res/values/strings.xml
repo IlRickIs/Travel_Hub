@@ -27,6 +27,9 @@
     <string name="pwd_error_specialCharacter">The password must contain at least one special character</string>
     <string name="pwd_valid">Password is valid</string>
     <string name="mail_valid">Mail is valid</string>
+    <string name="name_register">Username</string>
+    <string name="email_register">Email</string>
+    <string name="register_buttonRegister">Register</string>
 
 
 </resources>
