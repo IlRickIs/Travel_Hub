@@ -1,3 +1,6 @@
 TODO:
 - make login page layout responsive
-- make register layout
+- add validation rules to RegisterFragment
+- complete UserViewModel
+- complete registration with email and password
+- complete registration with google

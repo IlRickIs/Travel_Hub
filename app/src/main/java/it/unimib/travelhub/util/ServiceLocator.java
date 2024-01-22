@@ -1,7 +1,8 @@
 package it.unimib.travelhub.util;
 
-import android.app.Application;
 import android.content.Context;
+
+import it.unimib.travelhub.model.IValidator;
 
 public class ServiceLocator {
     private static volatile ServiceLocator INSTANCE = null;
@@ -20,6 +21,8 @@ public class ServiceLocator {
     }
 
     public IValidator getCredentialsValidator(Context context){
-        return new CredentialValidator(context);
+       CredentialValidator validator =  CredentialValidator.getInstance();
+       validator.setContext(context);
+       return validator;
     }
 }

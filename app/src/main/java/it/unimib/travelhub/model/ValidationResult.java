@@ -1,4 +1,4 @@
-package it.unimib.travelhub.util;
+package it.unimib.travelhub.model;
 
 public class ValidationResult {
     public boolean success;

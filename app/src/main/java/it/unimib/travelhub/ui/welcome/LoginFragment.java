@@ -1,18 +1,14 @@
 package it.unimib.travelhub.ui.welcome;
 
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,10 +23,10 @@ import java.security.GeneralSecurityException;
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.databinding.FragmentLoginBinding;
 import it.unimib.travelhub.ui.main.MainActivity;
-import it.unimib.travelhub.util.IValidator;
+import it.unimib.travelhub.model.IValidator;
 import it.unimib.travelhub.util.ServiceLocator;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
-import it.unimib.travelhub.util.ValidationResult;
+import it.unimib.travelhub.model.ValidationResult;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.PASSWORD;

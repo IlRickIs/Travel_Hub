@@ -1,6 +1,5 @@
 package it.unimib.travelhub.util;
 
-import android.app.Application;
 import android.content.Context;
 
 import org.apache.commons.validator.routines.EmailValidator;
@@ -9,16 +8,32 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.model.IValidator;
+import it.unimib.travelhub.model.ValidationResult;
 
-public class CredentialValidator implements IValidator{
+public class CredentialValidator implements IValidator {
 
     private Context context;
 
-    public CredentialValidator(Context context) {
+    private static volatile CredentialValidator INSTANCE = null;
+
+    private CredentialValidator(){};
+    private CredentialValidator(Context context) {
         this.context = context;
     }
 
-    public void setContext(Application context) {
+    public static CredentialValidator getInstance(){
+        if(INSTANCE == null){
+            synchronized (CredentialValidator.class){
+                if(INSTANCE == null){
+                    INSTANCE = new CredentialValidator();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+    public void setContext(Context context) {
         this.context = context;
     }
 

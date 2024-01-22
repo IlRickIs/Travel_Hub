@@ -28,5 +28,7 @@
     <string name="pwd_valid">La password è valida</string>
     <string name="mail_valid">La mail è valida</string>
     <string name="name_register">Username</string>
+    <string name="email_register">Email</string>
+    <string name="register_buttonRegister">Registrati</string>
 
 </resources>
