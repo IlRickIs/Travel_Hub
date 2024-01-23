@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -21,7 +22,10 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.databinding.FragmentLoginBinding;
+import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.model.IValidator;
 import it.unimib.travelhub.util.ServiceLocator;
@@ -29,12 +33,15 @@ import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.model.ValidationResult;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
+import static it.unimib.travelhub.util.Constants.ID_TOKEN;
+import static it.unimib.travelhub.util.Constants.INVALID_CREDENTIALS_ERROR;
+import static it.unimib.travelhub.util.Constants.INVALID_USER_ERROR;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import it.unimib.travelhub.GlobalClass;
 public class LoginFragment extends Fragment {
 
-    IValidator myValidator = ServiceLocator.getInstance().getCredentialsValidator(GlobalClass.getContext());
+    IValidator myValidator;
 
     private static final String TAG = LoginFragment.class.getSimpleName();
     private FragmentLoginBinding binding;
@@ -42,6 +49,8 @@ public class LoginFragment extends Fragment {
     private DataEncryptionUtil dataEncryptionUtil;
 
     private static final boolean USE_NAVIGATION_COMPONENT = true;
+
+    private UserViewModel userViewModel;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -56,6 +65,15 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        myValidator = ServiceLocator.getInstance().getCredentialsValidator(GlobalClass.getContext());
+
+        IUserRepository userRepository = ServiceLocator.getInstance().
+                getUserRepository(requireActivity().getApplication());
+
+        userViewModel = new ViewModelProvider(
+                requireActivity(),
+                new UserViewModelFactory(userRepository)).get(UserViewModel.class);
     }
 
     @Override
@@ -71,25 +89,28 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Inflate the layout for this fragment
-        dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
 
-        try {
-            String mail = dataEncryptionUtil.
-                    readSecretDataWithEncryptedSharedPreferences(
-                            ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS);
-            String password = dataEncryptionUtil.
-                    readSecretDataWithEncryptedSharedPreferences(
-                            ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD);
-            Log.d(TAG, "Email address from encrypted SharedPref: " + mail);
-            Log.d(TAG, "Password from encrypted SharedPref: " + password);
+        if(userViewModel.getLoggedUser() != null) {
+            dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
 
-            if(mail != null && password != null){
-                Log.d(TAG, "starting main activity");
-                startActivityBasedOnCondition(MainActivity.class,
-                        R.id.action_loginFragment_to_mainActivity);
+            try {
+                String mail = dataEncryptionUtil.
+                        readSecretDataWithEncryptedSharedPreferences(
+                                ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS);
+                String password = dataEncryptionUtil.
+                        readSecretDataWithEncryptedSharedPreferences(
+                                ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD);
+                Log.d(TAG, "Email address from encrypted SharedPref: " + mail);
+                Log.d(TAG, "Password from encrypted SharedPref: " + password);
+
+                if (mail != null && password != null) {
+                    Log.d(TAG, "starting main activity");
+                    startActivityBasedOnCondition(MainActivity.class,
+                            R.id.action_loginFragment_to_mainActivity);
+                }
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
             }
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
         }
 
 
@@ -98,11 +119,26 @@ public class LoginFragment extends Fragment {
             String password = binding.txtInputEditPwd.getText().toString();
             if (isEmailOk(email) & isPasswordOk(password)) {
                 Log.d(TAG, "Email and password are ok");
-                saveLoginData(email, password);
+                if(!userViewModel.isAuthenticationError()){
+                    userViewModel.getUserMutableLiveData(email, password, true).observe(
+                            getViewLifecycleOwner(), result -> {
+                                if (result.isSuccess()) {
+                                    User user = ((Result.UserResponseSuccess) result).getData();
+                                    saveLoginData(email, password, user.getIdToken());
+                                    userViewModel.setAuthenticationError(false);
+                                    startActivityBasedOnCondition(MainActivity.class,
+                                            R.id.action_loginFragment_to_mainActivity);
 
-                startActivityBasedOnCondition(MainActivity.class,
-                        R.id.action_loginFragment_to_mainActivity);
-
+                                } else {
+                                    userViewModel.setAuthenticationError(true);
+                                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                            getErrorMessage(((Result.Error) result).getMessage()),
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    userViewModel.getUser(email, password, true);
+                }
             } else {
                 Log.d(TAG, "Email and password are NOT ok");
             }
@@ -147,12 +183,14 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void saveLoginData(String email, String password) {
+    private void saveLoginData(String email, String password, String idToken) {
         try {
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS, email);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD, password);
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN, idToken);
 
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
@@ -167,6 +205,17 @@ public class LoginFragment extends Fragment {
             startActivity(intent);
         }
         requireActivity().finish();
+    }
+
+    private String getErrorMessage(String errorType) {
+        switch (errorType) {
+            case INVALID_CREDENTIALS_ERROR:
+                return requireActivity().getString(R.string.error_login_password_message);
+            case INVALID_USER_ERROR:
+                return requireActivity().getString(R.string.error_login_user_message);
+            default:
+                return requireActivity().getString(R.string.unexpected_error);
+        }
     }
 
 

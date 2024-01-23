@@ -15,13 +15,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import it.unimib.travelhub.model.User;
 
-public class UserAuth extends BaseUserAuthenticationRemoteDataSource{
+public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRemoteDataSource{
 
-    private static final String TAG = UserAuth.class.getSimpleName();
+    private static final String TAG = UserAuthenticationRemoteDataSource.class.getSimpleName();
 
     private final FirebaseAuth firebaseAuth;
 
-    public UserAuth(){
+    public UserAuthenticationRemoteDataSource(){
         firebaseAuth = FirebaseAuth.getInstance();
     }
     @Override
@@ -43,7 +43,7 @@ public class UserAuth extends BaseUserAuthenticationRemoteDataSource{
 
     @Override
     public void signUp(String email, String password) {
-        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {

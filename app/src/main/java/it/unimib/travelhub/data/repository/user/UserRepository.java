@@ -24,6 +24,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
             ) {
         this.userRemoteDataSource = userRemoteDataSource;
         this.userDataRemoteDataSource = userDataRemoteDataSource;
+        this.userRemoteDataSource.setUserResponseCallback(this);
+        this.userDataRemoteDataSource.setUserResponseCallback(this);
         this.userMutableLiveData = new MutableLiveData<>();
         this.userPreferencesMutableLiveData = new MutableLiveData<>();
     }
@@ -55,7 +57,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
 
     @Override
     public User getLoggedUser() {
-        return null;
+        return userRemoteDataSource.getLoggedUser();
     }
 
     @Override

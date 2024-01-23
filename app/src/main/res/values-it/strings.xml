@@ -30,5 +30,8 @@
     <string name="name_register">Username</string>
     <string name="email_register">Email</string>
     <string name="register_buttonRegister">Registrati</string>
+    <string name="error_login_password_message">the password is invalid</string>
+    <string name="error_login_user_message">there is no user record corresponding to this identifier</string>
+    <string name="unexpected_error">unexpected error</string>
 
 </resources>
