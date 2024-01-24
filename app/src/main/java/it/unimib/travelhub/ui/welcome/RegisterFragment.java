@@ -5,14 +5,18 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import it.unimib.travelhub.GlobalClass;
 import it.unimib.travelhub.databinding.FragmentRegisterBinding;
 import it.unimib.travelhub.model.IValidator;
+import it.unimib.travelhub.model.ValidationResult;
 import it.unimib.travelhub.util.ServiceLocator;
 
 /**
@@ -25,8 +29,10 @@ public class RegisterFragment extends Fragment {
     private static final String TAG = RegisterFragment.class.getSimpleName();
 
     private FragmentRegisterBinding binding;
+    private UserViewModel userViewModel;
 
-    private IValidator validator;
+    private IValidator myValidator;
+
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -42,6 +48,10 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel.setAuthenticationError(false);
+        myValidator = ServiceLocator.getInstance().getCredentialsValidator(GlobalClass.getContext());
+
     }
 
     @Override
@@ -56,10 +66,13 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        validator = ServiceLocator.getInstance().getCredentialsValidator(GlobalClass.getContext());
+        String email = binding.txtInputEditUser.getText().toString();
+        String password = binding.txtInputEditPwd.getText().toString();
+        String username = binding.txtInputEditName.getText().toString();
         binding.buttonRegister.setOnClickListener(V -> {
+            if(isEmailOk(email) && isPasswordOk(password)){
 
+            }
         });
     }
 
@@ -67,5 +80,29 @@ public class RegisterFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         binding = null;
+    }
+
+    private boolean isEmailOk(String email) {
+        ValidationResult validation = myValidator.validateMail(email);
+        if (!validation.isSuccess()) {
+            binding.txtInputEditUser.setError(validation.getMessage().toString());
+            return false;
+        } else {
+            binding.txtInputEditUser.setError(null);
+            return true;
+        }
+    }
+
+    private boolean isPasswordOk(String password) {
+        ValidationResult validation = myValidator.validatePassword(password);
+        if(!validation.isSuccess()){
+            //binding.txtInputLayoutPwd.setError(validation.getMessage().toString());
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    validation.getMessage().toString(), Snackbar.LENGTH_SHORT).show();
+            return false;
+        }else{
+            //binding.txtInputLayoutPwd.setError(null);
+            return true;
+        }
     }
 }
