@@ -1,21 +1,38 @@
 package it.unimib.travelhub.ui.welcome;
 
+import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
+import static it.unimib.travelhub.util.Constants.ENCRYPTED_DATA_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.ID_TOKEN;
+import static it.unimib.travelhub.util.Constants.PASSWORD;
+import static it.unimib.travelhub.util.Constants.USER_COLLISION_ERROR;
+import static it.unimib.travelhub.util.Constants.WEAK_PASSWORD_ERROR;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 import it.unimib.travelhub.GlobalClass;
+import it.unimib.travelhub.R;
+import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.databinding.FragmentRegisterBinding;
 import it.unimib.travelhub.model.IValidator;
+import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.model.ValidationResult;
 import it.unimib.travelhub.util.ServiceLocator;
 
@@ -30,6 +47,8 @@ public class RegisterFragment extends Fragment {
 
     private FragmentRegisterBinding binding;
     private UserViewModel userViewModel;
+
+    private DataEncryptionUtil dataEncryptionUtil;
 
     private IValidator myValidator;
 
@@ -51,6 +70,7 @@ public class RegisterFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.setAuthenticationError(false);
         myValidator = ServiceLocator.getInstance().getCredentialsValidator(GlobalClass.getContext());
+        dataEncryptionUtil =  new DataEncryptionUtil(requireActivity().getApplication());
 
     }
 
@@ -66,12 +86,32 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String email = binding.txtInputEditUser.getText().toString();
-        String password = binding.txtInputEditPwd.getText().toString();
-        String username = binding.txtInputEditName.getText().toString();
         binding.buttonRegister.setOnClickListener(V -> {
-            if(isEmailOk(email) && isPasswordOk(password)){
-
+            String email = binding.txtInputEditUser.getText().toString();
+            String password = binding.txtInputEditPwd.getText().toString();
+            String username = binding.txtInputEditName.getText().toString();
+            Log.d(TAG, "passing mail: " + email + " password: " + password + " username: " + username);
+            if(isEmailOk(email) & isPasswordOk(password)){
+                if (!userViewModel.isAuthenticationError()) {
+                    userViewModel.getUserMutableLiveData(username, email, password, false).observe(
+                            getViewLifecycleOwner(), result -> {
+                                if (result.isSuccess()) {
+                                    User user = ((Result.UserResponseSuccess) result).getData();
+                                    Log.d(TAG, "user: " + user.toString());
+                                    saveLoginData(email, password, user.getIdToken());
+                                    userViewModel.setAuthenticationError(false);
+                                    Navigation.findNavController(view).navigate(
+                                            R.id.action_registerFragment_to_mainActivity);
+                                } else {
+                                    userViewModel.setAuthenticationError(true);
+                                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                            getErrorMessage(((Result.Error) result).getMessage()),
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    userViewModel.getUser(email, password, false);
+                }
             }
         });
     }
@@ -103,6 +143,30 @@ public class RegisterFragment extends Fragment {
         }else{
             //binding.txtInputLayoutPwd.setError(null);
             return true;
+        }
+    }
+
+    private String getErrorMessage(String message) {
+        switch(message) {
+            case USER_COLLISION_ERROR:
+                return requireActivity().getString(R.string.error_user_collision_message);
+            default:
+                return requireActivity().getString(R.string.unexpected_error);
+        }
+    }
+
+    private void saveLoginData(String email, String password, String idToken) {
+        try {
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS, email);
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD, password);
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN, idToken);
+            dataEncryptionUtil.writeSecreteDataOnFile(ENCRYPTED_DATA_FILE_NAME,
+                    email.concat(":").concat(password));
+        } catch (GeneralSecurityException | IOException e) {
+            e.printStackTrace();
         }
     }
 }

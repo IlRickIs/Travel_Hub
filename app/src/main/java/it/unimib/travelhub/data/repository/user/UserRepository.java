@@ -1,5 +1,7 @@
 package it.unimib.travelhub.data.repository.user;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
@@ -40,6 +42,15 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         return userMutableLiveData;
     }
 
+    public MutableLiveData<Result> getUser(String username, String email, String password, boolean isUserRegistered) {
+        if (isUserRegistered) {
+            signIn(email, password);
+        } else {
+            signUp(username, email, password);
+        }
+        return userMutableLiveData;
+    }
+
     @Override
     public MutableLiveData<Result> getGoogleUser(String idToken) {
         return null;
@@ -66,6 +77,11 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
     }
 
     @Override
+    public void signUp(String username, String email, String password) {
+        userRemoteDataSource.signUp(username, email, password);
+    }
+
+    @Override
     public void signIn(String email, String password) {
         userRemoteDataSource.signIn(email, password);
     }
@@ -78,6 +94,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
     @Override
     public void onSuccessFromAuthentication(User user) {
         if (user != null) {
+            Log.d(TAG, "user: " + user.toString());
             userDataRemoteDataSource.saveUserData(user);
         }
     }

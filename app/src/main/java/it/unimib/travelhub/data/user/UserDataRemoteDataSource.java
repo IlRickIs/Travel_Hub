@@ -40,20 +40,10 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
                     Log.d(TAG, "User already present in Firebase Realtime Database");
                     userResponseCallback.onSuccessFromRemoteDatabase(user);
                 } else {
-                    Log.d(TAG, "User not present in Firebase Realtime Database");
+                    Log.d(TAG, "User not present in Firebase Realtime Database" + user);
                     databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).setValue(user)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    userResponseCallback.onSuccessFromRemoteDatabase(user);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage());
-                                }
-                            });
+                            .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
+                            .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
                 }
             }
             @Override

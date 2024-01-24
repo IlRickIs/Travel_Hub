@@ -33,5 +33,6 @@
     <string name="error_login_password_message">the password is invalid</string>
     <string name="error_login_user_message">there is no user record corresponding to this identifier</string>
     <string name="unexpected_error">unexpected error</string>
+    <string name="error_user_collision_message">this email address is already in use by another account</string>
 
 </resources>

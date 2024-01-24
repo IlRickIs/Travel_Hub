@@ -6,22 +6,24 @@ import android.os.Parcelable;
 import com.google.firebase.database.Exclude;
 
 public class User implements Parcelable {
-    private String userName;
+    private String username;
     private String email;
     private String idToken;
 
+    public User() {
+    }
     public User(String name, String email, String idToken) {
-        this.userName = name;
+        this.username = name;
         this.email = email;
         this.idToken = idToken;
     }
 
-    public String getName() {
-        return userName;
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setName(String name) {
-        this.userName = name;
+    public void setUsername(String name) {
+        this.username = name;
     }
 
     public String getEmail() {
@@ -44,7 +46,7 @@ public class User implements Parcelable {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + userName + '\'' +
+                "name='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", idToken='" + idToken + '\'' +
                 '}';
@@ -57,19 +59,19 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.userName);
+        dest.writeString(this.username);
         dest.writeString(this.email);
         dest.writeString(this.idToken);
     }
 
     public void readFromParcel(Parcel source) {
-        this.userName = source.readString();
+        this.username = source.readString();
         this.email = source.readString();
         this.idToken = source.readString();
     }
 
     protected User(Parcel in) {
-        this.userName = in.readString();
+        this.username = in.readString();
         this.email = in.readString();
         this.idToken = in.readString();
     }

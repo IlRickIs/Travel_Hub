@@ -4,17 +4,21 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.security.crypto.EncryptedFile;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 
 public class DataEncryptionUtil {
-    private final Context context;
+    private final Application application;
 
     public DataEncryptionUtil(Application application) {
-        this.context = application.getApplicationContext();
+        this.application = application;
     }
 
     /**
@@ -29,14 +33,14 @@ public class DataEncryptionUtil {
                                                               String key, String value)
             throws GeneralSecurityException, IOException {
 
-        MasterKey mainKey = new MasterKey.Builder(context)
+        MasterKey mainKey = new MasterKey.Builder(application)
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                 .build();
 
         // Creates a file with this name, or replaces an existing file that has the same name.
         // Note that the file name cannot contain path separators.
         SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(
-                context,
+                application,
                 sharedPreferencesFileName,
                 mainKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -60,12 +64,12 @@ public class DataEncryptionUtil {
                                                                String key)
             throws GeneralSecurityException, IOException {
 
-        MasterKey mainKey = new MasterKey.Builder(context)
+        MasterKey mainKey = new MasterKey.Builder(application)
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                 .build();
 
         SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(
-                context,
+                application,
                 sharedPreferencesFileName,
                 mainKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -73,5 +77,32 @@ public class DataEncryptionUtil {
         );
 
         return sharedPreferences.getString(key, null);
+    }
+
+    public void writeSecreteDataOnFile(String fileName, String data)
+            throws GeneralSecurityException, IOException {
+
+        MasterKey mainKey = new MasterKey.Builder(application)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+
+        // Creates a file with this name, or replaces an existing file that has the same name.
+        // Note that the file name cannot contain path separators.
+        File fileToWrite = new File(application.getFilesDir(), fileName);
+        EncryptedFile encryptedFile = new EncryptedFile.Builder(application,
+                fileToWrite,
+                mainKey,
+                EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+        ).build();
+
+        // File cannot exist before using openFileOutput
+        if (fileToWrite.exists()) {
+            fileToWrite.delete();
+        }
+
+        byte[] fileContent = data.getBytes(StandardCharsets.UTF_8);
+        OutputStream outputStream = encryptedFile.openFileOutput();
+        outputStream.write(fileContent);
+        outputStream.flush();
+        outputStream.close();
     }
 }

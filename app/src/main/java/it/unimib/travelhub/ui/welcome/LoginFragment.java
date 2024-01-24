@@ -74,6 +74,8 @@ public class LoginFragment extends Fragment {
         userViewModel = new ViewModelProvider(
                 requireActivity(),
                 new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
+        dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
     }
 
     @Override
@@ -89,10 +91,7 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Inflate the layout for this fragment
-
         if(userViewModel.getLoggedUser() != null) {
-            dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
-
             try {
                 String mail = dataEncryptionUtil.
                         readSecretDataWithEncryptedSharedPreferences(
@@ -117,6 +116,7 @@ public class LoginFragment extends Fragment {
         binding.buttonLogin.setOnClickListener(V -> {
             String email = binding.txtInputEditUser.getText().toString();
             String password = binding.txtInputEditPwd.getText().toString();
+
             if (isEmailOk(email) & isPasswordOk(password)) {
                 Log.d(TAG, "Email and password are ok");
                 if(!userViewModel.isAuthenticationError()){

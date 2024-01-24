@@ -30,6 +30,19 @@ public class UserViewModel extends ViewModel {
        return userMutableLiveData;
     }
 
+    public MutableLiveData<Result> getUserMutableLiveData
+            (String username, String email, String password, boolean isUserRegistered){
+        if(userMutableLiveData == null){
+           getUserData(username,email,password, isUserRegistered);
+        }
+
+        return userMutableLiveData;
+    }
+
+    private void getUserData(String username, String mail, String password, boolean isUserRegistered) {
+        userMutableLiveData = userRepository.getUser(username, mail, password, isUserRegistered);
+    }
+
     private void getUserData(String mail, String password, boolean isUserRegistered) {
         userMutableLiveData = userRepository.getUser(mail, password, isUserRegistered);
     }
