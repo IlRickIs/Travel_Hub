@@ -1,5 +1,7 @@
 package it.unimib.travelhub.data.repository.user;
 
+import static it.unimib.travelhub.util.Constants.USERNAME_NOT_AVAILABLE;
+
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -42,6 +44,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         return userMutableLiveData;
     }
 
+    @Override
     public MutableLiveData<Result> getUser(String username, String email, String password, boolean isUserRegistered) {
         if (isUserRegistered) {
             signIn(email, password);
@@ -79,7 +82,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
 
     @Override
     public void signUp(String username, String email, String password) {
-        userRemoteDataSource.signUp(username, email, password);
+            userRemoteDataSource.signUp(username, email, password);
     }
 
     @Override

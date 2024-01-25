@@ -189,8 +189,6 @@ public class LoginFragment extends Fragment {
         }
         */
 
-
-
         binding.buttonLogin.setOnClickListener(V -> {
             String email = binding.txtInputEditUser.getText().toString();
             String password = binding.txtInputEditPwd.getText().toString();
