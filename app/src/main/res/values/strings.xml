@@ -12,6 +12,7 @@
 
     <string name="forgot_password">Forgot password?</string>
     <string name="login">login</string>
+    <string name="logout">Logout</string>
     <string name="txt_or">or</string>
     <string name="google_login">login with Google</string>
     <string name="register">Register</string>
@@ -34,6 +35,13 @@
     <string name="error_login_user_message">there is no user record corresponding to this identifier</string>
     <string name="unexpected_error">unexpected error</string>
     <string name="error_user_collision_message">this email address is already in use by another account</string>
+
+
+    <string name="viewProfile">View Profile</string>
+    <string name="personalInformations">Personal Informations</string>
+    <string name="notifications">Notifications</string>
+    <string name="security">Security</string>
+    <string name="privacyTerms">Terms of Privacy</string>
 
 
 </resources>

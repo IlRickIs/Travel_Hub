@@ -38,6 +38,8 @@ android {
 dependencies {
 
     implementation("androidx.datastore:datastore-preferences-rxjava2:1.0.0")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
     val navVersion = "2.7.5"
 
     implementation("androidx.navigation:navigation-fragment:$navVersion")

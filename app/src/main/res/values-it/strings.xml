@@ -13,6 +13,7 @@
 
     <string name="forgot_password">Password dimenticata?</string>
     <string name="login">login</string>
+    <string name="logout">Logout</string>
     <string name="txt_or">or</string>
     <string name="google_login">login with Google</string>
     <string name="register">Register</string>
