@@ -1,7 +1,9 @@
 package it.unimib.travelhub.data.user;
 
 import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static it.unimib.travelhub.util.Constants.FIREBASE_USERNAMES_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
+import static it.unimib.travelhub.util.Constants.USERNAME_NOT_AVAILABLE;
 
 import android.util.Log;
 
@@ -13,6 +15,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import it.unimib.travelhub.model.User;
@@ -42,17 +45,39 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
                 } else {
                     Log.d(TAG, "User not present in Firebase Realtime Database" + user);
                     databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).setValue(user)
-                            .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
+                            .addOnSuccessListener(aVoid -> mapUsernameToId(user))
                             .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 userResponseCallback.onFailureFromRemoteDatabase(error.getMessage());
             }
         });
+    }
+
+
+
+
+
+
+
+private void mapUsernameToId(User user) {
+        Log.d(TAG, "Mapping username to id");
+        databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(user.getUsername()).setValue(user.getIdToken())
+                .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
+                .addOnFailureListener(e -> {
+                    Log.d(TAG, "Error while mapping username to id" + e.getLocalizedMessage());
+                    userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage());
+                });
+    }
+
+    public void isUsernameAvailable(String username) {
 
     }
+
+
 
     @Override
     public void getUserFavorite(String idToken) {

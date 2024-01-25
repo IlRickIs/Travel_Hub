@@ -12,10 +12,13 @@ public class Constants {
 
     public static final String ID_TOKEN = "google_token";
     public static final String FIREBASE_USERS_COLLECTION = "users";
+    public static final String FIREBASE_USERNAMES_COLLECTION = "usernames";
     public static final String UNEXPECTED_ERROR = "unexpected_error";
     public static final String INVALID_USER_ERROR = "invalidUserError";
     public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
     public static final String USER_COLLISION_ERROR = "userCollisionError";
     public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
+
+    public static final String USERNAME_NOT_AVAILABLE = "Username already taken";
 
 }

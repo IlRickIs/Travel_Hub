@@ -19,4 +19,7 @@ public abstract class BaseUserDataRemoteDataSource {
     public abstract void getUserFavorite(String idToken);
     public abstract void getUserPreferences(String idToken);
     public abstract void saveUserPreferences(String preferences);
+
+    public abstract void isUsernameAvailable(String username);
+
 }
