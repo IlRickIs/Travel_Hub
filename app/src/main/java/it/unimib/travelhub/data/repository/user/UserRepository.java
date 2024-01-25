@@ -53,7 +53,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
 
     @Override
     public MutableLiveData<Result> getGoogleUser(String idToken) {
-        return null;
+        signInWithGoogle(idToken);
+        return userMutableLiveData;
     }
 
     @Override
@@ -88,7 +89,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
 
     @Override
     public void signInWithGoogle(String token) {
-
+        userRemoteDataSource.signInWithGoogle(token);
     }
 
     @Override
@@ -118,7 +119,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
 
     @Override
     public void onFailureFromRemoteDatabase(String message) {
-
+        Result.Error result = new Result.Error(message);
+        userMutableLiveData.postValue(result);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package it.unimib.travelhub.ui.welcome;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -59,6 +60,10 @@ public class UserViewModel extends ViewModel {
         userRepository.getUser(email, password, isUserRegistered);
     }
 
+    public void getUser(String username, String email, String password, boolean isUserRegistered) {
+        userRepository.getUser(username, email, password, isUserRegistered);
+    }
+
     public boolean isAuthenticationError() {
         return authenticationError;
     }
@@ -69,5 +74,12 @@ public class UserViewModel extends ViewModel {
 
     public void setAuthenticationError(boolean b) {
         authenticationError = b;
+    }
+
+    public MutableLiveData<Result> getGoogleUserMutableLiveData(String idToken) {
+        if (userMutableLiveData == null) {
+                getUserData(idToken);
+            }
+        return userMutableLiveData;
     }
 }

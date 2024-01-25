@@ -12,12 +12,14 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import it.unimib.travelhub.model.User;
@@ -117,7 +119,32 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
 
     @Override
     public void signInWithGoogle(String idToken) {
-
+        if (idToken !=  null) {
+            // Got an ID token from Google. Use it to authenticate with Firebase.
+            AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+            firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential:success");
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    if (firebaseUser != null) {
+                        userResponseCallback.onSuccessFromAuthentication(
+                                new User(firebaseUser.getDisplayName(),
+                                        firebaseUser.getEmail(),
+                                        firebaseUser.getUid()
+                                )
+                        );
+                    } else {
+                        userResponseCallback.onFailureFromAuthentication(
+                                getErrorMessage(task.getException()));
+                    }
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential:failure", task.getException());
+                    userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
+                }
+            });
+        }
     }
 
     private String getErrorMessage(Exception exception) {
