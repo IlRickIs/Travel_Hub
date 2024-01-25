@@ -5,8 +5,8 @@ import static it.unimib.travelhub.util.Constants.ENCRYPTED_DATA_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
+import static it.unimib.travelhub.util.Constants.USERNAME;
 import static it.unimib.travelhub.util.Constants.USER_COLLISION_ERROR;
-import static it.unimib.travelhub.util.Constants.WEAK_PASSWORD_ERROR;
 
 import android.os.Bundle;
 
@@ -91,14 +91,14 @@ public class RegisterFragment extends Fragment {
             String password = binding.txtInputEditPwd.getText().toString();
             String username = binding.txtInputEditName.getText().toString();
             Log.d(TAG, "passing mail: " + email + " password: " + password + " username: " + username);
-            if(isEmailOk(email) & isPasswordOk(password)){
+            if(isEmailOk(email) && isPasswordOk(password) && isUsernameOk(username)){
                 if (!userViewModel.isAuthenticationError()) {
                     userViewModel.getUserMutableLiveData(username, email, password, false).observe(
                             getViewLifecycleOwner(), result -> {
                                 if (result.isSuccess()) {
                                     User user = ((Result.UserResponseSuccess) result).getData();
                                     Log.d(TAG, "user: " + user.toString());
-                                    saveLoginData(email, password, user.getIdToken());
+                                    saveLoginData(username, email, password, user.getIdToken());
                                     userViewModel.setAuthenticationError(false);
                                     Navigation.findNavController(view).navigate(
                                             R.id.action_registerFragment_to_mainActivity);
@@ -110,7 +110,7 @@ public class RegisterFragment extends Fragment {
                                 }
                             });
                 } else {
-                    userViewModel.getUser(email, password, false);
+                    userViewModel.getUser(username, email, password, false);
                 }
             }
         });
@@ -129,6 +129,16 @@ public class RegisterFragment extends Fragment {
             return false;
         } else {
             binding.txtInputEditUser.setError(null);
+            return true;
+        }
+    }
+
+    private boolean isUsernameOk(String username) {
+        if(username.isEmpty()) {
+            binding.txtInputEditName.setError(requireActivity().getString(R.string.error_empty_username));
+            return false;
+        } else {
+            binding.txtInputEditName.setError(null);
             return true;
         }
     }
@@ -155,8 +165,10 @@ public class RegisterFragment extends Fragment {
         }
     }
 
-    private void saveLoginData(String email, String password, String idToken) {
+    private void saveLoginData(String username, String email, String password, String idToken) {
         try {
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USERNAME, username);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS, email);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(

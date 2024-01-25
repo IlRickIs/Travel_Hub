@@ -6,6 +6,8 @@ public class Constants {
     public static final String EMAIL_ADDRESS = "email_address";
     public static final String PASSWORD = "password";
 
+    public static final String USERNAME = "username";
+
     public static final String FIREBASE_REALTIME_DATABASE = "https://travelhub-9bc21-default-rtdb.europe-west1.firebasedatabase.app/";
 
     public static final String ID_TOKEN = "google_token";
