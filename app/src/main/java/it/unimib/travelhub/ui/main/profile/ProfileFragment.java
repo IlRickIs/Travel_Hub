@@ -2,13 +2,26 @@ package it.unimib.travelhub.ui.main.profile;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.SecurityFragment;
+import it.unimib.travelhub.SettingsFragment;
+import it.unimib.travelhub.SubscriptionFragment;
+import it.unimib.travelhub.TermsOfPrivacyFragment;
+import it.unimib.travelhub.databinding.FragmentLoginBinding;
+import it.unimib.travelhub.databinding.FragmentProfileBinding;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,28 +35,19 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private FragmentProfileBinding binding;
+
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    private String TAG = "ProfileFragment";
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,16 +55,62 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        binding = FragmentProfileBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager.beginTransaction()
+                .add(R.id.profileFragmentContainer, PersonalInfoFragment.class, null)
+                .commit();
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        binding.buttonPersonalInformations.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.profileFragmentContainer, PersonalInfoFragment.class, null)
+                    .commit();
+        });
+
+        binding.buttonSettings.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.profileFragmentContainer, SettingsFragment.class, null)
+                    .commit();
+        });
+
+        binding.buttonSubscription.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.profileFragmentContainer, SubscriptionFragment.class, null)
+                    .commit();
+        });
+
+        binding.buttonSecurity.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.profileFragmentContainer, SecurityFragment.class, null)
+                    .commit();
+        });
+        binding.buttonTermsOfPrivacy.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.profileFragmentContainer, TermsOfPrivacyFragment.class, null)
+                    .commit();
+        });
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

@@ -10,4 +10,24 @@
         android:name="it.unimib.travelhub.ui.main.profile.PersonalInfoFragment"
         android:label="fragment_personal_info"
         tools:layout="@layout/fragment_personal_info" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="it.unimib.travelhub.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/subscriptionFragment"
+        android:name="it.unimib.travelhub.SubscriptionFragment"
+        android:label="fragment_subscription"
+        tools:layout="@layout/fragment_subscription" />
+    <fragment
+        android:id="@+id/securityFragment"
+        android:name="it.unimib.travelhub.SecurityFragment"
+        android:label="fragment_security"
+        tools:layout="@layout/fragment_security" />
+    <fragment
+        android:id="@+id/termsOfPrivacyFragment"
+        android:name="it.unimib.travelhub.TermsOfPrivacyFragment"
+        android:label="fragment_terms_of_privacy"
+        tools:layout="@layout/fragment_terms_of_privacy" />
 </navigation>
