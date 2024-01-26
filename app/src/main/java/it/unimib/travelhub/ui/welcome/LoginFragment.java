@@ -171,7 +171,7 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Inflate the layout for this fragment
-        /*
+
         if(userViewModel.getLoggedUser() != null) {
             try {
                 String mail = dataEncryptionUtil.
@@ -187,7 +187,7 @@ public class LoginFragment extends Fragment {
                 Log.d(TAG, "Email address from encrypted SharedPref: " + mail);
                 Log.d(TAG, "Password from encrypted SharedPref: " + password);
 
-                if (mail != null && password != null && username != null) {
+                if (mail != null &&  username != null) {
                     Log.d(TAG, "starting main activity");
                     startActivityBasedOnCondition(MainActivity.class,
                             R.id.action_loginFragment_to_mainActivity);
@@ -196,7 +196,9 @@ public class LoginFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        */
+
+
+
 
         binding.buttonLogin.setOnClickListener(V -> {
             String email = binding.txtInputEditUser.getText().toString();
