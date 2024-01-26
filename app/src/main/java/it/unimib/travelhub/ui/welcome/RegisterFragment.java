@@ -6,6 +6,7 @@ import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FI
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
 import static it.unimib.travelhub.util.Constants.USERNAME;
+import static it.unimib.travelhub.util.Constants.USERNAME_NOT_AVAILABLE;
 import static it.unimib.travelhub.util.Constants.USER_COLLISION_ERROR;
 
 import android.os.Bundle;
@@ -160,6 +161,8 @@ public class RegisterFragment extends Fragment {
         switch(message) {
             case USER_COLLISION_ERROR:
                 return requireActivity().getString(R.string.error_user_collision_message);
+            case USERNAME_NOT_AVAILABLE:
+                return requireActivity().getString(R.string.error_username_not_available);
             default:
                 return requireActivity().getString(R.string.unexpected_error);
         }

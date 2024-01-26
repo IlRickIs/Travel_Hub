@@ -57,7 +57,27 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
         });
     }
 
+    public void isUsernameTaken(String username, String mail, String password) {
+        Query query = databaseReference.child(FIREBASE_USERS_COLLECTION).orderByChild("username").equalTo(username);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG, "onDataChange");
+                if (snapshot.exists()) {
+                    Log.d(TAG, "Username already taken" + snapshot.getValue().toString());
+                    userResponseCallback.onFailureFromRemoteDatabase(USERNAME_NOT_AVAILABLE);
+                } else {
+                    Log.d(TAG, "Username available");
+                    userResponseCallback.signUp(username, mail, password);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "onCancelled");
+            }
+        });
 
+    }
 
 
 

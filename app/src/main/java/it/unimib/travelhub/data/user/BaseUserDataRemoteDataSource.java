@@ -22,4 +22,6 @@ public abstract class BaseUserDataRemoteDataSource {
 
     public abstract void isUsernameAvailable(String username);
 
+    public abstract void isUsernameTaken(String username, String email, String password);
+
 }

@@ -30,6 +30,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -47,6 +53,8 @@ import it.unimib.travelhub.model.ValidationResult;
 import it.unimib.travelhub.model.Result;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
+import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static it.unimib.travelhub.util.Constants.INVALID_USER_ERROR;
@@ -147,6 +155,7 @@ public class LoginFragment extends Fragment {
                 }
             }
         });
+        testDatabaseUsername("paolo");
     }
 
     @Override
@@ -333,6 +342,10 @@ public class LoginFragment extends Fragment {
                 });
     }
 
+    private void testDatabaseUsername(String username) {
+        Log.d(TAG, "metodo da cancellare");
+
+    }
 
 
 }
