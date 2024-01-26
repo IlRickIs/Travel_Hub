@@ -54,7 +54,6 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
     @Override
     public void signUp(String username, String email, String password) {
 
-
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();

@@ -36,5 +36,6 @@
     <string name="error_user_collision_message">this email address is already in use by another account</string>
     <string name="error_empty_username">empty username</string>
     <string name="error_no_google_account_found_message">No Google accounts have been found</string>
+    <string name="error_username_not_available">username already taken</string>
 
 </resources>

@@ -49,7 +49,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         if (isUserRegistered) {
             signIn(email, password);
         } else {
-            signUp(username, email, password);
+            isUsernameTaken(username, email, password);
         }
         return userMutableLiveData;
     }
@@ -83,6 +83,11 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
     @Override
     public void signUp(String username, String email, String password) {
             userRemoteDataSource.signUp(username, email, password);
+    }
+
+
+    public void isUsernameTaken(String username, String email, String password){
+        userDataRemoteDataSource.isUsernameTaken(username, email, password);
     }
 
     @Override
