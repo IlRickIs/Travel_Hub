@@ -6,20 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import it.unimib.travelhub.R;
-import it.unimib.travelhub.SecurityFragment;
-import it.unimib.travelhub.SettingsFragment;
-import it.unimib.travelhub.SubscriptionFragment;
-import it.unimib.travelhub.TermsOfPrivacyFragment;
-import it.unimib.travelhub.databinding.FragmentLoginBinding;
 import it.unimib.travelhub.databinding.FragmentProfileBinding;
 
 
