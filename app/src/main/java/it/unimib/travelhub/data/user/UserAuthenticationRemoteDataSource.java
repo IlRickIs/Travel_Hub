@@ -1,5 +1,7 @@
 package it.unimib.travelhub.data.user;
 
+import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static it.unimib.travelhub.util.Constants.INVALID_USER_ERROR;
 import static it.unimib.travelhub.util.Constants.UNEXPECTED_ERROR;
@@ -21,6 +23,9 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import it.unimib.travelhub.model.User;
 
@@ -29,7 +34,6 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
     private static final String TAG = UserAuthenticationRemoteDataSource.class.getSimpleName();
 
     private final FirebaseAuth firebaseAuth;
-
     public UserAuthenticationRemoteDataSource(){
         firebaseAuth = FirebaseAuth.getInstance();
     }
@@ -47,7 +51,18 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
 
     @Override
     public void logout() {
-
+        FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null) {
+                    firebaseAuth.removeAuthStateListener(this);
+                    Log.d(TAG, "User logged out");
+                    userResponseCallback.onSuccessLogout();
+                }
+            }
+        };
+        firebaseAuth.addAuthStateListener(authStateListener);
+        firebaseAuth.signOut();
     }
 
 
@@ -130,7 +145,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                     FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                     if (firebaseUser != null) {
                         userResponseCallback.onSuccessFromAuthentication(
-                                new User(firebaseUser.getDisplayName(),
+                                new User(genNewUsername(firebaseUser.getDisplayName(), firebaseUser.getEmail()),
                                         firebaseUser.getEmail(),
                                         firebaseUser.getUid()
                                 )
@@ -146,6 +161,14 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                 }
             });
         }
+    }
+
+    private String genNewUsername(String username, String email) {
+        String newUsername = username;
+        newUsername = username.replace(" ", "");
+        newUsername.toLowerCase();
+        newUsername = newUsername + email.hashCode();
+        return newUsername;
     }
 
     private String getErrorMessage(Exception exception) {

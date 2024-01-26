@@ -67,7 +67,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
 
     @Override
     public MutableLiveData<Result> logout() {
-        return null;
+        userRemoteDataSource.logout();
+        return userMutableLiveData;
     }
 
     @Override
@@ -99,6 +100,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
     public void signInWithGoogle(String token) {
         userRemoteDataSource.signInWithGoogle(token);
     }
+
 
     @Override
     public void onSuccessFromAuthentication(User user) {
