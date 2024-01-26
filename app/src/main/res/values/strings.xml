@@ -60,6 +60,9 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="error_empty_username">empty username</string>
+    <string name="error_no_google_account_found_message">No Google accounts have been found</string>
+    <string name="error_username_not_available">username already taken</string>
 
 
 </resources>
