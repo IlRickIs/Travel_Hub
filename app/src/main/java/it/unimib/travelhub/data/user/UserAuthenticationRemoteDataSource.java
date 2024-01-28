@@ -121,13 +121,16 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
             if (task.isSuccessful()) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
+                    Log.d(TAG, "signInWithCredential:success");
                     userResponseCallback.onSuccessFromAuthentication(
                             new User(firebaseUser.getDisplayName(), email, firebaseUser.getUid())
                     );
                 } else {
+                    Log.d(TAG, "signInWithCredential:failure");
                     userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                 }
             } else {
+                Log.d(TAG, "signInWithCredential:failure");
                 userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
             }
         });
@@ -141,7 +144,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
             firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success");
+                    Log.d(TAG, "signInWithgoogle:success");
                     FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                     if (firebaseUser != null) {
                         userResponseCallback.onSuccessFromAuthentication(
@@ -156,7 +159,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                     }
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.getException());
+                    Log.w(TAG, "signInWithgoogle", task.getException());
                     userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                 }
             });
