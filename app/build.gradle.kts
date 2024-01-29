@@ -43,6 +43,8 @@ dependencies {
     implementation("androidx.preference:preference:1.2.0")
     val navVersion = "2.7.5"
 
+    implementation("androidx.cardview:cardview:1.0.0")
+
     implementation("androidx.navigation:navigation-fragment:$navVersion")
     implementation("androidx.navigation:navigation-ui:$navVersion")
     implementation("androidx.appcompat:appcompat:1.6.1")
