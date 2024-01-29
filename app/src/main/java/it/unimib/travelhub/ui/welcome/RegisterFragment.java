@@ -93,6 +93,7 @@ public class RegisterFragment extends Fragment {
             String username = binding.txtInputEditName.getText().toString();
             Log.d(TAG, "passing mail: " + email + " password: " + password + " username: " + username);
             if(isEmailOk(email) && isPasswordOk(password) && isUsernameOk(username)){
+               // binding.registerProgressBar.setVisibility(View.VISIBLE);
                 if (!userViewModel.isAuthenticationError()) {
                     userViewModel.getUserMutableLiveData(username, email, password, false).observe(
                             getViewLifecycleOwner(), result -> {
@@ -113,7 +114,13 @@ public class RegisterFragment extends Fragment {
                 } else {
                     userViewModel.getUser(username, email, password, false);
                 }
+                //binding.registerProgressBar.setVisibility(View.GONE);
+            }else {
+                userViewModel.setAuthenticationError(true);
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
             }
+
         });
     }
 
