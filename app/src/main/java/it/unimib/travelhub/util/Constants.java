@@ -18,7 +18,6 @@ public class Constants {
     public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
     public static final String USER_COLLISION_ERROR = "userCollisionError";
     public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
-
     public static final String USERNAME_NOT_AVAILABLE = "Username already taken";
 
 }

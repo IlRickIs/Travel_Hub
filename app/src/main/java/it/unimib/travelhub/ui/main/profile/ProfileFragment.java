@@ -88,16 +88,10 @@ public class ProfileFragment extends Fragment {
                     .commit();
         });
 
-        binding.buttonSecurity.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.profileFragmentContainer, SecurityFragment.class, null)
-                    .commit();
-        });
         binding.buttonTermsOfPrivacy.setOnClickListener(v -> {
             FragmentManager fragmentManager = getParentFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.profileFragmentContainer, TermsOfPrivacyFragment.class, null)
+                    .replace(R.id.profileFragmentContainer, PrivacyAndSecurityFragment.class, null)
                     .commit();
         });
     }

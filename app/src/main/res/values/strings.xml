@@ -1,4 +1,7 @@
 <resources>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <string name="app_name">Travel Hub</string>
     <string name="app_login_user_hint">Username or Email</string>
     <string name="app_login_pwd_hint">Password</string>
@@ -13,6 +16,7 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="login">login</string>
     <string name="logout">Logout</string>
+    <string name="logout_message">Are you sure you want to logout?</string>
     <string name="txt_or">or</string>
     <string name="google_login">login with Google</string>
     <string name="register">Register</string>
@@ -39,13 +43,31 @@
     <string name="error_no_google_account_found_message">No Google accounts have been found</string>
     <string name="error_username_not_available">username already taken</string>
 
-
     <string name="viewProfile">View Profile</string>
-    <string name="personalInformations">Personal Informations</string>
+    <string name="personal_informations">Personal Informations</string>
+    <string name="username">Username</string>
+    <string name="user_name">Name</string>
+    <string name="user_surname">Surname</string>
+    <string name="user_birth">Birth</string>
+    <string name="user_city">City</string>
+
+
+
     <string name="subscription">Subscription</string>
+
     <string name="settings">Settings</string>
-    <string name="security">Security</string>
-    <string name="privacyTerms">Terms of Privacy</string>
+    <string name="general">General</string>
+    <string name="theme">Theme</string>
+    <string name="language">Language</string>
+    <string name="notifications">Notifications</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="email_notifications">Email Notifications</string>
+    <string name="new_message">New Message</string>
+    <string name="new_updates">New Updates</string>
+    <string name="Advertising">Advertising</string>
+    <string name="saveSettings">Save Settings</string>
+
+    <string name="privacyAndSecurity">Privacy and Security</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -60,6 +82,9 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+
+
 
 
 </resources>

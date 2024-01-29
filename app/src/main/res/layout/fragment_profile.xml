@@ -80,7 +80,7 @@
                 style="@style/Widget.Material3.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/personalInformations" />
+                android:text="@string/personal_informations" />
 
             <Button
                 android:id="@+id/buttonSubscription"
@@ -97,18 +97,11 @@
                 android:text="@string/settings" />
 
             <Button
-                android:id="@+id/buttonSecurity"
-                style="@style/Widget.Material3.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/security" />
-
-            <Button
                 android:id="@+id/buttonTermsOfPrivacy"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/privacyTerms" />
+                android:text="@string/privacyAndSecurity" />
 
         </LinearLayout>
 
