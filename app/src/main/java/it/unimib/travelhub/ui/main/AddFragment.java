@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,9 +65,13 @@ public class AddFragment extends Fragment {
 
         String[] anotherlocalDataset = {"activity 5", "activity 6", "activity 7", "activity 8", "activity 9", "activity 10"};
         LinearLayoutManager anotherLayoutManager = new LinearLayoutManager(getActivity());
-        AddRecyclerAdapter anotherAddRecyclerAdapter = new AddRecyclerAdapter(anotherlocalDataset);
+        //AddRecyclerAdapter anotherAddRecyclerAdapter = new AddRecyclerAdapter(anotherlocalDataset);
         binding.terminatedActivitiesRecyclerView.setLayoutManager(anotherLayoutManager);
-        binding.terminatedActivitiesRecyclerView.setAdapter(anotherAddRecyclerAdapter);
+        binding.terminatedActivitiesRecyclerView.setAdapter(addRecyclerAdapter);
+
+        binding.buttonAddActivity.setOnClickListener(v -> {
+            Navigation.findNavController(view).navigate(AddFragmentDirections.actionAddFragmentToEditFragment());
+        });
     }
 
     @Override

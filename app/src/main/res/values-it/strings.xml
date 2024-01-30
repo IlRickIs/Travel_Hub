@@ -59,5 +59,12 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="return_to_the_previous_screen">return to the previous screen</string>
+    <string name="from_fragment_edit">from</string>
+    <string name="title">titolo</string>
+    <string name="to">to</string>
+    <string name="save">Save</string>
+    <string name="from">from</string>
+    <string name="description">description</string>
 
 </resources>
