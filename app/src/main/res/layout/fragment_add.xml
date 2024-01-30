@@ -7,6 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.AddFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -81,7 +84,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:maxHeight="10dp"
             app:layout_constraintTop_toBottomOf="@id/ongoing_activities" />
+
 
     <TextView
         android:id="@+id/completed_activities"
@@ -104,5 +109,7 @@
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/completed_activities" />
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </FrameLayout>

@@ -12,7 +12,7 @@ import it.unimib.travelhub.R;
 
 public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.ViewHolder>{
 
-    private String[] myDataset = {"Add Activity", "Add Accomodation", "Add Restaurant", "Add Transport"};
+    private String[] myDataset;
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final Button button;
 
