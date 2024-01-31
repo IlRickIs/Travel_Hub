@@ -43,8 +43,10 @@ private ActivityAddTravelBinding binding;
 
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+        binding.buttonBack.setOnClickListener(v -> {
+            this.getOnBackPressedDispatcher().onBackPressed();
+        });
 
 
-        binding.backButton.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
     }
 }
