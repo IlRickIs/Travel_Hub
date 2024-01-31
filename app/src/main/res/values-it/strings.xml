@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+
     <string name="app_name">Travel Hub</string>
     <string name="app_login_user_hint">Username or Email</string>
     <string name="app_login_pwd_hint">Password</string>
@@ -14,6 +17,7 @@
     <string name="forgot_password">Password dimenticata?</string>
     <string name="login">login</string>
     <string name="logout">Logout</string>
+    <string name="logout_message">Sei sicuro di voler uscire?</string>
     <string name="txt_or">or</string>
     <string name="google_login">login with Google</string>
     <string name="register">Register</string>
@@ -40,11 +44,28 @@
     <string name="error_username_not_available">username already taken</string>
 
     <string name="viewProfile">View Profile</string>
-    <string name="personalInformations">Personal Informations</string>
+    <string name="personal_informations">Personal Informations</string>
+    <string name="username">Username</string>
+    <string name="user_name">Nome</string>
+    <string name="user_surname">Cognome</string>
+    <string name="user_birth">Data di nascita</string>
+    <string name="user_city">Città</string>
+
     <string name="subscription">Subscription</string>
+
     <string name="settings">Settings</string>
-    <string name="security">Security</string>
-    <string name="privacyTerms">Terms of Privacy</string>
+    <string name="general">Generali</string>
+    <string name="theme">Tema</string>
+    <string name="language">Lingua</string>
+    <string name="notifications">Notifiche</string>
+    <string name="push_notifications">Notifiche Push</string>
+    <string name="email_notifications">Notifiche Email</string>
+    <string name="new_message">Nuovo Messaggio</string>
+    <string name="new_updates">Nuovi Aggiornamenti</string>
+    <string name="Advertising">Pubblicità</string>
+    <string name="saveSettings">Salva Impostazioni</string>
+
+    <string name="privacyAndSecurity">Terms of Privacy</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
