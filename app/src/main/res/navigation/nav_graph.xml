@@ -38,17 +38,16 @@
         android:label="fragment_add"
         tools:layout="@layout/fragment_add" >
         <action
-            android:id="@+id/action_addFragment_to_editFragment"
-            app:destination="@id/editFragment" />
+            android:id="@+id/action_addFragment_to_addTravelActivity"
+            app:destination="@id/addTravelActivity" />
     </fragment>
     <activity
         android:id="@+id/welcomeActivity2"
         android:name="it.unimib.travelhub.ui.welcome.WelcomeActivity"
         android:label="WelcomeActivity" />
-    <fragment
-        android:id="@+id/editFragment"
-        android:name="it.unimib.travelhub.ui.main.EditFragment"
-        android:label="fragment_edit"
-        tools:layout="@layout/fragment_edit" />
+    <activity
+        android:id="@+id/addTravelActivity"
+        android:name="it.unimib.travelhub.ui.edit.AddTravelActivity"
+        android:label="AddTravelActivity" />
 
 </navigation>

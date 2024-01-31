@@ -70,7 +70,7 @@ public class AddFragment extends Fragment {
         binding.terminatedActivitiesRecyclerView.setAdapter(addRecyclerAdapter);
 
         binding.buttonAddActivity.setOnClickListener(v -> {
-            Navigation.findNavController(view).navigate(AddFragmentDirections.actionAddFragmentToEditFragment());
+            Navigation.findNavController(view).navigate(AddFragmentDirections.actionAddFragmentToAddTravelActivity());
         });
     }
 

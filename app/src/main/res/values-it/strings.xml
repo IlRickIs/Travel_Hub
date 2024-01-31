@@ -66,5 +66,8 @@
     <string name="save">Save</string>
     <string name="from">from</string>
     <string name="description">description</string>
+    <string name="travel_images">travel images</string>
+    <string name="edit">edit</string>
+    <string name="map_preview">map preview</string>
 
 </resources>

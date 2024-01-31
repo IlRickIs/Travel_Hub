@@ -5,42 +5,24 @@
     android:id="@+id/editFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.EditFragment">
+    tools:context=".ui.edit.EditFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/back_button"
-            style="?attr/materialIconButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/return_to_the_previous_screen"
-            app:icon="@drawable/baseline_arrow_back_ios_24"
 
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/button_save_activity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="@string/save"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/title_form"
-            android:layout_width="0dp"
-            app:layout_constraintWidth_percent=".7"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/back_button"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             >
 
             <com.google.android.material.textfield.TextInputEditText

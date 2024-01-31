@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.main;
+package it.unimib.travelhub.ui.edit;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -11,14 +11,12 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import it.unimib.travelhub.R;
 import it.unimib.travelhub.databinding.FragmentEditBinding;
 
 
@@ -59,9 +57,6 @@ public class EditFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        binding.backButton.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
-
 
         DatePickerDialog.OnDateSetListener date = (v, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR,year);
