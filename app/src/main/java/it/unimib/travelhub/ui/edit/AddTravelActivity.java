@@ -36,11 +36,11 @@ private ActivityAddTravelBinding binding;
                  R.id.navigation_edit, R.id.navigation_images, R.id.navigation_map_preview)
                 .build();
 
-        //NavController navController = Navigation.findNavController(this, R.id.nav_view);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
-                findFragmentById(binding.activityAddFragmentContainerView.getId());
+                findFragmentById(R.id.activityAddFragmentContainerView);
+
         NavController navController = navHostFragment.getNavController();
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
         NavigationUI.setupWithNavController(binding.navView, navController);
 
 
