@@ -123,7 +123,7 @@ public class PersonalInfoFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int id) {
                             userViewModel.logout().observe(getViewLifecycleOwner(), result -> {
                                 if (result.isSuccess()) {
-                                    Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_welcomeActivity2);
+                                    Navigation.findNavController(view).navigate(R.id.action_personalInfoFragment_to_welcomeActivity);
                                     ((MainActivity) requireActivity()).finish();
                                 } else {
                                     Snackbar.make(view,
@@ -145,6 +145,11 @@ public class PersonalInfoFragment extends Fragment {
             AlertDialog alert11 = builder1.create();
             alert11.show();
 
+
+        });
+
+        binding.buttonBack.setOnClickListener(v -> {
+            requireActivity().getOnBackPressedDispatcher().onBackPressed();
         });
     }
 }

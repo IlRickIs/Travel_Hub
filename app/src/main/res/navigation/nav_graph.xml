@@ -16,11 +16,23 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
-            android:id="@+id/action_profileFragment_to_welcomeActivity2"
-            app:destination="@id/welcomeActivity2"
+            android:id="@+id/action_profileFragment_to_welcomeActivity"
+            app:destination="@id/welcomeActivity"
             app:launchSingleTop="true"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_profileFragment_to_privacyAndSecurityFragment"
+            app:destination="@id/privacyAndSecurityFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_subscriptionFragment"
+            app:destination="@id/subscriptionFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_personalInfoFragment"
+            app:destination="@id/personalInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -38,8 +50,31 @@
         android:label="fragment_add"
         tools:layout="@layout/fragment_add" />
     <activity
-        android:id="@+id/welcomeActivity2"
+        android:id="@+id/welcomeActivity"
         android:name="it.unimib.travelhub.ui.welcome.WelcomeActivity"
         android:label="WelcomeActivity" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="it.unimib.travelhub.ui.main.profile.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/subscriptionFragment"
+        android:name="it.unimib.travelhub.ui.main.profile.SubscriptionFragment"
+        android:label="fragment_subscription"
+        tools:layout="@layout/fragment_subscription" />
+    <fragment
+        android:id="@+id/privacyAndSecurityFragment"
+        android:name="it.unimib.travelhub.ui.main.profile.PrivacyAndSecurityFragment"
+        android:label="fragment_privacy_and_security"
+        tools:layout="@layout/fragment_privacy_and_security" />
+    <fragment
+        android:id="@+id/personalInfoFragment"
+        android:name="it.unimib.travelhub.ui.main.profile.PersonalInfoFragment"
+        android:label="PersonalInfoFragment" >
+        <action
+            android:id="@+id/action_personalInfoFragment_to_welcomeActivity"
+            app:destination="@id/welcomeActivity" />
+    </fragment>
 
 </navigation>

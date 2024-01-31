@@ -1,5 +1,6 @@
 package it.unimib.travelhub.ui.welcome;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
