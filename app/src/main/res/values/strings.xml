@@ -60,6 +60,9 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="dash">-</string>
+    <string name="ongoing_travel">Ongoing travels</string>
+    <string name="other_travels">Other travels</string>
 
 
 </resources>

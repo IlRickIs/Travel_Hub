@@ -21,4 +21,6 @@ public class Constants {
 
     public static final String USERNAME_NOT_AVAILABLE = "Username already taken";
 
+    public static final String TRAVELS_TEST_JSON_FILE = "travels_data.json";
+
 }
