@@ -3,6 +3,7 @@ package it.unimib.travelhub.data.user;
 import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERNAMES_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
+import static it.unimib.travelhub.util.Constants.USERNAME;
 import static it.unimib.travelhub.util.Constants.USERNAME_NOT_AVAILABLE;
 
 import android.util.Log;
@@ -41,6 +42,10 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     Log.d(TAG, "User already present in Firebase Realtime Database");
+                    /*databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).child(USERNAME).setValue(user.getUsername())
+                            .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
+                            .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));*/
+                    user.setUsername(snapshot.child(USERNAME).getValue().toString());
                     userResponseCallback.onSuccessFromRemoteDatabase(user);
                 } else {
                     Log.d(TAG, "User not present in Firebase Realtime Database" + user);

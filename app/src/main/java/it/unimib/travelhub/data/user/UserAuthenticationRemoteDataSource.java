@@ -147,6 +147,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                     Log.d(TAG, "signInWithgoogle:success");
                     FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                     if (firebaseUser != null) {
+
                         userResponseCallback.onSuccessFromAuthentication(
                                 new User(genNewUsername(firebaseUser.getDisplayName(), firebaseUser.getEmail()),
                                         firebaseUser.getEmail(),
