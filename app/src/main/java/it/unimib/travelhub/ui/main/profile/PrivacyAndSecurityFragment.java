@@ -10,7 +10,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import it.unimib.travelhub.databinding.FragmentPrivacyAndSecurityBinding;
 
@@ -20,19 +19,8 @@ import it.unimib.travelhub.databinding.FragmentPrivacyAndSecurityBinding;
  * create an instance of this fragment.
  */
 public class PrivacyAndSecurityFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private FragmentPrivacyAndSecurityBinding binding;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private String htmlPrivacy = "<h1>Privacy Policy</h1>\n" +
+    private final String htmlPrivacy = "<h1>Privacy Policy</h1>\n" +
             "<p>Last updated: January 31, 2024</p>\n" +
             "<p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>\n" +
             "<p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the <a href=\"https://www.freeprivacypolicy.com/free-privacy-policy-generator/\" target=\"_blank\">Free Privacy Policy Generator</a>.</p>\n" +
@@ -196,39 +184,21 @@ public class PrivacyAndSecurityFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TermsOfPrivacyFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PrivacyAndSecurityFragment newInstance(String param1, String param2) {
-        PrivacyAndSecurityFragment fragment = new PrivacyAndSecurityFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static PrivacyAndSecurityFragment newInstance() {
+        return new PrivacyAndSecurityFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentPrivacyAndSecurityBinding.inflate(inflater, container, false);
-        ((TextView) binding.textViewPrivacyAndSecurity).setText(Html.fromHtml(htmlPrivacy));
+        binding.textViewPrivacyAndSecurity.setText(Html.fromHtml(htmlPrivacy));
         return binding.getRoot();
     }
 
@@ -236,8 +206,6 @@ public class PrivacyAndSecurityFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonBack.setOnClickListener(v -> {
-            requireActivity().getOnBackPressedDispatcher().onBackPressed();
-        });
+        binding.buttonBack.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
     }
 }

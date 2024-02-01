@@ -16,12 +16,6 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
-            android:id="@+id/action_profileFragment_to_welcomeActivity2"
-            app:destination="@id/welcomeActivity2"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true"/>
-        <action
             android:id="@+id/action_profileFragment_to_privacyAndSecurityFragment"
             app:destination="@id/privacyAndSecurityFragment" />
         <action
@@ -60,7 +54,8 @@
     <activity
         android:id="@+id/addTravelActivity"
         android:name="it.unimib.travelhub.ui.edit.AddTravelActivity"
-        android:label="AddTravelActivity" />
+        android:label="AddTravelActivity"
+        tools:layout="@layout/activity_add_travel"/>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="it.unimib.travelhub.ui.main.profile.SettingsFragment"

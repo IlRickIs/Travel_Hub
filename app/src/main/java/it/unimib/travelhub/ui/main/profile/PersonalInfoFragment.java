@@ -3,8 +3,11 @@ package it.unimib.travelhub.ui.main.profile;
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,33 +16,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Objects;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.databinding.FragmentPersonalInfoBinding;
-import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
 
 public class PersonalInfoFragment extends Fragment {
-
     private static final String TAG = PersonalInfoFragment.class.getSimpleName();
     private FragmentPersonalInfoBinding binding;
-
     private DataEncryptionUtil dataEncryptionUtil;
-
     private UserViewModel userViewModel;
-
-
-
     public PersonalInfoFragment() {
         // Required empty public constructor
     }
@@ -65,7 +58,7 @@ public class PersonalInfoFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentPersonalInfoBinding.inflate(inflater, container, false);
@@ -79,26 +72,26 @@ public class PersonalInfoFragment extends Fragment {
 
             String username = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
-            binding.textFieldUsername.getEditText().setHint(username);
+            Objects.requireNonNull(binding.textFieldUsername.getEditText()).setHint(username);
             binding.textFieldUsername.getEditText().setText(username);
 
             String name = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name");
-            binding.textFieldName.getEditText().setHint(name);
+            Objects.requireNonNull(binding.textFieldName.getEditText()).setHint(name);
             binding.textFieldName.getEditText().setText(name);
 
             String surname = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname");
-            binding.textFieldSurname.getEditText().setHint(surname);
+            Objects.requireNonNull(binding.textFieldSurname.getEditText()).setHint(surname);
             binding.textFieldSurname.getEditText().setText(surname);
 
             String birthDate = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate");
-            binding.textFieldBirth.getEditText().setHint(birthDate);
+            Objects.requireNonNull(binding.textFieldBirth.getEditText()).setHint(birthDate);
 
             String userCity = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_city");
-            binding.textFieldUserCity.getEditText().setHint(userCity);
+            Objects.requireNonNull(binding.textFieldUserCity.getEditText()).setHint(userCity);
             binding.textFieldUserCity.getEditText().setText(userCity);
 
 
@@ -119,28 +112,20 @@ public class PersonalInfoFragment extends Fragment {
 
             builder1.setPositiveButton(
                     "Yes",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            userViewModel.logout().observe(getViewLifecycleOwner(), result -> {
-                                if (result.isSuccess()) {
-                                    Navigation.findNavController(view).navigate(R.id.action_personalInfoFragment_to_welcomeActivity);
-                                    ((MainActivity) requireActivity()).finish();
-                                } else {
-                                    Snackbar.make(view,
-                                            requireActivity().getString(R.string.unexpected_error),
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-                            });
+                    (dialog, id) -> userViewModel.logout().observe(getViewLifecycleOwner(), result -> {
+                        if (result.isSuccess()) {
+                            Navigation.findNavController(view).navigate(R.id.action_personalInfoFragment_to_welcomeActivity);
+                            requireActivity().finish();
+                        } else {
+                            Snackbar.make(view,
+                                    requireActivity().getString(R.string.unexpected_error),
+                                    Snackbar.LENGTH_SHORT).show();
                         }
-                    });
+                    }));
 
             builder1.setNegativeButton(
                     "No",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
+                    (dialog, id) -> dialog.cancel());
 
             AlertDialog alert11 = builder1.create();
             alert11.show();
@@ -148,8 +133,6 @@ public class PersonalInfoFragment extends Fragment {
 
         });
 
-        binding.buttonBack.setOnClickListener(v -> {
-            requireActivity().getOnBackPressedDispatcher().onBackPressed();
-        });
+        binding.buttonBack.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
     }
 }

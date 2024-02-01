@@ -1,68 +1,44 @@
-package it.unimib.travelhub.ui.main;
+package it.unimib.travelhub.ui.main.profile;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import it.unimib.travelhub.adapter.AddRecyclerAdapter;
-import it.unimib.travelhub.databinding.FragmentAddBinding;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AddFragment extends Fragment {
-    private FragmentAddBinding binding;
+import it.unimib.travelhub.databinding.FragmentOngoingActivityBinding;
+public class OngoingActivityFragment extends Fragment {
+    private FragmentOngoingActivityBinding binding;
     private AddRecyclerAdapter addRecyclerAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    public AddFragment() {
+
+    public OngoingActivityFragment() {
         // Required empty public constructor
     }
-
-    public static AddFragment newInstance() {
-        AddFragment fragment = new AddFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+    public static OngoingActivityFragment newInstance() {
+        return new OngoingActivityFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        }
-
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentAddBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        // Inflate the layout for this fragment
+        binding = FragmentOngoingActivityBinding.inflate(inflater, container, false);
         String[] localDataset = {"activity 1", "activity 2", "activity 3", "activity 4", "activity 8", "activity 9", "activity 10"};
         mLayoutManager = new LinearLayoutManager(getActivity());
         addRecyclerAdapter = new AddRecyclerAdapter(localDataset);
         binding.ongoingActivitiesRecyclerView.setLayoutManager(mLayoutManager);
         binding.ongoingActivitiesRecyclerView.setAdapter(addRecyclerAdapter);
-        binding.buttonAddActivity.setOnClickListener(v -> Navigation.findNavController(view).navigate(AddFragmentDirections.actionAddFragmentToAddTravelActivity()));
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        binding = null;
+        return binding.getRoot();
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -30,41 +31,26 @@ import it.unimib.travelhub.databinding.FragmentProfileBinding;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private String name, surname, username, email;
-
     private FragmentProfileBinding binding;
-
     private DataEncryptionUtil dataEncryptionUtil;
-
-    // TODO: Rename and change types of parameters
-
-    private String TAG = "ProfileFragment";
-
+    private final String TAG = "ProfileFragment";
     public ProfileFragment() {
         // Required empty public constructor
     }
-
     public static ProfileFragment newInstance() {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        return new ProfileFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false);
@@ -80,9 +66,7 @@ public class ProfileFragment extends Fragment {
         } catch (Exception e) {
             Log.e(TAG, "Error while reading data from encrypted shared preferences", e);
         }
-
         binding.textViewUsername.setText(username);
-        //edit text in header_profile_drawer layout
         View headerView = binding.profileDrawerNavigation.getHeaderView(0);
         ((TextView) headerView.findViewById(R.id.textViewUsername)).setText(username);
         ((TextView) headerView.findViewById(R.id.textViewEmail)).setText(email);
@@ -93,15 +77,10 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.drawerLayout.open();
-            }
-        });
+        binding.buttonMenu.setOnClickListener(v -> binding.drawerLayout.open());
 
-        NavigationView navigationView = binding.profileDrawerNavigation;
-        navigationView.setNavigationItemSelectedListener(item -> {
+        NavigationView navigationViewProfile = binding.profileDrawerNavigation;
+        navigationViewProfile.setNavigationItemSelectedListener(item -> {
             if(item.getItemId() == R.id.personalInfoFragment){
                 NavController navController = Navigation.findNavController(view);
                 NavDirections val = ProfileFragmentDirections.actionProfileFragmentToPersonalInfoFragment();
@@ -130,7 +109,21 @@ public class ProfileFragment extends Fragment {
         });
 
 
+        FragmentManager fragmentManager = getChildFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.nav_profile_fragment, OngoingActivityFragment.class, null)
+                .setReorderingAllowed(true)
+                .commit();
 
+        binding.ongoingActivityFragment.setOnClickListener(v -> fragmentManager.beginTransaction()
+                .replace(R.id.nav_profile_fragment, OngoingActivityFragment.class, null)
+                .setReorderingAllowed(true)
+                .commit());
+
+        binding.terminatedActivityFragment.setOnClickListener(v -> fragmentManager.beginTransaction()
+                .replace(R.id.nav_profile_fragment, TerminatedActivityFragment.class, null)
+                .setReorderingAllowed(true)
+                .commit());
     }
     public void onDestroy() {
         super.onDestroy();
