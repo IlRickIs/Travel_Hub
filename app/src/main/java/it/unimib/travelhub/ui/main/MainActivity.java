@@ -10,33 +10,27 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Objects;
 
 import it.unimib.travelhub.R;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = MainActivity.class.getSimpleName();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         BottomNavigationView bottom_menu = findViewById(R.id.bottom_navigation);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
                 findFragmentById(R.id.nav_host_fragment);
-
-        NavController navController = navHostFragment.getNavController();
-
+        NavController navController = Objects.requireNonNull(navHostFragment).getNavController();
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.homeFragment,
                 R.id.communityFragment,
                 R.id.addFragment,
                 R.id.profileFragment,
                 R.id.mapFragment).build();
-
         NavigationUI.setupWithNavController(bottom_menu, navController);
 
         /*
