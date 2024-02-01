@@ -1,5 +1,6 @@
 package it.unimib.travelhub.ui.welcome;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -80,8 +81,6 @@ public class LoginFragment extends Fragment {
     private SignInClient oneTapClient;
     private BeginSignInRequest signInRequest;
 
-    private LinearProgressIndicator progressIndicator;
-
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -141,7 +140,7 @@ public class LoginFragment extends Fragment {
                                 retrieveUserInformationAndStartActivity(user, R.id.action_loginFragment_to_mainActivity);
                             } else {
                                 userViewModel.setAuthenticationError(true);
-                               // progressIndicator.setVisibility(View.GONE);
+                                binding.progressBar.setVisibility(View.GONE);
                                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) authenticationResult).getMessage()),
                                         Snackbar.LENGTH_SHORT).show();
@@ -207,6 +206,7 @@ public class LoginFragment extends Fragment {
             if (isEmailOk(email) & isPasswordOk(password)) {
                 Log.d(TAG, "Email and password are ok");
                 if(!userViewModel.isAuthenticationError()){
+                    binding.progressBar.setVisibility(View.VISIBLE);
                     userViewModel.getUserMutableLiveData(email, password, true).observe(
                             getViewLifecycleOwner(), result -> {
                                 if (result.isSuccess()) {
@@ -218,6 +218,7 @@ public class LoginFragment extends Fragment {
 
                                 } else {
                                     userViewModel.setAuthenticationError(true);
+                                    binding.progressBar.setVisibility(View.GONE);
                                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                             getErrorMessage(((Result.Error) result).getMessage()),
                                             Snackbar.LENGTH_SHORT).show();
@@ -327,16 +328,16 @@ public class LoginFragment extends Fragment {
     }
 
     private void retrieveUserInformationAndStartActivity(User user, int destination) {
-        //progressIndicator.setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(View.VISIBLE);
         userViewModel.getUserMutableLiveData(user.getEmail(), user.getIdToken(), false).observe(
                 getViewLifecycleOwner(), result -> {
                     if (result.isSuccess()) {
                         User userWithPreferences = ((Result.UserResponseSuccess) result).getData();
-                       // progressIndicator.setVisibility(View.GONE);
+                        binding.progressBar.setVisibility(View.GONE);
                         startActivityBasedOnCondition(MainActivity.class, destination);
                     } else {
                         userViewModel.setAuthenticationError(true);
-                       // progressIndicator.setVisibility(View.GONE);
+                        binding.progressBar.setVisibility(View.GONE);
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getErrorMessage(((Result.Error) result).getMessage()),
                                 Snackbar.LENGTH_SHORT).show();

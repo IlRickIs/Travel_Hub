@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.main.profile;
+package it.unimib.travelhub.ui.edit;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import it.unimib.travelhub.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TermsOfPrivacyFragment#newInstance} factory method to
+ * Use the {@link MapPreviewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TermsOfPrivacyFragment extends Fragment {
+public class MapPreviewFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class TermsOfPrivacyFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public TermsOfPrivacyFragment() {
+    public MapPreviewFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class TermsOfPrivacyFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TermsOfPrivacyFragment.
+     * @return A new instance of fragment MapPreview.
      */
     // TODO: Rename and change types and number of parameters
-    public static TermsOfPrivacyFragment newInstance(String param1, String param2) {
-        TermsOfPrivacyFragment fragment = new TermsOfPrivacyFragment();
+    public static MapPreviewFragment newInstance(String param1, String param2) {
+        MapPreviewFragment fragment = new MapPreviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class TermsOfPrivacyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_terms_of_privacy, container, false);
+        return inflater.inflate(R.layout.fragment_map_preview, container, false);
     }
 }

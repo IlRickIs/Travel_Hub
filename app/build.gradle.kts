@@ -41,6 +41,9 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
     implementation("androidx.preference:preference:1.2.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     val navVersion = "2.7.5"
 
     implementation("androidx.navigation:navigation-fragment:$navVersion")
