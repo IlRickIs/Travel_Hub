@@ -127,5 +127,8 @@
     <string name="edit">edit</string>
     <string name="map_preview">map preview</string>
 
+    <string name="ongoing_travel">Ongoing Travels</string>
+    <string name="other_travels">Other Travels</string>
+    <string name="dash">-</string>
 
 </resources>

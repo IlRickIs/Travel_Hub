@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layoutDirection="ltr">
 
         <LinearLayout
             android:id="@+id/profileToolbar"
@@ -23,7 +24,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
+            <TextView
+                android:id="@+id/textViewUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="9"
+                android:textSize="22sp"
+                android:text="@string/username" />
             <Button
                 android:id="@+id/buttonMenu"
                 android:layout_width="wrap_content"
@@ -40,13 +47,7 @@
                 app:iconSize="24dp"
                 app:iconTint="#000000" />
 
-            <TextView
-                android:id="@+id/textViewUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:textSize="22sp"
-                android:text="@string/username" />
+
         </LinearLayout>
 
         <ScrollView
@@ -68,10 +69,9 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imageViewUsername"
-
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/original_logo"
                     tools:src="@drawable/baseline_person_24" />
@@ -83,8 +83,8 @@
                     android:shrinkColumns="*"
                     android:stretchColumns="*"
                     app:layout_constraintBottom_toBottomOf="@+id/imageViewUsername"
-                    app:layout_constraintEnd_toStartOf="@+id/imageViewUsername"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imageViewUsername"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TableRow
@@ -134,7 +134,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewUsername" />
 
                 <TextView
@@ -153,12 +154,10 @@
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginVertical="16dp"
-                    android:layout_marginBottom="16dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
-
 
                 <LinearLayout
                     android:id="@+id/navigationView"
@@ -167,16 +166,8 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider">
-
-                    <Button
-                        android:id="@+id/terminatedActivityFragment"
-                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Terminated" />
-
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    android:layout_marginTop="16dp">
                     <Button
                         android:id="@+id/ongoingActivityFragment"
                         style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
@@ -184,7 +175,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Ongoing" />
-                    />
+                    <Button
+                        android:id="@+id/terminatedActivityFragment"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Terminated" />
                 </LinearLayout>
 
                 <androidx.fragment.app.FragmentContainerView
