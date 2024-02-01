@@ -35,7 +35,7 @@ public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.
     @Override
     public AddRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.edit_activities_row, parent, false);
+                .inflate(R.layout.travel_list_item, parent, false);
 
         return new ViewHolder(view);
     }

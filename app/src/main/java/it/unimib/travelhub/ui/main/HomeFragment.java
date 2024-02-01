@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import it.unimib.travelhub.R;
-import it.unimib.travelhub.adapter.HomeRecyclerAdapter;
+import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.util.JSONParserUtil;
 
@@ -87,8 +87,8 @@ public class HomeFragment extends Fragment {
                 new LinearLayoutManager(requireContext(),
                         LinearLayoutManager.VERTICAL, false);
 
-        HomeRecyclerAdapter homeRecyclerAdapterRunning = new HomeRecyclerAdapter(runningTravelsList,
-                new HomeRecyclerAdapter.OnItemClickListener() {
+        TravelRecyclerAdapter travelRecyclerAdapterRunning = new TravelRecyclerAdapter(runningTravelsList,
+                new TravelRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onTravelsItemClick(Travels travels) {
                         Snackbar.make(view, travels.getTitle(), Snackbar.LENGTH_SHORT).show();
@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment {
                 });
 
         homeRecyclerViewRunning.setLayoutManager(layoutManagerRunning);
-        homeRecyclerViewRunning.setAdapter(homeRecyclerAdapterRunning);
+        homeRecyclerViewRunning.setAdapter(travelRecyclerAdapterRunning);
 
         RecyclerView homeRecyclerViewDone = view.findViewById(R.id.home_recyclerview_done);
 
@@ -104,8 +104,8 @@ public class HomeFragment extends Fragment {
                 new LinearLayoutManager(requireContext(),
                         LinearLayoutManager.VERTICAL, false);
 
-        HomeRecyclerAdapter homeRecyclerAdapterDone = new HomeRecyclerAdapter(doneTravelsList,
-                new HomeRecyclerAdapter.OnItemClickListener() {
+        TravelRecyclerAdapter travelRecyclerAdapterDone = new TravelRecyclerAdapter(doneTravelsList,
+                new TravelRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onTravelsItemClick(Travels travels) {
                         Snackbar.make(view, travels.getTitle(), Snackbar.LENGTH_SHORT).show();
@@ -113,7 +113,7 @@ public class HomeFragment extends Fragment {
                 });
 
         homeRecyclerViewDone.setLayoutManager(layoutManagerDone);
-        homeRecyclerViewDone.setAdapter(homeRecyclerAdapterDone);
+        homeRecyclerViewDone.setAdapter(travelRecyclerAdapterDone);
 
     }
 

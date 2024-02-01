@@ -15,7 +15,7 @@ import java.util.List;
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.model.Travels;
 
-public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.ViewHolder>{
+public class TravelRecyclerAdapter extends RecyclerView.Adapter<TravelRecyclerAdapter.ViewHolder>{
 
     /**
      * Interface to associate a click listener with
@@ -28,7 +28,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     private final List<Travels> travelsList;
     private final OnItemClickListener onItemClickListener;
 
-    public HomeRecyclerAdapter(List<Travels> travelsList, OnItemClickListener onItemClickListener) {
+    public TravelRecyclerAdapter(List<Travels> travelsList, OnItemClickListener onItemClickListener) {
         this.travelsList = travelsList;
         this.onItemClickListener = onItemClickListener;
     }
