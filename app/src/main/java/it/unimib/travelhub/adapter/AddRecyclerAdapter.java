@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import it.unimib.travelhub.R;
@@ -13,22 +14,28 @@ import it.unimib.travelhub.R;
 public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.ViewHolder>{
 
     private String[] myDataset;
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final Button button;
 
-        public ViewHolder(View view) {
-            super(view);
-            // Define click listener for the ViewHolder's View
+    private final OnItemClickListener onItemClickListener;
 
-            button = (Button) view.findViewById(R.id.button_add_activity);
-        }
+    public String[] getDataSet() {
+        return myDataset;
+    }
 
-        public Button getButton() {
-            return button;
-        }
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public AddRecyclerAdapter(String[] myDataset, OnItemClickListener onItemClickListener) {
+        this.myDataset = myDataset;
+        this.onItemClickListener = onItemClickListener;
     }
 
     public AddRecyclerAdapter(String[] myDataset) {
+        this.myDataset = myDataset;
+        onItemClickListener = null;
+    }
+
+    public void setDataSet(String[] myDataset) {
         this.myDataset = myDataset;
     }
     @NonNull
@@ -49,4 +56,34 @@ public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.
     public int getItemCount() {
         return myDataset.length;
     }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final Button button;
+
+        public ViewHolder(View view) {
+            super(view);
+            // Define click listener for the ViewHolder's View
+
+            button = (Button) view.findViewById(R.id.button_add_activity);
+            button.setOnClickListener(this);
+        }
+
+        public Button getButton() {
+            return button;
+        }
+
+        @Override
+        public void onClick(View v) {
+            // Triggers click upwards to the adapter on click
+            if (onItemClickListener != null && v.getId() == R.id.button_add_activity) {
+                int position = getBindingAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener.onItemClick(position);
+                    notifyItemChanged(position);
+                }
+            }
+        }
+    }
+
+
 }

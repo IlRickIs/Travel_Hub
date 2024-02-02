@@ -9,10 +9,13 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.AddRecyclerAdapter;
 import it.unimib.travelhub.databinding.FragmentAddBinding;
 
@@ -25,6 +28,8 @@ public class AddFragment extends Fragment {
     private FragmentAddBinding binding;
     private AddRecyclerAdapter addRecyclerAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
+
+    private static final String TAG = AddFragment.class.getSimpleName();
     public AddFragment() {
         // Required empty public constructor
     }
@@ -52,9 +57,26 @@ public class AddFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String[] localDataset = {"activity 1", "activity 2", "activity 3", "activity 4", "activity 8", "activity 9", "activity 10"};
+        Log.d(TAG, "onViewCreated");
+        String[] localDataset = {"activity 1", "activity 2", "activity 3"};
         mLayoutManager = new LinearLayoutManager(getActivity());
-        addRecyclerAdapter = new AddRecyclerAdapter(localDataset);
+
+        addRecyclerAdapter = new AddRecyclerAdapter(localDataset, new AddRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String[] attualDataset = addRecyclerAdapter.getDataSet();
+                Log.d(TAG, "onItemClick: " +  attualDataset.toString());
+                if (position == 0) {
+                    String[] newDataset = new String[attualDataset.length + 1];
+                    for(int i = 0; i < attualDataset.length; i++) {
+                        newDataset[i] = attualDataset[i];
+                    }
+                    newDataset[attualDataset.length] = "activity " + (attualDataset.length + 1);
+                    addRecyclerAdapter.setDataSet(newDataset);
+                }
+
+            }
+        });
         binding.ongoingActivitiesRecyclerView.setLayoutManager(mLayoutManager);
         binding.ongoingActivitiesRecyclerView.setAdapter(addRecyclerAdapter);
         binding.buttonAddActivity.setOnClickListener(v -> Navigation.findNavController(view).navigate(AddFragmentDirections.actionAddFragmentToAddTravelActivity()));
