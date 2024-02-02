@@ -105,4 +105,24 @@ public class DataEncryptionUtil {
         outputStream.flush();
         outputStream.close();
     }
+
+    public void flushEncryptedSharedPreferences(String sharedPreferencesFileName)
+            throws GeneralSecurityException, IOException {
+
+        MasterKey mainKey = new MasterKey.Builder(application)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build();
+
+        SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(
+                application,
+                sharedPreferencesFileName,
+                mainKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        );
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
 }

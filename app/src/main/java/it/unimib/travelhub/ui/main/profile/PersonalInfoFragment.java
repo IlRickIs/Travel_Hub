@@ -2,6 +2,7 @@ package it.unimib.travelhub.ui.main.profile;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.PASSWORD;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,12 +19,15 @@ import androidx.navigation.Navigation;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Objects;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.databinding.FragmentPersonalInfoBinding;
+import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
@@ -112,8 +116,25 @@ public class PersonalInfoFragment extends Fragment {
 
             builder1.setPositiveButton(
                     "Yes",
-                    (dialog, id) -> userViewModel.logout().observe(getViewLifecycleOwner(), result -> {
+                    (dialog, id) -> userViewModel.logout(dataEncryptionUtil).observe(getViewLifecycleOwner(), result -> {
                         if (result.isSuccess()) {
+                            try {
+                                String mail = dataEncryptionUtil.
+                                        readSecretDataWithEncryptedSharedPreferences(
+                                                ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS);
+                                String password = dataEncryptionUtil.
+                                        readSecretDataWithEncryptedSharedPreferences(
+                                                ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD);
+                                String username = dataEncryptionUtil.
+                                        readSecretDataWithEncryptedSharedPreferences(
+                                                ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
+                                Log.d(TAG, "Username from encrypted SharedPref: " + username);
+                                Log.d(TAG, "Email address from encrypted SharedPref: " + mail);
+                                Log.d(TAG, "Password from encrypted SharedPref: " + password);
+
+                            } catch (GeneralSecurityException | IOException e) {
+                                e.printStackTrace();
+                            }
                             Navigation.findNavController(view).navigate(R.id.action_personalInfoFragment_to_welcomeActivity);
                             requireActivity().finish();
                         } else {
