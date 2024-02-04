@@ -8,13 +8,15 @@ import androidx.annotation.NonNull;
 import java.util.Date;
 import java.util.Objects;
 
-public class Travels implements Parcelable {
+public class Travels implements Parcelable, Comparable<Travels> {
     //@SerializedName("publishedAt")
     private long id;
     private String title;
     private String description;
     private Date startDate;
     private Date endDate;
+    private Status status;
+    public enum Status {NULL, ONGOING, DONE, FUTURE}
 
     public Travels() {}
 
@@ -24,6 +26,7 @@ public class Travels implements Parcelable {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.status = Status.NULL;
     }
 
     public long getId() {return id;}
@@ -45,6 +48,14 @@ public class Travels implements Parcelable {
     public Date getEndDate() {return endDate;}
 
     public void setEndDate(Date endDate) {this.endDate = endDate;}
+
+    public Status getStatus() {return status;}
+
+    public void setStatus(Status status) {this.status = status;}
+
+    public int compareTo(Travels travels) {
+        return this.startDate.compareTo(travels.startDate);
+    }
 
     @Override
     public boolean equals(Object o) {
