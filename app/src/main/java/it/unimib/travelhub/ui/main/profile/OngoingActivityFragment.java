@@ -22,7 +22,6 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
 import java.util.List;
 
-import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.AddRecyclerAdapter;
 import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
 import it.unimib.travelhub.databinding.FragmentOngoingActivityBinding;
@@ -96,7 +95,7 @@ public class OngoingActivityFragment extends Fragment {
         JSONParserUtil jsonParserUtil = new JSONParserUtil(requireActivity().getApplication());
         try {
             return jsonParserUtil.parseJSONFileWithGSon(TRAVELS_TEST_JSON_FILE)
-                    .getRunningTravelsList();
+                    .getFutureTravelsList();
         } catch (IOException e) {
             e.printStackTrace();
         }

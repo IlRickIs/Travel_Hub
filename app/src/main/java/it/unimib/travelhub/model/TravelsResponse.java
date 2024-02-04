@@ -3,6 +3,7 @@ package it.unimib.travelhub.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -11,24 +12,14 @@ import java.util.List;
  * associated with the endpoint "Top headlines" - /v2/top-headlines.
  */
 public class TravelsResponse implements Parcelable {
-    private String status;
     private int travelsCount;
     private List<Travels> travelsList;
 
     public TravelsResponse() {}
 
-    public TravelsResponse(String status, int totalResults, List<Travels> travelsList) {
-        this.status = status;
+    public TravelsResponse(int totalResults, List<Travels> travelsList) {
         this.travelsCount = totalResults;
         this.travelsList = travelsList;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public int getTravelsCount() {
@@ -43,23 +34,43 @@ public class TravelsResponse implements Parcelable {
         return travelsList;
     }
 
-    public List<Travels> getRunningTravelsList() {
-        List<Travels> runningTravelsList = new java.util.ArrayList<>();
+    public Travels getOnGoingTravel() {
         for (Travels travels : travelsList) {
-            if (travels.getEndDate().after(new Date())) {
-                runningTravelsList.add(travels);
+            if (travels.getStatus() == Travels.Status.ONGOING) {
+                return travels;
+            } else if (travels.getStatus() == Travels.Status.FUTURE) {
+                return travels;
             }
         }
-        return runningTravelsList;
+        return null;
+    }
+
+    public Travels getFutureTravel() {
+        return getFutureTravelsList().isEmpty() ? null : getFutureTravelsList().get(0);
+    }
+
+    public Travels getDoneTravel() {
+        return getDoneTravelsList().isEmpty() ? null : getDoneTravelsList().get(0);
+    }
+
+    public List<Travels> getFutureTravelsList() {
+        List<Travels> futureTravelsList = new java.util.ArrayList<>();
+        for (Travels travels : travelsList) {
+            if (travels.getStatus() == Travels.Status.FUTURE) {
+                futureTravelsList.add(travels);
+            }
+        }
+        return futureTravelsList;
     }
 
     public List<Travels> getDoneTravelsList() {
         List<Travels> doneTravelsList = new java.util.ArrayList<>();
         for (Travels travels : travelsList) {
-            if (travels.getEndDate().before(new Date())) {
+            if (travels.getStatus() == Travels.Status.DONE) {
                 doneTravelsList.add(travels);
             }
         }
+        Collections.reverse(doneTravelsList);
         return doneTravelsList;
     }
 
@@ -70,8 +81,7 @@ public class TravelsResponse implements Parcelable {
     @Override
     public String toString() {
         return "NewsApiResponse{" +
-                "status='" + status + '\'' +
-                ", totalResults=" + travelsCount +
+                "totalResults=" + travelsCount +
                 ", articles=" + travelsList +
                 '}';
     }
@@ -83,19 +93,16 @@ public class TravelsResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.status);
         dest.writeInt(this.travelsCount);
         dest.writeTypedList(this.travelsList);
     }
 
     public void readFromParcel(Parcel source) {
-        this.status = source.readString();
         this.travelsCount = source.readInt();
         this.travelsList = source.createTypedArrayList(Travels.CREATOR);
     }
 
     protected TravelsResponse(Parcel in) {
-        this.status = in.readString();
         this.travelsCount = in.readInt();
         this.travelsList = in.createTypedArrayList(Travels.CREATOR);
     }
