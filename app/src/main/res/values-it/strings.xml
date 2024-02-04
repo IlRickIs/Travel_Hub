@@ -93,5 +93,7 @@
     <string name="travel_images">travel images</string>
     <string name="edit">edit</string>
     <string name="map_preview">map preview</string>
+    <string name="destination">destination</string>
+    <string name="add_friends_email">add friends email</string>
 
 </resources>

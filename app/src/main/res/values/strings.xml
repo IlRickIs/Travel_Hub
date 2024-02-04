@@ -68,22 +68,22 @@
 
     <string name="privacyAndSecurity">Privacy and Security</string>
 
-    <string name="privacyPolicy">Privacy Policy</string>
-    <string name="privacyPolicyText">
+    <string name="privacyPolicy" translatable="false">Privacy Policy</string>
+    <string name="privacyPolicyText" translatable="false">
         Last updated: January 31, 2024
         \nThis Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.
         \n\nWe use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the Free Privacy Policy Generator.
     </string>
 
-    <string name="interpretationAndDefinitions">Interpretation and Definitions</string>
-    <string name="interpretation">Interpretation</string>
-    <string name="interpretationText">
+    <string name="interpretationAndDefinitions" translatable="false">Interpretation and Definitions</string>
+    <string name="interpretation" translatable="false">Interpretation</string>
+    <string name="interpretationText" translatable="false">
     The words of which the initial letter is capitalized have meanings defined under the following conditions.
     \nThe following definitions shall have the same meaning regardless of whether they appear in singular or in plural.
     </string>
 
-    <string name="definitions">Definitions</string>
-    <string name="definitionsText">
+    <string name="definitions" translatable="false">Definitions</string>
+    <string name="definitionsText" translatable="false">
         For the purposes of this Privacy Policy:
         \n\n<b>Account</b> means a unique account created for You to access our Service or parts of our Service.
         \n\n<b>Affiliate</b> means an entity that controls, is controlled by or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.
@@ -130,5 +130,7 @@
     <string name="ongoing_travel">Ongoing Travel</string>
     <string name="other_travels">Other Travels</string>
     <string name="dash">-</string>
+    <string name="destination">destination</string>
+    <string name="add_friends_email">add friends email</string>
 
 </resources>
