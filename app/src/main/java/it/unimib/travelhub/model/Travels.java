@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class Travels implements Parcelable, Comparable<Travels> {
@@ -13,6 +14,9 @@ public class Travels implements Parcelable, Comparable<Travels> {
     private long id;
     private String title;
     private String description;
+
+    private List<String> destinations;
+    private List<String> friends;
     private Date startDate;
     private Date endDate;
     private Status status;
@@ -20,13 +24,32 @@ public class Travels implements Parcelable, Comparable<Travels> {
 
     public Travels() {}
 
-    public Travels(long id, String title, String description, Date startDate, Date endDate) {
+    public Travels(long id, String title, String description, Date startDate, Date endDate,
+                   List<String> friends, List<String> destinations) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = Status.NULL;
+        this.destinations = destinations;
+        this.friends = friends;
+    }
+
+    public List<String> getDestinations() {
+        return destinations;
+    }
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public void setDestinations(List<String> destinations) {
+        this.destinations = destinations;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
     }
 
     public long getId() {return id;}
@@ -72,15 +95,17 @@ public class Travels implements Parcelable, Comparable<Travels> {
         return Objects.hash(id, title, description, startDate, endDate);
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "Travels{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", date=" + startDate +
-                ", status=" + endDate +
+                ", destinations=" + destinations +
+                ", friends=" + friends +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", status=" + status +
                 '}';
     }
 

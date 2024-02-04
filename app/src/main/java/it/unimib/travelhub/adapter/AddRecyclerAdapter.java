@@ -62,7 +62,7 @@ public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
+            // Define click listener for the DestinationsViewHolder's View
 
             button = (Button) view.findViewById(R.id.button_add_activity);
             button.setOnClickListener(this);

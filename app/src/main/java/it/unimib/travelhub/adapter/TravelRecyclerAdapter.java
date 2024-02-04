@@ -56,10 +56,9 @@ public class TravelRecyclerAdapter extends RecyclerView.Adapter<TravelRecyclerAd
     }
 
     /**
-     * Custom ViewHolder to bind data to the RecyclerView items.
+     * Custom DestinationsViewHolder to bind data to the RecyclerView items.
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
         private final TextView textViewTitle;
         private final TextView textViewStartDate;
         private final TextView textViewEndDate;
