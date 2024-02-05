@@ -73,13 +73,15 @@ public class AddFragment extends Fragment {
                     }
                     newDataset[attualDataset.length] = "activity " + (attualDataset.length + 1);
                     addRecyclerAdapter.setDataSet(newDataset);
+
                 }
 
             }
         });
         binding.ongoingActivitiesRecyclerView.setLayoutManager(mLayoutManager);
         binding.ongoingActivitiesRecyclerView.setAdapter(addRecyclerAdapter);
-        binding.buttonAddActivity.setOnClickListener(v -> Navigation.findNavController(view).navigate(AddFragmentDirections.actionAddFragmentToAddTravelActivity()));
+        binding.buttonAddActivity.setOnClickListener(v -> Navigation.findNavController(view).
+                navigate(AddFragmentDirections.actionAddFragmentToAddTravelActivity()));
     }
 
     @Override

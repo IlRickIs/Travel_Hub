@@ -6,17 +6,22 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
+import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
 import it.unimib.travelhub.databinding.FragmentEditBinding;
 
 
@@ -24,6 +29,11 @@ public class EditFragment extends Fragment {
 
     private FragmentEditBinding binding;
 
+    private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
+
+    protected RecyclerView.LayoutManager mLayoutManager;
+
+    private static final String TAG = EditFragment.class.getSimpleName();
     final Calendar myCalendar= Calendar.getInstance();
     public EditFragment() {
     }
@@ -38,6 +48,7 @@ public class EditFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLayoutManager = new LinearLayoutManager(getContext());
 
     }
 
@@ -76,6 +87,45 @@ public class EditFragment extends Fragment {
             updateLabel(binding.editTxtToForm);
         });
 
+        List<String> hintsList = new ArrayList<>();
+        List<String> destinationsText = new ArrayList<>();
+        textBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(hintsList, destinationsText,new TextBoxesRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                int actualItems = textBoxesRecyclerAdapter.getItemCount();
+                if (actualItems > 0){
+                    textBoxesRecyclerAdapter.getDestinationsHints().remove(position);
+                    textBoxesRecyclerAdapter.getDestinationsTexts().remove(position);
+                    textBoxesRecyclerAdapter.notifyDataSetChanged();
+                    printdataset(textBoxesRecyclerAdapter.getDestinationsHints());
+                    printdataset(textBoxesRecyclerAdapter.getDestinationsTexts());
+                }
+            }
+
+            @Override
+            public void onKeyPressed(int position, String text) {
+                textBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
+            }
+        });
+
+        binding.destinationsTextBoxes.setLayoutManager(mLayoutManager);
+        binding.destinationsTextBoxes.setAdapter(textBoxesRecyclerAdapter);
+
+        binding.addDestinationButton.setOnClickListener(v -> {
+            int actualItems = textBoxesRecyclerAdapter.getItemCount();
+            textBoxesRecyclerAdapter.getDestinationsHints().add("Destination" + (actualItems + 1));
+            textBoxesRecyclerAdapter.getDestinationsTexts().add("");
+            textBoxesRecyclerAdapter.notifyDataSetChanged();
+        });
+
+    }
+
+
+
+    private void printdataset(List<String> dataset) {
+        for (String s : dataset) {
+           Log.d(TAG, "printdataset: " + s);
+        }
     }
 
     @Override
