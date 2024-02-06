@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
 import it.unimib.travelhub.databinding.FragmentEditBinding;
 
@@ -31,8 +31,7 @@ public class EditFragment extends Fragment {
 
     private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
 
-    protected RecyclerView.LayoutManager mLayoutManager;
-
+    private TextBoxesRecyclerAdapter friendTextBoxesRecyclerAdapter;
     private static final String TAG = EditFragment.class.getSimpleName();
     final Calendar myCalendar= Calendar.getInstance();
     public EditFragment() {
@@ -48,8 +47,6 @@ public class EditFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLayoutManager = new LinearLayoutManager(getContext());
-
     }
 
     private void updateLabel(EditText editText) {
@@ -94,34 +91,64 @@ public class EditFragment extends Fragment {
             public void onItemClick(int position) {
                 int actualItems = textBoxesRecyclerAdapter.getItemCount();
                 if (actualItems > 0){
-                    textBoxesRecyclerAdapter.getDestinationsHints().remove(position);
-                    textBoxesRecyclerAdapter.getDestinationsTexts().remove(position);
-                    textBoxesRecyclerAdapter.notifyDataSetChanged();
-                    printdataset(textBoxesRecyclerAdapter.getDestinationsHints());
-                    printdataset(textBoxesRecyclerAdapter.getDestinationsTexts());
+                    removeItem(textBoxesRecyclerAdapter,position);
                 }
             }
-
             @Override
             public void onKeyPressed(int position, String text) {
                 textBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
             }
         });
 
-        binding.destinationsTextBoxes.setLayoutManager(mLayoutManager);
-        binding.destinationsTextBoxes.setAdapter(textBoxesRecyclerAdapter);
+        LinearLayoutManager mLayoutManager =
+                new LinearLayoutManager(requireContext(),
+                        LinearLayoutManager.VERTICAL, false);
+
+        binding.recyclerDestinations.setLayoutManager(mLayoutManager);
+        binding.recyclerDestinations.setAdapter(textBoxesRecyclerAdapter);
 
         binding.addDestinationButton.setOnClickListener(v -> {
-            int actualItems = textBoxesRecyclerAdapter.getItemCount();
-            textBoxesRecyclerAdapter.getDestinationsHints().add("Destination" + (actualItems + 1));
-            textBoxesRecyclerAdapter.getDestinationsTexts().add("");
-            textBoxesRecyclerAdapter.notifyDataSetChanged();
+            updateItem(textBoxesRecyclerAdapter, R.string.destination);
+        });
+
+        List<String> friendHintsList = new ArrayList<>();
+        List<String> friendTextList = new ArrayList<>();
+        friendTextBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(friendHintsList, friendTextList, new TextBoxesRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                int actualItems = friendTextBoxesRecyclerAdapter.getItemCount();
+                if (actualItems > 0){
+                    removeItem(friendTextBoxesRecyclerAdapter,position);
+                }
+            }
+            @Override
+            public void onKeyPressed(int position, String text) {
+                friendTextBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
+            }
+        });
+        LinearLayoutManager friendLayoutManager =
+                new LinearLayoutManager(requireContext(),
+                        LinearLayoutManager.VERTICAL, false);
+
+        binding.recyclerFriends.setLayoutManager(friendLayoutManager);
+        binding.recyclerFriends.setAdapter(friendTextBoxesRecyclerAdapter);
+
+        binding.addFriendButton.setOnClickListener(v -> {
+            updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_email);
         });
 
     }
 
-
-
+private void updateItem(TextBoxesRecyclerAdapter adapter, int id){
+    adapter.getTextBoxesHints().add(getString(id));
+    adapter.getDestinationsTexts().add("");
+    adapter.notifyDataSetChanged();
+}
+private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
+    adapter.getTextBoxesHints().remove(position);
+    adapter.getDestinationsTexts().remove(position);
+    adapter.notifyDataSetChanged();
+}
     private void printdataset(List<String> dataset) {
         for (String s : dataset) {
            Log.d(TAG, "printdataset: " + s);

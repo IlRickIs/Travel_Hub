@@ -20,8 +20,8 @@ import it.unimib.travelhub.R;
 
 public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecyclerAdapter.DestinationsViewHolder> {
 
-    List<String> destinationsHints;
-    List<String> destinationsTexts;
+    List<String> textBoxesHints;
+    List<String> textBoxesTexts;
     OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
@@ -33,24 +33,24 @@ public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecy
     private static final String TAG = TextBoxesRecyclerAdapter.class.getSimpleName();
 
     public List<String> getDestinationsTexts() {
-        return destinationsTexts;
+        return textBoxesTexts;
     }
 
     public void setDestinationsTexts(List<String> destinationsTexts) {
-        this.destinationsTexts = destinationsTexts;
+        this.textBoxesTexts = destinationsTexts;
     }
 
-    public void setDestinationsHints(List<String> destinationsHints) {
-        this.destinationsHints = destinationsHints;
+    public void setTextBoxesHints(List<String> textBoxesHints) {
+        this.textBoxesHints = textBoxesHints;
     }
-    public List<String> getDestinationsHints() {
-        return destinationsHints;
+    public List<String> getTextBoxesHints() {
+        return textBoxesHints;
     }
 
 
-    public TextBoxesRecyclerAdapter(List<String> destinationsHints, List<String> destinationsTexts , OnItemClickListener onItemClickListener) {
-        this.destinationsHints = destinationsHints;
-        this.destinationsTexts = destinationsTexts;
+    public TextBoxesRecyclerAdapter(List<String> textBoxesHints, List<String> destinationsTexts , OnItemClickListener onItemClickListener) {
+        this.textBoxesHints = textBoxesHints;
+        this.textBoxesTexts = destinationsTexts;
         this.onItemClickListener = onItemClickListener;
     }
 
@@ -69,17 +69,17 @@ public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecy
         TextInputEditText textInputEditText = holder.getTextInputEditText();
         textInputLayout.setVisibility(View.VISIBLE);
         textInputEditText.setVisibility(View.VISIBLE);
-        textInputLayout.setHint(destinationsHints.get(position));
-        textInputEditText.setText(destinationsTexts.get(position));
+        textInputLayout.setHint(textBoxesHints.get(position));
+        textInputEditText.setText(textBoxesTexts.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        if(destinationsHints == null) {
+        if(textBoxesHints == null) {
             return 0;
         }
-        return destinationsHints.size();
+        return textBoxesHints.size();
     }
 
     public class DestinationsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, TextWatcher{
