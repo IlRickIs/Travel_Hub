@@ -1,5 +1,10 @@
 package it.unimib.travelhub.ui.edit;
 
+import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
+import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
+import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
+import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
@@ -34,6 +39,11 @@ public class EditFragment extends Fragment {
     private TextBoxesRecyclerAdapter friendTextBoxesRecyclerAdapter;
     private static final String TAG = EditFragment.class.getSimpleName();
     final Calendar myCalendar= Calendar.getInstance();
+
+    private List<String> friendHintsList;
+    private List<String> friendTextList;
+    private List<String> hintsList;
+    private List<String> destinationsText;
     public EditFragment() {
     }
 
@@ -47,6 +57,17 @@ public class EditFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            destinationsText = savedInstanceState.getStringArrayList(DESTINATIONS_TEXTS);
+            friendTextList = savedInstanceState.getStringArrayList(FRIENDS_TEXTS);
+            hintsList = savedInstanceState.getStringArrayList(DESTINATIONS_HINTS);
+            friendHintsList = savedInstanceState.getStringArrayList(FRIENDS_HINTS);
+        } else {
+            destinationsText = new ArrayList<>();
+            friendTextList = new ArrayList<>();
+            hintsList = new ArrayList<>();
+            friendHintsList = new ArrayList<>();
+        }
     }
 
     private void updateLabel(EditText editText) {
@@ -84,8 +105,6 @@ public class EditFragment extends Fragment {
             updateLabel(binding.editTxtToForm);
         });
 
-        List<String> hintsList = new ArrayList<>();
-        List<String> destinationsText = new ArrayList<>();
         textBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(hintsList, destinationsText,new TextBoxesRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -110,9 +129,6 @@ public class EditFragment extends Fragment {
         binding.addDestinationButton.setOnClickListener(v -> {
             updateItem(textBoxesRecyclerAdapter, R.string.destination);
         });
-
-        List<String> friendHintsList = new ArrayList<>();
-        List<String> friendTextList = new ArrayList<>();
         friendTextBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(friendHintsList, friendTextList, new TextBoxesRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -159,5 +175,14 @@ private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
     public void onDestroy() {
         super.onDestroy();
         binding = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(DESTINATIONS_TEXTS, (ArrayList<String>) destinationsText);
+        outState.putStringArrayList(FRIENDS_TEXTS, (ArrayList<String>) friendTextList);
+        outState.putStringArrayList(DESTINATIONS_HINTS, (ArrayList<String>) hintsList);
+        outState.putStringArrayList(FRIENDS_HINTS, (ArrayList<String>) friendHintsList);
     }
 }
