@@ -132,5 +132,7 @@
     <string name="dash">-</string>
     <string name="destination">destination</string>
     <string name="add_friends_email">add friends email</string>
+    <string name="update_from_gallery">Update from gallery</string>
+    <string name="open_camera" translatable="false">open camera</string>
 
 </resources>

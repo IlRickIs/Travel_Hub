@@ -22,6 +22,7 @@ public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecy
 
     List<String> textBoxesHints;
     List<String> textBoxesTexts;
+    String hint;
     OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
@@ -54,6 +55,12 @@ public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecy
         this.onItemClickListener = onItemClickListener;
     }
 
+    public TextBoxesRecyclerAdapter(String hint, List<String> destinationsTexts , OnItemClickListener onItemClickListener) {
+        this.hint = hint;
+        this.textBoxesTexts = destinationsTexts;
+        this.onItemClickListener = onItemClickListener;
+    }
+
 
     @NonNull
     @Override
@@ -69,8 +76,13 @@ public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecy
         TextInputEditText textInputEditText = holder.getTextInputEditText();
         textInputLayout.setVisibility(View.VISIBLE);
         textInputEditText.setVisibility(View.VISIBLE);
-        textInputLayout.setHint(textBoxesHints.get(position));
         textInputEditText.setText(textBoxesTexts.get(position));
+
+        if(textBoxesHints != null) {
+            textInputLayout.setHint(textBoxesHints.get(position));
+        }else{
+            textInputLayout.setHint(hint);
+        }
 
     }
 

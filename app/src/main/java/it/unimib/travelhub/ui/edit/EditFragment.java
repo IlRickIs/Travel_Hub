@@ -39,11 +39,10 @@ public class EditFragment extends Fragment {
     private TextBoxesRecyclerAdapter friendTextBoxesRecyclerAdapter;
     private static final String TAG = EditFragment.class.getSimpleName();
     final Calendar myCalendar= Calendar.getInstance();
-
-    private List<String> friendHintsList;
     private List<String> friendTextList;
-    private List<String> hintsList;
     private List<String> destinationsText;
+    private List<String> hintsList;
+    private List<String> friendHintsList;
     public EditFragment() {
     }
 

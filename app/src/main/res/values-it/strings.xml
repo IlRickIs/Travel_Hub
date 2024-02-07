@@ -95,5 +95,6 @@
     <string name="map_preview">map preview</string>
     <string name="destination">destination</string>
     <string name="add_friends_email">add friends email</string>
+    <string name="update_from_gallery">Update from gallery</string>
 
 </resources>
