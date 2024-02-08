@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,20 +25,20 @@ import java.util.List;
 
 import it.unimib.travelhub.adapter.AddRecyclerAdapter;
 import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
-import it.unimib.travelhub.databinding.FragmentOngoingActivityBinding;
+import it.unimib.travelhub.databinding.FragmentOngoingTravelsBinding;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.util.JSONParserUtil;
 
-public class OngoingActivityFragment extends Fragment {
-    private FragmentOngoingActivityBinding binding;
+public class OngoingTravelsFragment extends Fragment {
+    private FragmentOngoingTravelsBinding binding;
     private AddRecyclerAdapter addRecyclerAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
 
-    public OngoingActivityFragment() {
+    public OngoingTravelsFragment() {
         // Required empty public constructor
     }
-    public static OngoingActivityFragment newInstance() {
-        return new OngoingActivityFragment();
+    public static OngoingTravelsFragment newInstance() {
+        return new OngoingTravelsFragment();
     }
 
     @Override
@@ -49,7 +50,7 @@ public class OngoingActivityFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentOngoingActivityBinding.inflate(inflater, container, false);
+        binding = FragmentOngoingTravelsBinding.inflate(inflater, container, false);
         String[] localDataset = {"activity 1", "activity 2", "activity 3", "activity 4", "activity 8", "activity 9", "activity 10"};
         mLayoutManager = new LinearLayoutManager(getActivity());
         return binding.getRoot();
@@ -83,7 +84,13 @@ public class OngoingActivityFragment extends Fragment {
                 new TravelRecyclerAdapter.OnItemClickListener() {
                     @Override
                     public void onTravelsItemClick(Travels travels) {
-                        Snackbar.make(view, travels.getTitle(), Snackbar.LENGTH_SHORT).show();
+
+                        Navigation.findNavController(requireView())
+                                .navigate(ProfileFragmentDirections.actionProfileFragmentToTravelActivity());
+
+
+
+
                     }
                 });
 

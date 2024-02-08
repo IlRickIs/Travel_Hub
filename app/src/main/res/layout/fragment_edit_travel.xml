@@ -5,7 +5,7 @@
     android:id="@+id/editFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.edit.EditFragment">
+    tools:context=".ui.travels.EditTravelFragment">
 
     <ScrollView
         android:layout_width="match_parent"

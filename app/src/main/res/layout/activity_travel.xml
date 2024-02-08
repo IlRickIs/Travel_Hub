@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="#FFFFFF"
+    android:orientation="vertical"
+    tools:context=".ui.travels.TravelActivity">
+
+    <Button
+        android:id="@+id/buttonBack"
+        style="@style/Widget.Material3.Button.TextButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:padding="0dp"
+        app:icon="@drawable/baseline_arrow_back_ios_new_24"
+        app:iconSize="16dp"
+        app:iconTint="#000000" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#D1BCBC"
+                android:paddingTop="32dp"
+                android:paddingBottom="128dp">
+
+                <!-- Put travel title, travel data and description with background of the travel -->
+
+
+                <TextView
+                    android:id="@+id/travel_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Travel Title"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/travel_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Travel Data"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="@+id/travel_title"
+                    app:layout_constraintStart_toStartOf="@+id/travel_title"
+                    app:layout_constraintTop_toBottomOf="@+id/travel_title" />
+
+                <TextView
+                    android:id="@+id/travel_country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Travel Country"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="@+id/travel_data"
+                    app:layout_constraintStart_toStartOf="@+id/travel_data"
+                    app:layout_constraintTop_toBottomOf="@+id/travel_data" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:padding="16dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Participants"
+                    android:layout_marginVertical="4dp"
+                    />
+
+                <!-- Add horizontal list of friends, description of the travel and buttons to edit and delete the travel -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/friends_recycler_view"
+                    android:scrollbars="none"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="4dp"/>
+
+                <TextView
+                    android:id="@+id/travel_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Travel Description"
+                    android:textSize="16sp"
+                    android:layout_marginVertical="4dp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.edit;
+package it.unimib.travelhub.ui.travels;
 
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
@@ -27,27 +27,27 @@ import java.util.Locale;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
-import it.unimib.travelhub.databinding.FragmentEditBinding;
+import it.unimib.travelhub.databinding.FragmentEditTravelBinding;
 
 
-public class EditFragment extends Fragment {
+public class EditTravelFragment extends Fragment {
 
-    private FragmentEditBinding binding;
+    private FragmentEditTravelBinding binding;
 
     private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
 
     private TextBoxesRecyclerAdapter friendTextBoxesRecyclerAdapter;
-    private static final String TAG = EditFragment.class.getSimpleName();
+    private static final String TAG = EditTravelFragment.class.getSimpleName();
     final Calendar myCalendar= Calendar.getInstance();
     private List<String> friendTextList;
     private List<String> destinationsText;
     private List<String> hintsList;
     private List<String> friendHintsList;
-    public EditFragment() {
+    public EditTravelFragment() {
     }
 
-    public static EditFragment newInstance(String param1, String param2) {
-        EditFragment fragment = new EditFragment();
+    public static EditTravelFragment newInstance(String param1, String param2) {
+        EditTravelFragment fragment = new EditTravelFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -78,7 +78,7 @@ public class EditFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentEditBinding.inflate(inflater, container, false);
+        binding = FragmentEditTravelBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 

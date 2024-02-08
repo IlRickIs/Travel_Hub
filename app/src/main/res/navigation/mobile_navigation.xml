@@ -8,17 +8,17 @@
 
     <fragment
         android:id="@+id/navigation_edit"
-        android:name="it.unimib.travelhub.ui.edit.EditFragment"
+        android:name="it.unimib.travelhub.ui.travels.EditTravelFragment"
         android:label="@string/edit"
-        tools:layout="@layout/fragment_edit" />
+        tools:layout="@layout/fragment_edit_travel" />
 
     <fragment
         android:id="@+id/navigation_images"
-        android:name="it.unimib.travelhub.ui.edit.EditImagesFragment"
-        tools:layout="@layout/fragment_edit_images" />
+        android:name="it.unimib.travelhub.ui.travels.EditTravelImagesFragment"
+        tools:layout="@layout/fragment_edit_travel_images" />
 
     <fragment
         android:id="@+id/navigation_map_preview"
-        android:name="it.unimib.travelhub.ui.edit.MapPreviewFragment"
+        android:name="it.unimib.travelhub.ui.travels.MapPreviewFragment"
         tools:layout="@layout/fragment_map_preview" />
 </navigation>

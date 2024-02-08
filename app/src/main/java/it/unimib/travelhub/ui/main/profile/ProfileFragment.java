@@ -111,17 +111,17 @@ public class ProfileFragment extends Fragment {
 
         FragmentManager fragmentManager = getChildFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.nav_profile_fragment, OngoingActivityFragment.class, null)
+                .replace(R.id.nav_profile_fragment, OngoingTravelsFragment.class, null)
                 .setReorderingAllowed(true)
                 .commit();
 
         binding.ongoingActivityFragment.setOnClickListener(v -> fragmentManager.beginTransaction()
-                .replace(R.id.nav_profile_fragment, OngoingActivityFragment.class, null)
+                .replace(R.id.nav_profile_fragment, OngoingTravelsFragment.class, null)
                 .setReorderingAllowed(true)
                 .commit());
 
         binding.terminatedActivityFragment.setOnClickListener(v -> fragmentManager.beginTransaction()
-                .replace(R.id.nav_profile_fragment, TerminatedActivityFragment.class, null)
+                .replace(R.id.nav_profile_fragment, TerminatedTravelsFragment.class, null)
                 .setReorderingAllowed(true)
                 .commit());
     }

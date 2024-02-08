@@ -21,24 +21,23 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
 import java.util.List;
 
-import it.unimib.travelhub.adapter.AddRecyclerAdapter;
 import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
-import it.unimib.travelhub.databinding.FragmentTerminatedActivityBinding;
+import it.unimib.travelhub.databinding.FragmentTerminatedTravelsBinding;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.util.JSONParserUtil;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TerminatedActivityFragment#newInstance} factory method to
+ * Use the {@link TerminatedTravelsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TerminatedActivityFragment extends Fragment {
-    private FragmentTerminatedActivityBinding binding;
-    public TerminatedActivityFragment() {
+public class TerminatedTravelsFragment extends Fragment {
+    private FragmentTerminatedTravelsBinding binding;
+    public TerminatedTravelsFragment() {
         // Required empty public constructor
     }
-    public static TerminatedActivityFragment newInstance() {
-        TerminatedActivityFragment fragment = new TerminatedActivityFragment();
+    public static TerminatedTravelsFragment newInstance() {
+        TerminatedTravelsFragment fragment = new TerminatedTravelsFragment();
         return fragment;
     }
     @Override
@@ -50,7 +49,7 @@ public class TerminatedActivityFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentTerminatedActivityBinding.inflate(inflater, container, false);
+        binding = FragmentTerminatedTravelsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 

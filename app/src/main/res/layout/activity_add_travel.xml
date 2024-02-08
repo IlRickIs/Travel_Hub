@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/separator_view"
         app:navGraph="@navigation/mobile_navigation"
-        tools:layout="@layout/fragment_edit"
+        tools:layout="@layout/fragment_edit_travel"
         />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

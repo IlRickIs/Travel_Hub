@@ -7,13 +7,32 @@ import com.google.firebase.database.Exclude;
 
 public class User implements Parcelable {
     private String username;
+
+    private String name;
+    private String surname;
+    private int age;
+    private String photoUrl;
     private String email;
     private String idToken;
 
     public User() {
     }
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
     public User(String name, String email, String idToken) {
         this.username = name;
+        this.email = email;
+        this.idToken = idToken;
+    }
+
+    public User(String name, String surname, int age, String photoUrl, String email, String idToken) {
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.photoUrl = photoUrl;
         this.email = email;
         this.idToken = idToken;
     }
@@ -87,4 +106,20 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
 }

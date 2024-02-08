@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.edit;
+package it.unimib.travelhub.ui.travels;
 
 import android.os.Bundle;
 
@@ -10,15 +10,15 @@ import android.view.ViewGroup;
 
 import it.unimib.travelhub.R;
 
-public class EditImagesFragment extends Fragment {
+public class EditTravelImagesFragment extends Fragment {
 
 
-    public EditImagesFragment() {
+    public EditTravelImagesFragment() {
         // Required empty public constructor
     }
 
-    public static EditImagesFragment newInstance() {
-        EditImagesFragment fragment = new EditImagesFragment();
+    public static EditTravelImagesFragment newInstance() {
+        EditTravelImagesFragment fragment = new EditTravelImagesFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -34,6 +34,6 @@ public class EditImagesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_images, container, false);
+        return inflater.inflate(R.layout.fragment_edit_travel_images, container, false);
     }
 }

@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.edit;
+package it.unimib.travelhub.ui.travels;
 
 import android.os.Bundle;
 
