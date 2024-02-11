@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
     <application
         android:name=".GlobalClass"
         android:allowBackup="true"
@@ -13,19 +19,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TravelHub"
         tools:targetApi="33" >
+
         <activity
             android:name=".ui.travels.TravelActivity"
             android:exported="true" >
-
         </activity>
+
         <activity
             android:name=".ui.travels.AddTravelActivity"
             android:exported="false"
             android:label="@string/title_activity_add_travel" />
+
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true" >
         </activity>
+
         <activity
             android:name=".ui.welcome.WelcomeActivity"
             android:exported="true" >
@@ -40,5 +49,4 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-
 </manifest>

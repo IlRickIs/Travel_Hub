@@ -1,6 +1,7 @@
 package it.unimib.travelhub.util;
 
 public class Constants {
+    public static final String PICS_FOLDER = "/picFolder/";
     public static final String DESTINATIONS_HINTS = "destinations_hints";
     public static final String FRIENDS_HINTS = "friends_hints";
     public static final String DESTINATIONS_TEXTS = "destinations_texts";
