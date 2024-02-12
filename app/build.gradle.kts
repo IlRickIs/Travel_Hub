@@ -66,6 +66,12 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
+    val fragmentVersion = "1.6.2"
+    implementation("androidx.fragment:fragment:$fragmentVersion")
+
+    val activity_version = "1.8.2"
+    implementation("androidx.activity:activity:$activity_version")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
