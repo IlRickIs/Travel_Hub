@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.io.File;
 
@@ -55,7 +56,19 @@ public class EditTravelImagesFragment extends Fragment {
                         return;
                     }
                     Log.d(TAG, "Picture taken at" + capturedImageUri.toString());
-                    displayPicture(capturedImageUri);
+                    displayPicture(capturedImageUri, binding.imageView);
+                }
+            });
+
+    private ActivityResultLauncher<String> mGetContentFromGallery = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri uri) {
+                    if (uri != null) {
+                        displayPicture(uri, binding.imageView2);
+                    } else {
+                        Log.d(TAG, "No image selected");
+                    }
                 }
             });
 
@@ -124,7 +137,13 @@ public class EditTravelImagesFragment extends Fragment {
 
         });
 
+        binding.galleryButton.setOnClickListener(v -> openGallery());
 
+    }
+
+    private void openGallery() {
+        //Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        mGetContentFromGallery.launch("image/*");
     }
 
     private File createImageFile(String dir){
@@ -149,8 +168,13 @@ public class EditTravelImagesFragment extends Fragment {
 
     }
 
-    private void displayPicture(Uri uri){
-        binding.imageView.setImageURI(uri);
+    private void displayPicture(Uri uri, View view){
+        if(view == null){
+            Log.d(TAG, "View is null");
+            return;
+        }else if(view instanceof ImageView){
+            ((ImageView) view).setImageURI(uri);
+        }
     }
 
     @Override
