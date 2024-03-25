@@ -229,7 +229,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:text="Altri viaggi futuri"
+                android:text="Altri viaggi"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/home_card_ongoing" />
@@ -253,7 +253,7 @@
                     android:layout_marginEnd="4dp"
 
                     app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                    app:layout_constraintEnd_toStartOf="@+id/home_card_future_other"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -325,177 +325,6 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/home_future_separator"
                             app:layout_constraintTop_toBottomOf="@+id/home_future_title" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/home_card_future_other"
-                    style="?attr/materialCardViewElevatedStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-
-                    android:layout_margin="8dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?android:selectableItemBackground"
-                        android:descendantFocusability="blocksDescendants">
-
-                        <Button
-                            android:id="@+id/home_iconButton_future"
-                            style="?attr/materialIconButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="Altri viaggi futuri"
-
-                            app:icon="@drawable/baseline_keyboard_arrow_right_30"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/home_text_done"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:text="I tuoi viaggi passati"
-                android:textSize="24sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/home_layout_future" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/home_layout_done"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="?android:selectableItemBackground"
-                android:descendantFocusability="blocksDescendants"
-
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/home_text_done">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/home_card_done"
-                    style="?attr/materialCardViewElevatedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                    app:layout_constraintEnd_toStartOf="@+id/home_card_done_other"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?android:selectableItemBackground"
-                        android:descendantFocusability="blocksDescendants">
-
-                        <TextView
-                            android:id="@+id/home_done_title"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:text="Titolo passatoso"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
-                            android:textSize="20sp"
-
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/home_done_start_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="16dp"
-                            android:text="15/01/2023"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?android:attr/textColorSecondary"
-                            android:textSize="17sp"
-
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/home_done_title" />
-
-                        <TextView
-                            android:id="@+id/home_done_separator"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="16dp"
-                            android:paddingLeft="4dp"
-                            android:paddingRight="4dp"
-                            android:text="@string/dash"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?android:attr/textColorSecondary"
-                            android:textSize="17sp"
-
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/home_done_start_date"
-                            app:layout_constraintTop_toBottomOf="@+id/home_done_title" />
-
-                        <TextView
-                            android:id="@+id/home_done_end_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="16dp"
-                            android:text="24/01/2023"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?android:attr/textColorSecondary"
-                            android:textSize="17sp"
-
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/home_done_separator"
-                            app:layout_constraintTop_toBottomOf="@+id/home_done_title" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/home_card_done_other"
-                    style="?attr/materialCardViewElevatedStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-
-                    android:layout_margin="8dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?android:selectableItemBackground"
-                        android:descendantFocusability="blocksDescendants">
-
-                        <Button
-                            android:id="@+id/home_iconButton_done"
-                            style="?attr/materialIconButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="Altri viaggi passati"
-
-                            app:icon="@drawable/baseline_keyboard_arrow_right_30"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>

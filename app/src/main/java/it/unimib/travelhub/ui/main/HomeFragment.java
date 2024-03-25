@@ -72,18 +72,9 @@ public class HomeFragment extends Fragment {
         } else if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
             binding.homeTextFuture.setVisibility(View.GONE);
             binding.homeLayoutFuture.setVisibility(View.GONE);
-            binding.homeTextDone.setVisibility(View.GONE);
-            binding.homeLayoutDone.setVisibility(View.GONE);
-        } else if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() != null) {
-            binding.homeTextDone.setVisibility(View.GONE);
-            binding.homeLayoutDone.setVisibility(View.GONE);
         } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
             binding.homeTextFuture.setVisibility(View.GONE);
             binding.homeLayoutFuture.setVisibility(View.GONE);
-        } else if (travelsResponse.getFutureTravelsList().size() == 1) {
-            binding.homeCardFutureOther.setVisibility(View.GONE);
-        } else if (travelsResponse.getDoneTravelsList().size() == 1) {
-            binding.homeCardDoneOther.setVisibility(View.GONE);
         }
 
         return binding.getRoot();
