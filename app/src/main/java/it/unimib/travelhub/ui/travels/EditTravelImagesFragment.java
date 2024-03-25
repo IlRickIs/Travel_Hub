@@ -79,7 +79,7 @@ public class EditTravelImagesFragment extends Fragment {
             Log.d(TAG, "Permission denied");
         }
     });
-    private final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/";
+    private final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PICS_FOLDER;
     private static final String TAG = EditTravelImagesFragment.class.getSimpleName();
     private FragmentEditTravelImagesBinding binding;
 

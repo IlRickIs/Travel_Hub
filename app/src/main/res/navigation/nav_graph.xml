@@ -9,7 +9,7 @@
         android:id="@+id/homeFragment"
         android:name="it.unimib.travelhub.ui.main.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home_backup" />
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="it.unimib.travelhub.ui.main.profile.ProfileFragment"
