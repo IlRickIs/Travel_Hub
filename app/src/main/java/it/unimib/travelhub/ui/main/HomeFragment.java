@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,7 +56,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
@@ -68,13 +71,13 @@ public class HomeFragment extends Fragment {
             binding.homeTextOngoing.setVisibility(View.GONE);
             binding.homeCardOngoing.setVisibility(View.GONE);
             binding.homeTextFuture.setVisibility(View.GONE);
-            binding.homeLayoutFuture.setVisibility(View.GONE);
+            binding.homeCardFuture.setVisibility(View.GONE);
         } else if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
             binding.homeTextFuture.setVisibility(View.GONE);
-            binding.homeLayoutFuture.setVisibility(View.GONE);
+            binding.homeCardFuture.setVisibility(View.GONE);
         } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
             binding.homeTextFuture.setVisibility(View.GONE);
-            binding.homeLayoutFuture.setVisibility(View.GONE);
+            binding.homeCardFuture.setVisibility(View.GONE);
         }
 
         return binding.getRoot();
@@ -95,6 +98,11 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        binding.seeAll.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(view);
+            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
+            navController.navigate(val);
+        });
 
     }
 
