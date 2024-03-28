@@ -1,7 +1,9 @@
 package it.unimib.travelhub.ui.travels;
 
+import static it.unimib.travelhub.util.Constants.DESTINATION;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
+import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
@@ -33,7 +35,6 @@ import it.unimib.travelhub.databinding.FragmentEditTravelBinding;
 
 
 public class EditTravelFragment extends Fragment {
-
     private FragmentEditTravelBinding binding;
 
     private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
@@ -89,7 +90,6 @@ public class EditTravelFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         DatePickerDialog.OnDateSetListener date = (v, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR,year);
             myCalendar.set(Calendar.MONTH,month);
@@ -183,12 +183,22 @@ private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+        printdataset(destinationsText);
+        printdataset(friendTextList);
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(DESTINATIONS_TEXTS, (ArrayList<String>) destinationsText);
         outState.putStringArrayList(FRIENDS_TEXTS, (ArrayList<String>) friendTextList);
         outState.putStringArrayList(DESTINATIONS_HINTS, (ArrayList<String>) hintsList);
         outState.putStringArrayList(FRIENDS_HINTS, (ArrayList<String>) friendHintsList);
+        outState.putString(DESTINATION, binding.destinationFormEditText.getText().toString());
+        outState.putString(FRIEND, binding.friendsEmailFormEditText.getText().toString());
         outState.putString(TRAVEL_TITLE, binding.titleFormEditText.getText().toString());
         outState.putString(TRAVEL_DESCRIPTION, binding.descriptionFormEditText.getText().toString());
     }

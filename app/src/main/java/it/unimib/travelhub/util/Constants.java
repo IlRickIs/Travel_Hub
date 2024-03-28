@@ -25,4 +25,7 @@ public class Constants {
     public static final String TRAVEL_TITLE = "title";
     public static final String TRAVEL_DESCRIPTION = "description";
 
+    public static final String DESTINATION = "first_destination";
+    public static final String FRIEND = "first_friend";
+
 }

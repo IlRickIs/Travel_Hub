@@ -120,6 +120,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/destination_form_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColorHint="#546E7A"
@@ -193,6 +194,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/friends_email_form_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColorHint="#546E7A"
