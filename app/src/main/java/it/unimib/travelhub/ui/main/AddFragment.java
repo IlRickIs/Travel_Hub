@@ -46,7 +46,6 @@ public class AddFragment extends Fragment {
         super.onCreate(savedInstanceState);
         }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

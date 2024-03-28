@@ -40,7 +40,5 @@ private ActivityAddTravelBinding binding;
         binding.buttonBack.setOnClickListener(v -> {
             this.getOnBackPressedDispatcher().onBackPressed();
         });
-
-
     }
 }

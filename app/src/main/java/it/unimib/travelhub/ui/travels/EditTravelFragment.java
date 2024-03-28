@@ -4,6 +4,8 @@ import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
+import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
+import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -61,6 +63,8 @@ public class EditTravelFragment extends Fragment {
             friendTextList = savedInstanceState.getStringArrayList(FRIENDS_TEXTS);
             hintsList = savedInstanceState.getStringArrayList(DESTINATIONS_HINTS);
             friendHintsList = savedInstanceState.getStringArrayList(FRIENDS_HINTS);
+            binding.titleFormEditText.setText(savedInstanceState.getString(TRAVEL_TITLE));
+            binding.descriptionFormEditText.setText(savedInstanceState.getString(TRAVEL_DESCRIPTION));
         } else {
             destinationsText = new ArrayList<>();
             friendTextList = new ArrayList<>();
@@ -115,6 +119,7 @@ public class EditTravelFragment extends Fragment {
             @Override
             public void onKeyPressed(int position, String text) {
                 textBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
+                destinationsText = textBoxesRecyclerAdapter.getDestinationsTexts(); // Update the list immediately
             }
         });
 
@@ -139,6 +144,7 @@ public class EditTravelFragment extends Fragment {
             @Override
             public void onKeyPressed(int position, String text) {
                 friendTextBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
+                friendTextList = friendTextBoxesRecyclerAdapter.getDestinationsTexts(); // Update the list immediately
             }
         });
         LinearLayoutManager friendLayoutManager =
@@ -183,5 +189,7 @@ private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
         outState.putStringArrayList(FRIENDS_TEXTS, (ArrayList<String>) friendTextList);
         outState.putStringArrayList(DESTINATIONS_HINTS, (ArrayList<String>) hintsList);
         outState.putStringArrayList(FRIENDS_HINTS, (ArrayList<String>) friendHintsList);
+        outState.putString(TRAVEL_TITLE, binding.titleFormEditText.getText().toString());
+        outState.putString(TRAVEL_DESCRIPTION, binding.descriptionFormEditText.getText().toString());
     }
 }
