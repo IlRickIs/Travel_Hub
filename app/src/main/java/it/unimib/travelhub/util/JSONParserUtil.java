@@ -49,7 +49,6 @@ public class JSONParserUtil {
         }
 
         return new TravelsResponse(
-                travelsResponseUnordered.getTravelsCount(),
                 travelsList
         );
     }

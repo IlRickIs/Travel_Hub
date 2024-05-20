@@ -3,31 +3,18 @@ package it.unimib.travelhub.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-/**
- * Class to represent the API response of NewsAPI.org (https://newsapi.org)
- * associated with the endpoint "Top headlines" - /v2/top-headlines.
- */
 public class TravelsResponse implements Parcelable {
-    private int travelsCount;
     private List<Travels> travelsList;
 
     public TravelsResponse() {}
 
-    public TravelsResponse(int totalResults, List<Travels> travelsList) {
-        this.travelsCount = totalResults;
+    public TravelsResponse(List<Travels> travelsList) {
         this.travelsList = travelsList;
-    }
-
-    public int getTravelsCount() {
-        return travelsCount;
-    }
-
-    public void setTravelsCount(int travelsCount) {
-        this.travelsCount = travelsCount;
     }
 
     public List<Travels> getTravelsList() {
@@ -78,11 +65,11 @@ public class TravelsResponse implements Parcelable {
         this.travelsList = travelsList;
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "NewsApiResponse{" +
-                "totalResults=" + travelsCount +
-                ", articles=" + travelsList +
+        return "TravelsResponse{" +
+                "Travels List=" + travelsList +
                 '}';
     }
 
@@ -93,17 +80,14 @@ public class TravelsResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.travelsCount);
         dest.writeTypedList(this.travelsList);
     }
 
     public void readFromParcel(Parcel source) {
-        this.travelsCount = source.readInt();
         this.travelsList = source.createTypedArrayList(Travels.CREATOR);
     }
 
     protected TravelsResponse(Parcel in) {
-        this.travelsCount = in.readInt();
         this.travelsList = in.createTypedArrayList(Travels.CREATOR);
     }
 

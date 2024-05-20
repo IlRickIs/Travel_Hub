@@ -3,8 +3,18 @@ package it.unimib.travelhub.util;
 import android.app.Application;
 import android.content.Context;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+import it.unimib.travelhub.data.database.TravelsRoomDatabase;
+import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
+import it.unimib.travelhub.data.repository.travels.TravelsRepository;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.repository.user.UserRepository;
+import it.unimib.travelhub.data.source.BaseTravelsLocalDataSource;
+import it.unimib.travelhub.data.source.BaseTravelsRemoteDataSource;
+import it.unimib.travelhub.data.source.TravelsLocalDataSource;
+import it.unimib.travelhub.data.source.TravelsMockRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
@@ -46,6 +56,23 @@ public class ServiceLocator {
 
         return new UserRepository(userRemoteAuthenticationDataSource,
                 userDataRemoteDataSource);
+    }
+
+    public ITravelsRepository getTravelsRepository(Application application) {
+        BaseTravelsRemoteDataSource travelsRemoteDataSource;
+        BaseTravelsLocalDataSource travelsLocalDataSource;
+
+        JSONParserUtil jsonParserUtil = new JSONParserUtil(application);
+        travelsRemoteDataSource = new TravelsMockRemoteDataSource(jsonParserUtil);
+
+        travelsLocalDataSource = new TravelsLocalDataSource(getTravelsDao(application));
+
+        return new TravelsRepository(travelsLocalDataSource, travelsRemoteDataSource);
+
+    }
+
+    public TravelsRoomDatabase getTravelsDao(Application application) {
+        return TravelsRoomDatabase.getDatabase(application);
     }
 }
 

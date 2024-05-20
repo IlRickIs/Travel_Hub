@@ -1,47 +1,52 @@
 {
-  "travelsCount": 6,
   "travelsList": [
     {
-      "id": 1,
-      "title": "Zara 2023",
-      "startDate": "18-09-2023",
-      "endDate": "24-09-2023",
-      "description": "Vacanza Zara 2023 con amici"
-    },
-    {
-      "id": 2,
-      "title": "title2",
-      "startDate": "02-01-2024",
-      "endDate": "02-01-2024",
-      "description": "description2"
-    },
-    {
-      "id": 3,
-      "title": "title3",
-      "startDate": "03-01-2024",
-      "endDate": "05-01-2024",
-      "description": "description3"
-    },
-    {
-      "id": 4,
-      "title": "title4",
-      "startDate": "07-01-2024",
+      "description": "Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione.",
+      "destinations": [
+        {
+          "dateFrom": "01-01-2024 09:30",
+          "dateTo": "01-01-2024 18:30",
+          "description": "Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione.",
+          "location": "Milano"
+        },
+        {
+          "dateFrom": "02-01-2024 05:30",
+          "dateTo": "03-01-2024 22:30",
+          "description": "Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione.",
+          "location": "Parigi"
+        },
+        {
+          "dateFrom": "03-01-2024 07:00",
+          "dateTo": "05-01-2024 16:30",
+          "description": "Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione.",
+          "location": "Berlino"
+        },
+        {
+          "dateFrom": "05-01-2024 22:30",
+          "dateTo": "07-01-2024 19:15",
+          "description": "Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione.",
+          "location": "Amsterdam"
+        }
+      ],
       "endDate": "07-01-2024",
-      "description": "description4"
-    },
-    {
-      "id": 5,
-      "title": "title5",
-      "startDate": "31-01-2024",
-      "endDate": "12-02-2024",
-      "description": "description5"
-    },
-    {
-      "id": 6,
-      "title": "title6",
-      "startDate": "01-09-2024",
-      "endDate": "14-09-2024",
-      "description": "description6"
+      "id": 1,
+      "image": "url",
+      "members": [
+        {
+          "id": "CO1KWBzCi9P8NX0CO3h4BUFwSgR2",
+          "role": "MEMBER"
+        },
+        {
+          "id": "YsFsAeSDcxNTWhKavdETgw5CuPa2",
+          "role": "SUPPORTER"
+        },
+        {
+          "id": "d1VZw72r1aSyrXM7ntFTFhxQcJo2",
+          "role": "CREATOR"
+        }
+      ],
+      "startDate": "01-01-2024",
+      "title": "Titolone"
     }
   ]
 }

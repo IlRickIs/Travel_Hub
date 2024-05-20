@@ -26,4 +26,7 @@ public class Constants {
 
     public static final String TRAVELS_TEST_JSON_FILE = "travels_data.json";
 
+    public static final int TRAVELS_DATABASE_VERSION = 1;
+    public static final String TRAVELS_DATABASE_NAME = "travels_database";
+
 }

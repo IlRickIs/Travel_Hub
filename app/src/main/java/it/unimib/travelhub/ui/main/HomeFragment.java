@@ -8,10 +8,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,12 +21,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.IOException;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.TravelsResponse;
+import it.unimib.travelhub.ui.travels.TravelsViewModel;
+import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.JSONParserUtil;
+import it.unimib.travelhub.util.ServiceLocator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +43,7 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private FragmentHomeBinding binding;
+    private TravelsViewModel travelsViewModel;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -53,6 +62,21 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ITravelsRepository travelsRepository =
+                ServiceLocator.getInstance().getTravelsRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (travelsRepository != null) {
+            // This is the way to create a ViewModel with custom parameters
+            // (see NewsViewModelFactory class for the implementation details)
+            travelsViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -62,22 +86,29 @@ public class HomeFragment extends Fragment {
 
         TravelsResponse travelsResponse = getTravelsResponseWithGSon();
 
-        assert travelsResponse != null; //TODO: check if the response is null
-        if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
+        travelsViewModel.getTravels(); // TODO: This is the way to get the data from the repository (never used)
+
+        if (travelsResponse != null) {
+            if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
+                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
+                binding.homeLayoutStandard.setVisibility(View.GONE);
+            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
+                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
+                binding.homeTextOngoing.setVisibility(View.GONE);
+                binding.homeCardOngoing.setVisibility(View.GONE);
+                binding.homeTextFuture.setVisibility(View.GONE);
+                binding.homeCardFuture.setVisibility(View.GONE);
+            } else if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
+                binding.homeTextFuture.setVisibility(View.GONE);
+                binding.homeCardFuture.setVisibility(View.GONE);
+            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
+                binding.homeTextFuture.setVisibility(View.GONE);
+                binding.homeCardFuture.setVisibility(View.GONE);
+            }
+        } else {
+            Log.e(TAG, "TravelsResponse is null");
             binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
             binding.homeLayoutStandard.setVisibility(View.GONE);
-        } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
-            binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
-            binding.homeTextOngoing.setVisibility(View.GONE);
-            binding.homeCardOngoing.setVisibility(View.GONE);
-            binding.homeTextFuture.setVisibility(View.GONE);
-            binding.homeCardFuture.setVisibility(View.GONE);
-        } else if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
-            binding.homeTextFuture.setVisibility(View.GONE);
-            binding.homeCardFuture.setVisibility(View.GONE);
-        } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
-            binding.homeTextFuture.setVisibility(View.GONE);
-            binding.homeCardFuture.setVisibility(View.GONE);
         }
 
         return binding.getRoot();
@@ -101,6 +132,18 @@ public class HomeFragment extends Fragment {
         binding.seeAll.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(view);
             NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
+            navController.navigate(val);
+        });
+
+        binding.homeCardOngoing.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(view);
+            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
+            navController.navigate(val);
+        });
+
+        binding.homeCardFuture.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(view);
+            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
             navController.navigate(val);
         });
 
