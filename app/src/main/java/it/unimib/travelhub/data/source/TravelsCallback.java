@@ -7,6 +7,7 @@ public interface TravelsCallback {
     void onFailureFromRemote(Exception exception);
     void onSuccessFromLocal(TravelsResponse travelsResponse);
     void onFailureFromLocal(Exception exception);
+    void onSuccessFromCloudReading(TravelsResponse travelsResponse);
     void onSuccessSynchronization();
     void onSuccessDeletion();
 }

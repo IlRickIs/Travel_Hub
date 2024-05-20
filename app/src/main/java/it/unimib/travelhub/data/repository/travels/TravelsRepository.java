@@ -25,7 +25,7 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     }
     @Override
     public MutableLiveData<Result> fetchTravels() {
-        travelsRemoteDataSource.getTravels();
+        travelsRemoteDataSource.getAllUserTravel();
         return travelsMutableLiveData;
     }
 
@@ -68,6 +68,14 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     public void onFailureFromLocal(Exception exception) {
         Result.Error resultError = new Result.Error(exception.getMessage());
         travelsMutableLiveData.postValue(resultError);
+    }
+
+    @Override
+    public void onSuccessFromCloudReading(TravelsResponse travelsResponse) {
+        if (travelsResponse != null) {
+            travelsLocalDataSource.insertTravels(travelsResponse.getTravelsList());
+            travelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(travelsResponse));
+        }
     }
 
     @Override

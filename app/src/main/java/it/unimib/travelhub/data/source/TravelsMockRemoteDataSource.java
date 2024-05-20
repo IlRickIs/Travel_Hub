@@ -4,6 +4,7 @@ import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
 
 import java.io.IOException;
 
+import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.util.JSONParserUtil;
 
@@ -14,7 +15,7 @@ public class TravelsMockRemoteDataSource extends BaseTravelsRemoteDataSource{
         this.jsonParserUtil = jsonParserUtil;
     }
 
-    public void getTravels() {
+    public void getAllUserTravel() {
         TravelsResponse travelsResponse = null;
 
         try {
@@ -28,5 +29,25 @@ public class TravelsMockRemoteDataSource extends BaseTravelsRemoteDataSource{
         } else {
             travelsCallback.onFailureFromRemote(new Exception("Error parsing file"));
         }
+    }
+
+    @Override
+    public void addTravel() {
+
+    }
+
+    @Override
+    public void updateTravel(Travels travels) {
+
+    }
+
+    @Override
+    public void deleteTravel(Travels travels) {
+
+    }
+
+    @Override
+    public void deleteAllTravels() {
+
     }
 }

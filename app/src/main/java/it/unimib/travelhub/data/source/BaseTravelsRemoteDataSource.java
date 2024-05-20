@@ -1,5 +1,7 @@
 package it.unimib.travelhub.data.source;
 
+import it.unimib.travelhub.model.Travels;
+
 public abstract class BaseTravelsRemoteDataSource {
     protected TravelsCallback travelsCallback;
 
@@ -7,5 +9,11 @@ public abstract class BaseTravelsRemoteDataSource {
         this.travelsCallback = travelsCallback;
     }
 
-    public abstract void getTravels();
+    public abstract void getAllUserTravel();
+    public abstract void addTravel();
+    // public abstract void getTravelById(String travelId);
+    public abstract void updateTravel(Travels travels);
+    public abstract void deleteTravel(Travels travels);
+    public abstract void deleteAllTravels();
+
 }
