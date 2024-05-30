@@ -3,9 +3,11 @@ package it.unimib.travelhub.ui.travels;
 import static it.unimib.travelhub.util.Constants.DESTINATION;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
+import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
+import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
 import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 
@@ -23,15 +25,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
+import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.databinding.FragmentEditTravelBinding;
+import it.unimib.travelhub.model.Travels;
+import it.unimib.travelhub.ui.main.MainActivity;
 
 
 public class EditTravelFragment extends Fragment {
@@ -46,6 +55,9 @@ public class EditTravelFragment extends Fragment {
     private List<String> destinationsText;
     private List<String> hintsList;
     private List<String> friendHintsList;
+    private MainActivity mainActivity;
+
+    private DataEncryptionUtil dataEncryptionUtil;
     public EditTravelFragment() {
     }
 
@@ -72,6 +84,7 @@ public class EditTravelFragment extends Fragment {
             hintsList = new ArrayList<>();
             friendHintsList = new ArrayList<>();
         }
+        dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
     }
 
     private void updateLabel(EditText editText) {
@@ -84,6 +97,7 @@ public class EditTravelFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentEditTravelBinding.inflate(inflater, container, false);
+        mainActivity = (MainActivity) requireActivity();
         return binding.getRoot();
     }
 
@@ -156,6 +170,42 @@ public class EditTravelFragment extends Fragment {
 
         binding.addFriendButton.setOnClickListener(v -> {
             updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_email);
+        });
+
+        mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> { //TODO: finish to implement this method
+            // Save the data
+            Travels travel = new Travels();
+            String id;
+            try {
+                id = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
+            } catch (GeneralSecurityException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (id != null) {
+                id += System.currentTimeMillis();
+            }else{
+                id = System.currentTimeMillis() + "";
+            }
+            id = String.valueOf(id.hashCode());
+            travel.setId(Long.parseLong(id));
+
+            travel.setTitle(binding.titleFormEditText.getText().toString());
+            travel.setDescription(binding.descriptionFormEditText.getText().toString());
+            try {
+                String endDateString = binding.editTxtToForm.getText().toString();
+                String startDateString = binding.editTxtFromForm.getText().toString();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
+                Date endDate = sdf.parse(endDateString);
+
+                Date startDate = sdf.parse(startDateString);
+
+                travel.setStartDate(startDate);
+                travel.setEndDate(endDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         });
 
     }
