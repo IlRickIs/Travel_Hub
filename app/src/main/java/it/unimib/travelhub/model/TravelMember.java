@@ -5,6 +5,11 @@ public class TravelMember {
     private Role role;
     public enum Role {MEMBER, SUPPORTER, CREATOR}
 
+    public TravelMember() {
+        this.id = null;
+        this.role = Role.MEMBER;
+    }
+
     public TravelMember(String id, Role role) {
         this.id = id;
         this.role = role;

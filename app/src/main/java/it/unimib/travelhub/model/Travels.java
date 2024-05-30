@@ -81,21 +81,21 @@ public class Travels implements Parcelable, Comparable<Travels> {
 
     public void setStatus(Status status) {this.status = status;}
 
-    public void setStatus(String status) {
-        switch (status) {
-            case "ONGOING":
-                this.status = Status.ONGOING;
-                break;
-            case "DONE":
-                this.status = Status.DONE;
-                break;
-            case "FUTURE":
-                this.status = Status.FUTURE;
-                break;
-            default:
-                this.status = Status.NULL;
-        }
-    }
+//    public void setStatus(String status) {
+//        switch (status) {
+//            case "ONGOING":
+//                this.status = Status.ONGOING;
+//                break;
+//            case "DONE":
+//                this.status = Status.DONE;
+//                break;
+//            case "FUTURE":
+//                this.status = Status.FUTURE;
+//                break;
+//            default:
+//                this.status = Status.NULL;
+//        }
+//    }
 
     public int compareTo(Travels travels) {
         return this.startDate.compareTo(travels.startDate);
@@ -124,7 +124,7 @@ public class Travels implements Parcelable, Comparable<Travels> {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", destinations=" + destinations +
-                ", friends=" + members +
+                ", members=" + members +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", status=" + status +

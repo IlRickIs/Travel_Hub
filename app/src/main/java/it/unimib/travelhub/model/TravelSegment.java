@@ -7,6 +7,13 @@ public class TravelSegment {
     private Date dateTo;
     private String description;
 
+    public TravelSegment() {
+        this.location = null;
+        this.dateFrom = null;
+        this.dateTo = null;
+        this.description = null;
+    }
+
     public TravelSegment(String location, Date dateFrom, Date dateTo, String description) {
         this.location = location;
         this.dateFrom = dateFrom;

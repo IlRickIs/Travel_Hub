@@ -23,9 +23,9 @@ public class TravelsViewModel extends ViewModel {
         * travels list to the Fragment/Activity.
         * @return The LiveData object associated with the travels list.
         */
-        public MutableLiveData<Result> getTravels() {
+        public MutableLiveData<Result> getTravels(long lastUpdate) {
             if (travelsListLiveData == null) {
-                fetchTravels();
+                fetchTravels(lastUpdate);
             }
             return travelsListLiveData;
         }
@@ -33,8 +33,8 @@ public class TravelsViewModel extends ViewModel {
         /**
         * Fetches the travels list from the repository.
         */
-        private void fetchTravels() {
-            travelsListLiveData = travelsRepository.fetchTravels();
+        private void fetchTravels(long lastUpdate) {
+            travelsListLiveData = travelsRepository.fetchTravels(lastUpdate);
         }
 
         /**
@@ -43,5 +43,9 @@ public class TravelsViewModel extends ViewModel {
         */
         public void updateTravel(Travels travel) {
             travelsRepository.updateTravel(travel);
+        }
+
+        public void addTravel(Travels travel) {
+            travelsRepository.addTravel(travel);
         }
 }

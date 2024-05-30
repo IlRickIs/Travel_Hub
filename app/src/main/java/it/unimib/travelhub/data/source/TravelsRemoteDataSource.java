@@ -7,6 +7,10 @@ import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,7 +52,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                         travelsIdList.add(id);
                     }
 
-                    List<Travels> travelsList = new ArrayList<>();
+                    TravelsResponse travelsResponse = new TravelsResponse(travelsIdList.size(), travelsCallback);
 
                     for (Integer id : travelsIdList) {
                         databaseReference.child("travels").child(id.toString()).get().addOnCompleteListener(task1 -> {
@@ -57,13 +61,11 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                             } else {
                                 Log.d(TAG, "Successful read: " + task1.getResult().getValue());
                                 Travels travels = task1.getResult().getValue(Travels.class);
-                                travelsList.add(travels);
+                                Log.d(TAG, "Travel: " + travels.toString());
+                                travelsResponse.addTravel(travels);
                             }
                         });
                     }
-
-                    travelsCallback.onSuccessFromCloudReading(new TravelsResponse(travelsList));
-
                 }
             });
         } catch (Exception e) {
@@ -72,8 +74,27 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
     }
 
     @Override
-    public void addTravel() {
-
+    public void addTravel(Travels travel) {
+        try {
+            String idToken = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
+            databaseReference.child("travels").child(Long.toString(travel.getId())).setValue(travel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            //travelsCallback.onSuccessFromCloudWriting();
+                            Log.d(TAG, "Travel added successfully");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            //travelsCallback.onFailureFromCloud(e);
+                            Log.d(TAG, "Error adding travel", e);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.content.Context;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.database.TravelsRoomDatabase;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.data.repository.travels.TravelsRepository;
@@ -15,6 +16,7 @@ import it.unimib.travelhub.data.source.BaseTravelsLocalDataSource;
 import it.unimib.travelhub.data.source.BaseTravelsRemoteDataSource;
 import it.unimib.travelhub.data.source.TravelsLocalDataSource;
 import it.unimib.travelhub.data.source.TravelsMockRemoteDataSource;
+import it.unimib.travelhub.data.source.TravelsRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
@@ -61,11 +63,14 @@ public class ServiceLocator {
     public ITravelsRepository getTravelsRepository(Application application) {
         BaseTravelsRemoteDataSource travelsRemoteDataSource;
         BaseTravelsLocalDataSource travelsLocalDataSource;
+        DataEncryptionUtil dataEncryptionUtil = new DataEncryptionUtil(application);
+        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
 
         JSONParserUtil jsonParserUtil = new JSONParserUtil(application);
-        travelsRemoteDataSource = new TravelsMockRemoteDataSource(jsonParserUtil);
+//        travelsRemoteDataSource = new TravelsMockRemoteDataSource(jsonParserUtil);
+        travelsRemoteDataSource = new TravelsRemoteDataSource(dataEncryptionUtil);
 
-        travelsLocalDataSource = new TravelsLocalDataSource(getTravelsDao(application));
+        travelsLocalDataSource = new TravelsLocalDataSource(getTravelsDao(application), sharedPreferencesUtil);
 
         return new TravelsRepository(travelsLocalDataSource, travelsRemoteDataSource);
 

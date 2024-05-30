@@ -32,7 +32,7 @@ public class TravelsMockRemoteDataSource extends BaseTravelsRemoteDataSource{
     }
 
     @Override
-    public void addTravel() {
+    public void addTravel(Travels travel) {
 
     }
 

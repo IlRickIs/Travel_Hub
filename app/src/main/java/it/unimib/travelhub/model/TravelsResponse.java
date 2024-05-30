@@ -2,19 +2,31 @@ package it.unimib.travelhub.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import java.util.Collections;
 import java.util.List;
 
-public class TravelsResponse implements Parcelable {
-    private List<Travels> travelsList;
+import it.unimib.travelhub.data.source.TravelsCallback;
 
-    public TravelsResponse() {}
+public class TravelsResponse implements Parcelable {
+    private static final String TAG = "TravelsResponse";
+    private List<Travels> travelsList;
+    private TravelsCallback travelsCallback;
+    private Integer length;
 
     public TravelsResponse(List<Travels> travelsList) {
         this.travelsList = travelsList;
+        this.travelsCallback = null;
+        this.length = travelsList.size();
+    }
+
+    public TravelsResponse(Integer length, TravelsCallback travelsCallback) {
+        this.travelsList = new java.util.ArrayList<>(length);
+        this.travelsCallback = travelsCallback;
+        this.length = length;
     }
 
     public List<Travels> getTravelsList() {
@@ -63,6 +75,14 @@ public class TravelsResponse implements Parcelable {
 
     public void setTravelsList(List<Travels> travelsList) {
         this.travelsList = travelsList;
+    }
+
+    public void addTravel(Travels travel) {
+        travelsList.add(travel);
+        if (travelsList.size() == length) {
+            Log.d(TAG, "Travels list size: " + travelsList.size());
+            travelsCallback.onSuccessFromRemote(this, System.currentTimeMillis());
+        }
     }
 
     @NonNull

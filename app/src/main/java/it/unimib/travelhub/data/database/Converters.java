@@ -7,21 +7,24 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;
 
 public class Converters {
     @TypeConverter
-    public static Date fromTimestamp(Long value) {
-        return value == null ? null : new Date(value);
+    public static Date jsonToDate(String json) {
+        Type type = new TypeToken<Date>() {}.getType();
+        return new Gson().fromJson(json, type);
     }
 
     @TypeConverter
-    public static Long dateToTimestamp(Date date) {
-        return date == null ? null : date.getTime();
+    public static String dateToJson(Date date) {
+        return new Gson().toJson(date);
     }
 
     @TypeConverter

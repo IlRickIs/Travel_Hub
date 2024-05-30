@@ -1,5 +1,7 @@
 package it.unimib.travelhub.ui.main;
 
+import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
+import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
 
 import android.os.Bundle;
@@ -33,6 +35,7 @@ import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.JSONParserUtil;
 import it.unimib.travelhub.util.ServiceLocator;
+import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +47,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = HomeFragment.class.getSimpleName();
     private FragmentHomeBinding binding;
     private TravelsViewModel travelsViewModel;
+    private SharedPreferencesUtil sharedPreferencesUtil;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -77,6 +81,10 @@ public class HomeFragment extends Fragment {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
+
+        if (sharedPreferencesUtil == null) {
+            sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
+        }
     }
 
     @Override
@@ -86,7 +94,12 @@ public class HomeFragment extends Fragment {
 
         TravelsResponse travelsResponse = getTravelsResponseWithGSon();
 
-        travelsViewModel.getTravels(); // TODO: This is the way to get the data from the repository (never used)
+        String lastUpdate = "0";
+        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
+            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
+        }
+        travelsViewModel.getTravels(Long.parseLong(lastUpdate)); // TODO: This is the way to get the data from the repository (never used)
+        //travelsViewModel.addTravel(TRAVEL);
 
         if (travelsResponse != null) {
             if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {

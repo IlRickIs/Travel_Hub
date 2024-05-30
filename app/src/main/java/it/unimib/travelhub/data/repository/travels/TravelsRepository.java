@@ -1,5 +1,7 @@
 package it.unimib.travelhub.data.repository.travels;
 
+import static it.unimib.travelhub.util.Constants.FRESH_TIMEOUT;
+
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
@@ -24,7 +26,14 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         this.travelsRemoteDataSource.setTravelsCallback(this);
     }
     @Override
-    public MutableLiveData<Result> fetchTravels() {
+    public MutableLiveData<Result> fetchTravels(long lastUpdate) {
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastUpdate > FRESH_TIMEOUT) {
+            travelsRemoteDataSource.getAllUserTravel();
+        } else {
+            travelsLocalDataSource.getTravels();
+        }
         travelsRemoteDataSource.getAllUserTravel();
         return travelsMutableLiveData;
     }
@@ -37,6 +46,10 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     @Override
     public void addTravels(List<Travels> travelsList) {
         travelsLocalDataSource.insertTravels(travelsList);
+    }
+
+    public void addTravel(Travels travel) {
+        travelsRemoteDataSource.addTravel(travel);
     }
 
     @Override

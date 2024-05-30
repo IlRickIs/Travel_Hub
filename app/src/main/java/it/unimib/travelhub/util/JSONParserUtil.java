@@ -31,7 +31,7 @@ public class JSONParserUtil {
         InputStream inputStream = context.getAssets().open(fileName);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy").create();
+        Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
 
         TravelsResponse travelsResponseUnordered = gson.fromJson(bufferedReader, TravelsResponse.class);
         List<Travels> travelsList = travelsResponseUnordered.getTravelsList();
