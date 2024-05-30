@@ -2,32 +2,31 @@ package it.unimib.travelhub.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-/**
- * Class to represent the API response of NewsAPI.org (https://newsapi.org)
- * associated with the endpoint "Top headlines" - /v2/top-headlines.
- */
+import it.unimib.travelhub.data.source.TravelsCallback;
+
 public class TravelsResponse implements Parcelable {
-    private int travelsCount;
+    private static final String TAG = "TravelsResponse";
     private List<Travels> travelsList;
+    private TravelsCallback travelsCallback;
+    private Integer length;
 
-    public TravelsResponse() {}
-
-    public TravelsResponse(int totalResults, List<Travels> travelsList) {
-        this.travelsCount = totalResults;
+    public TravelsResponse(List<Travels> travelsList) {
         this.travelsList = travelsList;
+        this.travelsCallback = null;
+        this.length = travelsList.size();
     }
 
-    public int getTravelsCount() {
-        return travelsCount;
-    }
-
-    public void setTravelsCount(int travelsCount) {
-        this.travelsCount = travelsCount;
+    public TravelsResponse(Integer length, TravelsCallback travelsCallback) {
+        this.travelsList = new java.util.ArrayList<>(length);
+        this.travelsCallback = travelsCallback;
+        this.length = length;
     }
 
     public List<Travels> getTravelsList() {
@@ -78,11 +77,19 @@ public class TravelsResponse implements Parcelable {
         this.travelsList = travelsList;
     }
 
+    public void addTravel(Travels travel) {
+        travelsList.add(travel);
+        if (travelsList.size() == length) {
+            Log.d(TAG, "Travels list size: " + travelsList.size());
+            travelsCallback.onSuccessFromRemote(this, System.currentTimeMillis());
+        }
+    }
+
+    @NonNull
     @Override
     public String toString() {
-        return "NewsApiResponse{" +
-                "totalResults=" + travelsCount +
-                ", articles=" + travelsList +
+        return "TravelsResponse{" +
+                "Travels List=" + travelsList +
                 '}';
     }
 
@@ -93,17 +100,14 @@ public class TravelsResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.travelsCount);
         dest.writeTypedList(this.travelsList);
     }
 
     public void readFromParcel(Parcel source) {
-        this.travelsCount = source.readInt();
         this.travelsList = source.createTypedArrayList(Travels.CREATOR);
     }
 
     protected TravelsResponse(Parcel in) {
-        this.travelsCount = in.readInt();
         this.travelsList = in.createTypedArrayList(Travels.CREATOR);
     }
 

@@ -4,20 +4,25 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Travels implements Parcelable, Comparable<Travels> {
     //@SerializedName("publishedAt")
+    @PrimaryKey(autoGenerate = true)
     private long id;
     private String title;
     private String description;
+    private List<TravelSegment> destinations;
+    private List<TravelMember> members;
 
-    private List<String> destinations;
-    private List<String> friends;
     private Date startDate;
+
     private Date endDate;
     private Status status;
     public enum Status {NULL, ONGOING, DONE, FUTURE}
@@ -25,7 +30,7 @@ public class Travels implements Parcelable, Comparable<Travels> {
     public Travels() {}
 
     public Travels(long id, String title, String description, Date startDate, Date endDate,
-                   List<String> friends, List<String> destinations) {
+                   List<TravelMember> members, List<TravelSegment> destinations) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -33,23 +38,23 @@ public class Travels implements Parcelable, Comparable<Travels> {
         this.endDate = endDate;
         this.status = Status.NULL;
         this.destinations = destinations;
-        this.friends = friends;
+        this.members = members;
     }
 
-    public List<String> getDestinations() {
+    public List<TravelSegment> getDestinations() {
         return destinations;
     }
 
-    public List<String> getFriends() {
-        return friends;
+    public List<TravelMember> getMembers() {
+        return members;
     }
 
-    public void setDestinations(List<String> destinations) {
+    public void setDestinations(List<TravelSegment> destinations) {
         this.destinations = destinations;
     }
 
-    public void setFriends(List<String> friends) {
-        this.friends = friends;
+    public void setMembers(List<TravelMember> members) {
+        this.members = members;
     }
 
     public long getId() {return id;}
@@ -76,6 +81,22 @@ public class Travels implements Parcelable, Comparable<Travels> {
 
     public void setStatus(Status status) {this.status = status;}
 
+//    public void setStatus(String status) {
+//        switch (status) {
+//            case "ONGOING":
+//                this.status = Status.ONGOING;
+//                break;
+//            case "DONE":
+//                this.status = Status.DONE;
+//                break;
+//            case "FUTURE":
+//                this.status = Status.FUTURE;
+//                break;
+//            default:
+//                this.status = Status.NULL;
+//        }
+//    }
+
     public int compareTo(Travels travels) {
         return this.startDate.compareTo(travels.startDate);
     }
@@ -95,6 +116,7 @@ public class Travels implements Parcelable, Comparable<Travels> {
         return Objects.hash(id, title, description, startDate, endDate);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Travels{" +
@@ -102,7 +124,7 @@ public class Travels implements Parcelable, Comparable<Travels> {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", destinations=" + destinations +
-                ", friends=" + friends +
+                ", members=" + members +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", status=" + status +

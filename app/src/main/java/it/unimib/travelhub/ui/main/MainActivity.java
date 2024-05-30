@@ -25,14 +25,28 @@ public class MainActivity extends AppCompatActivity {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
                 findFragmentById(R.id.nav_host_fragment);
         NavController navController = Objects.requireNonNull(navHostFragment).getNavController();
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.homeFragment,
-                R.id.communityFragment,
-                R.id.addFragment,
-                R.id.profileFragment,
-                R.id.mapFragment).build();
         NavigationUI.setupWithNavController(bottom_menu, navController);
 
+        bottom_menu.setOnItemSelectedListener(item -> {
+            if(item.getItemId() == R.id.homeFragment){
+                navController.navigate(R.id.homeFragment);
+                return true;
+            }
+            else if(item.getItemId() == R.id.profileFragment){
+                navController.navigate(R.id.profileFragment);
+                return true;
+            } else if(item.getItemId() == R.id.mapFragment){
+                navController.navigate(R.id.mapFragment);
+                return true;
+            } else if(item.getItemId() == R.id.communityFragment){
+                navController.navigate(R.id.communityFragment);
+                return true;
+            } else if(item.getItemId() == R.id.addFragment){
+                navController.navigate(R.id.addFragment);
+                return true;
+            }
+            return false;
+        });
         /*
         NavigationBarView bottom_menu = findViewById(R.id.bottom_navigation);
         bottom_menu.setOnItemSelectedListener(item ->

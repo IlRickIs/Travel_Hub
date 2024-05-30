@@ -8,13 +8,18 @@ public abstract class Result {
     private Result() {}
 
     public boolean isSuccess() {
-        if (this instanceof UserResponseSuccess) {
-            return true;
-        } else {
-            return false;
-        }
+        return this instanceof UserResponseSuccess;
     }
 
+    public static final class TravelsResponseSuccess extends Result {
+        private final TravelsResponse travelsResponse;
+        public TravelsResponseSuccess(TravelsResponse travelsResponse) {
+            this.travelsResponse = travelsResponse;
+        }
+        public TravelsResponse getData() {
+            return travelsResponse;
+        }
+    }
 
     public static final class UserResponseSuccess extends Result {
         private final User user;

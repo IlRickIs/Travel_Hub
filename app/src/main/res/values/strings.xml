@@ -129,7 +129,7 @@
 
     <string name="ongoing_travel">Ongoing Travel</string>
     <string name="other_travels">Other Travels</string>
-    <string name="travel_description">
+    <string name="travel_description" translatable="false">
         Welcome to the beautiful land of Salvador, a charming destination for a beach vacation that will take your breath away. Located along the northeastern coast of Brazil, Salvador is a vibrant and colorful city, rich in culture, history, and of course, beautiful beaches.
         \n\nImagine waking up to the sound of waves gently crashing on the golden sand. Your day begins with a stroll along the beach as the sun rises on the horizon, painting the sky with shades of pink and orange. Salvadors beaches are spectacular, with kilometers of fine sand and crystal-clear waters that invite you to relax and enjoy the tropical sun.
         \n\nAfter a morning of beachside relaxation, immerse yourself in Salvadors lively culture. Explore the historic center, declared a UNESCO World Heritage Site, and wander through narrow cobblestone streets lined with charming colorful colonial buildings. Stop for an authentic Brazilian meal at one of the local restaurants, where you can savor delicacies like moqueca, a delicious fish stew made with the freshest ingredients.
