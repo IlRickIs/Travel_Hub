@@ -11,12 +11,14 @@ import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
 import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -24,6 +26,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -34,13 +38,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
+import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentEditTravelBinding;
+import it.unimib.travelhub.model.TravelMember;
+import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.ui.main.MainActivity;
+import it.unimib.travelhub.util.ServiceLocator;
 
 
 public class EditTravelFragment extends Fragment {
@@ -55,7 +64,9 @@ public class EditTravelFragment extends Fragment {
     private List<String> destinationsText;
     private List<String> hintsList;
     private List<String> friendHintsList;
-    private MainActivity mainActivity;
+    private Activity mainActivity;
+
+    private TravelsViewModel travelsViewModel;
 
     private DataEncryptionUtil dataEncryptionUtil;
     public EditTravelFragment() {
@@ -85,6 +96,22 @@ public class EditTravelFragment extends Fragment {
             friendHintsList = new ArrayList<>();
         }
         dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
+
+        ITravelsRepository travelsRepository =
+                ServiceLocator.getInstance().getTravelsRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (travelsRepository != null) {
+            // This is the way to create a ViewModel with custom parameters
+            // (see NewsViewModelFactory class for the implementation details)
+            travelsViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private void updateLabel(EditText editText) {
@@ -97,7 +124,7 @@ public class EditTravelFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentEditTravelBinding.inflate(inflater, container, false);
-        mainActivity = (MainActivity) requireActivity();
+        mainActivity = (Activity) requireActivity();
         return binding.getRoot();
     }
 
@@ -174,17 +201,21 @@ public class EditTravelFragment extends Fragment {
 
         mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> { //TODO: finish to implement this method
             // Save the data
+
+            //TODO: before the next part of the code we should put some ifs to check nulls values
+            // checkifTravelIsReadyToBeSaved(travel);
             Travels travel = new Travels();
             String id;
+            String userId;
             try {
-                id = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
+                userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
             } catch (GeneralSecurityException e) {
                 throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            if (id != null) {
-                id += System.currentTimeMillis();
+            if (userId != null) {
+                id = userId + System.currentTimeMillis();
             }else{
                 id = System.currentTimeMillis() + "";
             }
@@ -206,6 +237,29 @@ public class EditTravelFragment extends Fragment {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
+            List<TravelSegment> destinations = new ArrayList<TravelSegment>();
+            destinations.add(new TravelSegment(binding.departureFormEditText.getText().toString()));
+            destinations.add(new TravelSegment(binding.destinationFormEditText.getText().toString()));
+            for(String s : destinationsText){
+                TravelSegment segment = new TravelSegment(s);
+                destinations.add(segment);
+            }
+            travel.setDestinations(destinations);
+
+            List<TravelMember> members = new ArrayList<>();
+            members.add(new TravelMember(userId, TravelMember.Role.CREATOR));
+            members.add(new TravelMember("fakeId", TravelMember.Role.MEMBER));
+            for(String s : friendTextList){
+                String memberId = mockRetrieveIdFromUsername(s); //TODO: implement this method
+                TravelMember member = new TravelMember(memberId);
+                members.add(member);
+            }
+            travel.setMembers(members);
+
+            travelsViewModel.addTravel(travel);
+
+            //TODO: implement the code to save the travel under users collection on firebase database
         });
 
     }
@@ -238,6 +292,17 @@ private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
         Log.d(TAG, "onPause: ");
         printdataset(destinationsText);
         printdataset(friendTextList);
+    }
+
+    public String mockRetrieveIdFromUsername(String username){
+        String[] userIds = {"CO1KWBzCi9P8NX0CO3h4BUFwSgR2", "YsFsAeSDcxNTWhKavdETgw5CuPa2", "d1VZw72r1aSyrXM7ntFTFhxQcJo2", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1",
+        "oH8EFtZMyhOE7dwmH0XJxzZC1Ar2"};
+
+        Random rand = new Random();
+        int randomIndex = rand.nextInt(userIds.length);
+
+        return userIds[randomIndex];
+
     }
 
     @Override

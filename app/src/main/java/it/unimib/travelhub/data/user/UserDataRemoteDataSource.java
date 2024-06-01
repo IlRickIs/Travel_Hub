@@ -78,7 +78,8 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "onCancelled");
+                userResponseCallback.onFailureFromRemoteDatabase(error.getMessage());
+                Log.d(TAG, error.toString() + "onCancelled");
             }
         });
 
