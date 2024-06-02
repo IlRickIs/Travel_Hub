@@ -26,11 +26,13 @@ import android.view.ViewGroup;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
@@ -136,10 +138,19 @@ public class HomeFragment extends Fragment {
                 binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
                 binding.homeLayoutStandard.setVisibility(View.GONE);
             } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
-                setDoneView();
-            } else if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
+                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
+                binding.homeTextOngoing.setVisibility(View.GONE);
+                binding.homeCardOngoing.setVisibility(View.GONE);
+                binding.homeTextFuture.setVisibility(View.GONE);
+                binding.homeCardFuture.setVisibility(View.GONE);
+            } else if (travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null ||
+                        travelsResponse.getOnGoingTravel() == travelsResponse.getFutureTravel()) {
+                binding.homeTextFuture.setVisibility(View.GONE);
+                binding.homeCardFuture.setVisibility(View.GONE);
+
                 setOngoingView();
-            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
+            } else {
+                setOngoingView();
                 setFutureView();
             }
         } else {
@@ -172,22 +183,33 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void setDoneView() {
-        binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
-        binding.homeTextOngoing.setVisibility(View.GONE);
-        binding.homeCardOngoing.setVisibility(View.GONE);
-        binding.homeTextFuture.setVisibility(View.GONE);
-        binding.homeCardFuture.setVisibility(View.GONE);
-    }
-
     private void setOngoingView() {
-        binding.homeTextFuture.setVisibility(View.GONE);
-        binding.homeCardFuture.setVisibility(View.GONE);
+        Travels onGoingTravel = travelsResponse.getOnGoingTravel();
+
+        binding.homeOngoingTitle.setText(onGoingTravel.getTitle());
+        binding.homeOngoingStartDate.setText(
+                new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                        .format(onGoingTravel.getStartDate())
+        );
+        binding.homeOngoingEndDate.setText(
+                new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                        .format(onGoingTravel.getEndDate())
+        );
+        binding.homeOngoingDescription.setText(onGoingTravel.getDescription());
     }
 
     private void setFutureView() {
-        binding.homeTextFuture.setVisibility(View.GONE);
-        binding.homeCardFuture.setVisibility(View.GONE);
+        Travels futureTravel = travelsResponse.getFutureTravel();
+
+        binding.homeFutureTitle.setText(futureTravel.getTitle());
+        binding.homeFutureStartDate.setText(
+                new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                        .format(futureTravel.getStartDate())
+        );
+        binding.homeFutureEndDate.setText(
+                new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                        .format(futureTravel.getEndDate())
+        );
     }
 
     private TravelsResponse getTravelsResponseWithGSon() {
