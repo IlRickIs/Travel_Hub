@@ -24,8 +24,6 @@ public class Travels implements Parcelable, Comparable<Travels> {
     private Date startDate;
 
     private Date endDate;
-    private Status status;
-    public enum Status {NULL, ONGOING, DONE, FUTURE}
 
     public Travels() {}
 
@@ -36,7 +34,6 @@ public class Travels implements Parcelable, Comparable<Travels> {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.status = Status.NULL;
         this.destinations = destinations;
         this.members = members;
     }
@@ -77,26 +74,6 @@ public class Travels implements Parcelable, Comparable<Travels> {
 
     public void setEndDate(Date endDate) {this.endDate = endDate;}
 
-    public Status getStatus() {return status;}
-
-    public void setStatus(Status status) {this.status = status;}
-
-//    public void setStatus(String status) {
-//        switch (status) {
-//            case "ONGOING":
-//                this.status = Status.ONGOING;
-//                break;
-//            case "DONE":
-//                this.status = Status.DONE;
-//                break;
-//            case "FUTURE":
-//                this.status = Status.FUTURE;
-//                break;
-//            default:
-//                this.status = Status.NULL;
-//        }
-//    }
-
     public int compareTo(Travels travels) {
         return this.startDate.compareTo(travels.startDate);
     }
@@ -127,7 +104,6 @@ public class Travels implements Parcelable, Comparable<Travels> {
                 ", members=" + members +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
-                ", status=" + status +
                 '}';
     }
 

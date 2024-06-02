@@ -8,7 +8,7 @@ public abstract class Result {
     private Result() {}
 
     public boolean isSuccess() {
-        return this instanceof UserResponseSuccess;
+        return this instanceof UserResponseSuccess || this instanceof TravelsResponseSuccess;
     }
 
     public static final class TravelsResponseSuccess extends Result {

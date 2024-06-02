@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import it.unimib.travelhub.data.source.TravelsCallback;
@@ -18,6 +19,7 @@ public class TravelsResponse implements Parcelable {
     private Integer length;
 
     public TravelsResponse(List<Travels> travelsList) {
+        Collections.sort(travelsList);
         this.travelsList = travelsList;
         this.travelsCallback = null;
         this.length = travelsList.size();
@@ -34,14 +36,14 @@ public class TravelsResponse implements Parcelable {
     }
 
     public Travels getOnGoingTravel() {
-        for (Travels travels : travelsList) {
-            if (travels.getStatus() == Travels.Status.ONGOING) {
-                return travels;
-            } else if (travels.getStatus() == Travels.Status.FUTURE) {
-                return travels;
+        Date currentDate = new Date();
+
+        for (Travels travel : travelsList) {
+            if (travel.getStartDate().before(currentDate) && travel.getEndDate().after(currentDate)) {
+                return travel;
             }
         }
-        return null;
+        return getFutureTravel();
     }
 
     public Travels getFutureTravel() {
@@ -53,9 +55,10 @@ public class TravelsResponse implements Parcelable {
     }
 
     public List<Travels> getFutureTravelsList() {
+        Date currentDate = new Date();
         List<Travels> futureTravelsList = new java.util.ArrayList<>();
         for (Travels travels : travelsList) {
-            if (travels.getStatus() == Travels.Status.FUTURE) {
+            if (travels.getStartDate().after(currentDate)) {
                 futureTravelsList.add(travels);
             }
         }
@@ -63,9 +66,10 @@ public class TravelsResponse implements Parcelable {
     }
 
     public List<Travels> getDoneTravelsList() {
+        Date currentDate = new Date();
         List<Travels> doneTravelsList = new java.util.ArrayList<>();
         for (Travels travels : travelsList) {
-            if (travels.getStatus() == Travels.Status.DONE) {
+            if (travels.getEndDate().before(currentDate)) {
                 doneTravelsList.add(travels);
             }
         }
@@ -80,6 +84,7 @@ public class TravelsResponse implements Parcelable {
     public void addTravel(Travels travel) {
         travelsList.add(travel);
         if (travelsList.size() == length) {
+            Collections.sort(travelsList);
             Log.d(TAG, "Travels list size: " + travelsList.size());
             travelsCallback.onSuccessFromRemote(this, System.currentTimeMillis());
         }

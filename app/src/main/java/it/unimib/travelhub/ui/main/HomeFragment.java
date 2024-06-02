@@ -30,6 +30,7 @@ import java.io.IOException;
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
+import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
@@ -48,6 +49,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private TravelsViewModel travelsViewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
+    private TravelsResponse travelsResponse;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -92,38 +94,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
-        TravelsResponse travelsResponse = getTravelsResponseWithGSon();
-
-        String lastUpdate = "0";
-        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
-            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
-        }
-        travelsViewModel.getTravels(Long.parseLong(lastUpdate)); // TODO: This is the way to get the data from the repository (never used)
-        //travelsViewModel.addTravel(TRAVEL);
-
-        if (travelsResponse != null) {
-            if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
-                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-                binding.homeLayoutStandard.setVisibility(View.GONE);
-            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
-                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
-                binding.homeTextOngoing.setVisibility(View.GONE);
-                binding.homeCardOngoing.setVisibility(View.GONE);
-                binding.homeTextFuture.setVisibility(View.GONE);
-                binding.homeCardFuture.setVisibility(View.GONE);
-            } else if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
-                binding.homeTextFuture.setVisibility(View.GONE);
-                binding.homeCardFuture.setVisibility(View.GONE);
-            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
-                binding.homeTextFuture.setVisibility(View.GONE);
-                binding.homeCardFuture.setVisibility(View.GONE);
-            }
-        } else {
-            Log.e(TAG, "TravelsResponse is null");
-            binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-            binding.homeLayoutStandard.setVisibility(View.GONE);
-        }
-
         return binding.getRoot();
     }
 
@@ -141,6 +111,42 @@ public class HomeFragment extends Fragment {
                 return false;
             }
         });
+
+//        String lastUpdate = "0";
+//        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
+//            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
+//        }
+//
+//        travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+//                result -> {
+//                    if (result.isSuccess()) {
+//                        travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
+//
+//
+//                    } else {
+//                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+//                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+//                    }
+//                });
+
+        travelsResponse = getTravelsResponseWithGSon(); //TODO: Cambiare e mettere il get dal repository
+
+        if (travelsResponse != null) {
+            if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
+                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
+                binding.homeLayoutStandard.setVisibility(View.GONE);
+            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
+                setDoneView();
+            } else if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
+                setOngoingView();
+            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null) {
+                setFutureView();
+            }
+        } else {
+            Log.e(TAG, "TravelsResponse is null");
+            binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
+            binding.homeLayoutStandard.setVisibility(View.GONE);
+        }
 
         binding.seeAll.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(view);
@@ -160,6 +166,28 @@ public class HomeFragment extends Fragment {
             navController.navigate(val);
         });
 
+        //travelsViewModel.addTravel(TRAVEL);
+
+
+
+    }
+
+    private void setDoneView() {
+        binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
+        binding.homeTextOngoing.setVisibility(View.GONE);
+        binding.homeCardOngoing.setVisibility(View.GONE);
+        binding.homeTextFuture.setVisibility(View.GONE);
+        binding.homeCardFuture.setVisibility(View.GONE);
+    }
+
+    private void setOngoingView() {
+        binding.homeTextFuture.setVisibility(View.GONE);
+        binding.homeCardFuture.setVisibility(View.GONE);
+    }
+
+    private void setFutureView() {
+        binding.homeTextFuture.setVisibility(View.GONE);
+        binding.homeCardFuture.setVisibility(View.GONE);
     }
 
     private TravelsResponse getTravelsResponseWithGSon() {

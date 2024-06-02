@@ -52,6 +52,8 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                         travelsIdList.add(id);
                     }
 
+                    Log.d(TAG, "Travels id list: " + travelsIdList);
+
                     TravelsResponse travelsResponse = new TravelsResponse(travelsIdList.size(), travelsCallback);
 
                     for (Integer id : travelsIdList) {
@@ -61,7 +63,6 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                             } else {
                                 Log.d(TAG, "Successful read: " + task1.getResult().getValue());
                                 Travels travels = task1.getResult().getValue(Travels.class);
-                                Log.d(TAG, "Travel: " + travels.toString());
                                 travelsResponse.addTravel(travels);
                             }
                         });

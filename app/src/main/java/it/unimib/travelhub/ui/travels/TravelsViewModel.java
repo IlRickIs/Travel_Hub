@@ -1,5 +1,7 @@
 package it.unimib.travelhub.ui.travels;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 

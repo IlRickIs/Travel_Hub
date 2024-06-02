@@ -88,7 +88,7 @@ public class TerminatedTravelsFragment extends Fragment {
         travelRecyclerViewRunning.setAdapter(travelRecyclerAdapterRunning);
     }
 
-    private List<Travels> getDoneTravelsListWithGSon() {
+    private List<Travels> getDoneTravelsListWithGSon() { //TODO: Cambiare e mettere il get dal repository
         JSONParserUtil jsonParserUtil = new JSONParserUtil(requireActivity().getApplication());
         try {
             return jsonParserUtil.parseJSONFileWithGSon(TRAVELS_TEST_JSON_FILE)
