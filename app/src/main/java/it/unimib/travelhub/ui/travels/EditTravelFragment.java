@@ -4,6 +4,8 @@ import static it.unimib.travelhub.util.Constants.DESTINATION;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static it.unimib.travelhub.util.Constants.FIREBASE_USERNAMES_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
@@ -28,6 +30,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -39,6 +43,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
@@ -48,7 +53,6 @@ import it.unimib.travelhub.databinding.FragmentEditTravelBinding;
 import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
-import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.util.ServiceLocator;
 
 
@@ -67,7 +71,6 @@ public class EditTravelFragment extends Fragment {
     private Activity mainActivity;
 
     private TravelsViewModel travelsViewModel;
-
     private DataEncryptionUtil dataEncryptionUtil;
     public EditTravelFragment() {
     }
@@ -196,14 +199,23 @@ public class EditTravelFragment extends Fragment {
         binding.recyclerFriends.setAdapter(friendTextBoxesRecyclerAdapter);
 
         binding.addFriendButton.setOnClickListener(v -> {
-            updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_email);
+            updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_username);
         });
 
         mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> { //TODO: finish to implement this method
             // Save the data
+            String username = binding.friendsEmailFormEditText.getText().toString();
+            if(checkIfUserExists(username)){
+                Log.d(TAG, "checking firs user in list, it exists " + username);
+            }else{
+                Log.d(TAG, "checking firs user in list, it does not exist " + username);
+            }
 
             //TODO: before the next part of the code we should put some ifs to check nulls values
-            // checkifTravelIsReadyToBeSaved(travel);
+            /*if(checkNullValues()){
+                return;
+            }
+
             Travels travel = new Travels();
             String id;
             String userId;
@@ -249,30 +261,78 @@ public class EditTravelFragment extends Fragment {
 
             List<TravelMember> members = new ArrayList<>();
             members.add(new TravelMember(userId, TravelMember.Role.CREATOR));
-            members.add(new TravelMember("fakeId", TravelMember.Role.MEMBER));
+            String memberUsername = binding.friendsEmailFormEditText.getText().toString();
+            if(!memberUsername.isEmpty()){
+                if(checkIfUserExists(memberUsername)){
+                    members.add(new TravelMember(memberUsername, TravelMember.Role.MEMBER));
+                    Log.d(TAG, "checking firs user in list, it exists");
+                }
+            }
             for(String s : friendTextList){
-                String memberId = mockRetrieveIdFromUsername(s); //TODO: implement this method
+                String memberId = s; //TODO: implement this method
+                //check if the user exists
                 TravelMember member = new TravelMember(memberId);
                 members.add(member);
             }
             travel.setMembers(members);
 
-            travelsViewModel.addTravel(travel);
+            travelsViewModel.addTravel(travel);*/
 
             //TODO: implement the code to save the travel under users collection on firebase database
         });
 
     }
 
-private void updateItem(TextBoxesRecyclerAdapter adapter, int id){
-    adapter.getTextBoxesHints().add(getString(id));
-    adapter.getDestinationsTexts().add("");
-    adapter.notifyDataSetChanged();
+    private boolean checkNullValues() {
+        boolean isNull = false;
+        //mandatory fields are title, from, to, departure, destinations
+        if (binding.titleFormEditText.getText().toString().isEmpty()) {
+            binding.titleFormEditText.setError(getString(R.string.title_empty_error));
+            isNull = true;
+        }
+        if (binding.editTxtFromForm.getText().toString().isEmpty()) {
+            binding.editTxtFromForm.setError(getString(R.string.date_empty_error));
+            isNull = true;
+        }
+        if (binding.editTxtToForm.getText().toString().isEmpty()) {
+            binding.editTxtToForm.setError(getString(R.string.date_empty_error));
+            isNull = true;
+        }
+        if (binding.departureFormEditText.getText().toString().isEmpty()) {
+            binding.departureFormEditText.setError(getString(R.string.departure_empty_error));
+            isNull = true;
+        }
+        if (binding.destinationFormEditText.getText().toString().isEmpty()) {
+                binding.destinationFormEditText.setError(getString(R.string.destination_error));
+                isNull = true;
+
+        }
+        return isNull;
+    }
+
+    private boolean checkIfUserExists(String username){
+        AtomicBoolean exists = new AtomicBoolean(false);
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
+        DatabaseReference dbReference = firebaseDatabase.getReference().getRef();
+        dbReference.child(FIREBASE_USERNAMES_COLLECTION).child(username).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                exists.set(true);
+                Log.d(TAG, "checkIfUserExists: " + task.getResult().getValue());
+            } else {
+                exists.set(false);
+                Log.d(TAG, "checkIfUserExists: " + task.getException().getMessage());
+        }});;
+        return exists.get();
+    }
+    private void updateItem(TextBoxesRecyclerAdapter adapter, int id){
+        adapter.getTextBoxesHints().add(getString(id));
+        adapter.getDestinationsTexts().add("");
+        adapter.notifyDataSetChanged();
 }
-private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
-    adapter.getTextBoxesHints().remove(position);
-    adapter.getDestinationsTexts().remove(position);
-    adapter.notifyDataSetChanged();
+    private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
+        adapter.getTextBoxesHints().remove(position);
+        adapter.getDestinationsTexts().remove(position);
+        adapter.notifyDataSetChanged();
 }
     private void printdataset(List<String> dataset) {
         for (String s : dataset) {
