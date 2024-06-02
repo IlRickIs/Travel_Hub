@@ -1,8 +1,11 @@
 package it.unimib.travelhub.ui.main.profile;
 
+import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
+import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,18 +16,28 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
+import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentTerminatedTravelsBinding;
+import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
+import it.unimib.travelhub.model.TravelsResponse;
+import it.unimib.travelhub.ui.travels.TravelsViewModel;
+import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.JSONParserUtil;
+import it.unimib.travelhub.util.ServiceLocator;
+import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +46,10 @@ import it.unimib.travelhub.util.JSONParserUtil;
  */
 public class TerminatedTravelsFragment extends Fragment {
     private FragmentTerminatedTravelsBinding binding;
+    protected RecyclerView.LayoutManager mLayoutManager;
+    private SharedPreferencesUtil sharedPreferencesUtil;
+    private TravelsResponse travelsResponse;
+    private TravelsViewModel travelsViewModel;
     public TerminatedTravelsFragment() {
         // Required empty public constructor
     }
@@ -42,7 +59,27 @@ public class TerminatedTravelsFragment extends Fragment {
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        ITravelsRepository travelsRepository =
+                ServiceLocator.getInstance().getTravelsRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (travelsRepository != null) {
+            // This is the way to create a ViewModel with custom parameters
+            // (see NewsViewModelFactory class for the implementation details)
+            travelsViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
+        if (sharedPreferencesUtil == null) {
+            sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
+        }
     }
 
     @Override
@@ -50,6 +87,7 @@ public class TerminatedTravelsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         binding = FragmentTerminatedTravelsBinding.inflate(inflater, container, false);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         return binding.getRoot();
     }
 
@@ -70,22 +108,41 @@ public class TerminatedTravelsFragment extends Fragment {
 
         RecyclerView travelRecyclerViewRunning = binding.terminatedActivitiesRecyclerView;
 
-        List<Travels> runningTravelsList = getDoneTravelsListWithGSon();
+        //List<Travels> runningTravelsList = getDoneTravelsListWithGSon();
 
-        RecyclerView.LayoutManager layoutManagerRunning =
-                new LinearLayoutManager(requireContext(),
-                        LinearLayoutManager.VERTICAL, false);
+        List<Travels> doneTravelList = new ArrayList<Travels>();
 
-        TravelRecyclerAdapter travelRecyclerAdapterRunning = new TravelRecyclerAdapter(runningTravelsList,
-                new TravelRecyclerAdapter.OnItemClickListener() {
-                    @Override
-                    public void onTravelsItemClick(Travels travels) {
-                        Snackbar.make(view, travels.getTitle(), Snackbar.LENGTH_SHORT).show();
+        String lastUpdate = "0";
+        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
+            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
+        }
+         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
+                        doneTravelList.addAll(travelsResponse.getDoneTravelsList());
+                        RecyclerView.LayoutManager layoutManagerRunning =
+                                new LinearLayoutManager(requireContext(),
+                                        LinearLayoutManager.VERTICAL, false);
+
+                        TravelRecyclerAdapter travelRecyclerAdapterRunning = new TravelRecyclerAdapter(doneTravelList,
+                                new TravelRecyclerAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onTravelsItemClick(Travels travels) {
+                                        Snackbar.make(view, travels.getTitle(), Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                        travelRecyclerViewRunning.setLayoutManager(layoutManagerRunning);
+                        travelRecyclerViewRunning.setAdapter(travelRecyclerAdapterRunning);
+
+                    } else {
+                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
                     }
                 });
 
-        travelRecyclerViewRunning.setLayoutManager(layoutManagerRunning);
-        travelRecyclerViewRunning.setAdapter(travelRecyclerAdapterRunning);
+
     }
 
     private List<Travels> getDoneTravelsListWithGSon() { //TODO: Cambiare e mettere il get dal repository

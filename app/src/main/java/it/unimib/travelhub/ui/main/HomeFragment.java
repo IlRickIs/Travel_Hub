@@ -114,68 +114,111 @@ public class HomeFragment extends Fragment {
             }
         });
 
-//        String lastUpdate = "0";
-//        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
-//            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
-//        }
-//
-//        travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
-//                result -> {
-//                    if (result.isSuccess()) {
-//                        travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
-//
-//
-//                    } else {
-//                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-//                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
-//                    }
-//                });
-
-        travelsResponse = getTravelsResponseWithGSon(); //TODO: Cambiare e mettere il get dal repository
-
-        if (travelsResponse != null) {
-            if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
-                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-                binding.homeLayoutStandard.setVisibility(View.GONE);
-            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
-                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
-                binding.homeTextOngoing.setVisibility(View.GONE);
-                binding.homeCardOngoing.setVisibility(View.GONE);
-                binding.homeTextFuture.setVisibility(View.GONE);
-                binding.homeCardFuture.setVisibility(View.GONE);
-            } else if (travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null ||
-                        travelsResponse.getOnGoingTravel() == travelsResponse.getFutureTravel()) {
-                binding.homeTextFuture.setVisibility(View.GONE);
-                binding.homeCardFuture.setVisibility(View.GONE);
-
-                setOngoingView();
-            } else {
-                setOngoingView();
-                setFutureView();
-            }
-        } else {
-            Log.e(TAG, "TravelsResponse is null");
-            binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-            binding.homeLayoutStandard.setVisibility(View.GONE);
+        String lastUpdate = "0";
+        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
+            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
         }
 
-        binding.seeAll.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(view);
-            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
-            navController.navigate(val);
-        });
+        travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 
-        binding.homeCardOngoing.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(view);
-            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
-            navController.navigate(val);
-        });
+                        if (travelsResponse != null) {
+                            if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
+                                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
+                                binding.homeLayoutStandard.setVisibility(View.GONE);
+                            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
+                                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
+                                binding.homeTextOngoing.setVisibility(View.GONE);
+                                binding.homeCardOngoing.setVisibility(View.GONE);
+                                binding.homeTextFuture.setVisibility(View.GONE);
+                                binding.homeCardFuture.setVisibility(View.GONE);
+                            } else if (travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null ||
+                                    travelsResponse.getOnGoingTravel() == travelsResponse.getFutureTravel()) {
+                                binding.homeTextFuture.setVisibility(View.GONE);
+                                binding.homeCardFuture.setVisibility(View.GONE);
 
-        binding.homeCardFuture.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(view);
-            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
-            navController.navigate(val);
-        });
+                                setOngoingView();
+                            } else {
+                                setOngoingView();
+                                setFutureView();
+                            }
+                        } else {
+                            Log.e(TAG, "TravelsResponse is null");
+                            binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
+                            binding.homeLayoutStandard.setVisibility(View.GONE);
+                        }
+
+                        binding.seeAll.setOnClickListener(v -> {
+                            NavController navController = Navigation.findNavController(view);
+                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
+                            navController.navigate(val);
+                        });
+
+                        binding.homeCardOngoing.setOnClickListener(v -> {
+                            NavController navController = Navigation.findNavController(view);
+                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
+                            navController.navigate(val);
+                        });
+
+                        binding.homeCardFuture.setOnClickListener(v -> {
+                            NavController navController = Navigation.findNavController(view);
+                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
+                            navController.navigate(val);
+                        });
+
+                    } else {
+                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+
+        //travelsResponse = getTravelsResponseWithGSon(); //TODO: Cambiare e mettere il get dal repository
+
+//        if (travelsResponse != null) {
+//            if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
+//                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
+//                binding.homeLayoutStandard.setVisibility(View.GONE);
+//            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
+//                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
+//                binding.homeTextOngoing.setVisibility(View.GONE);
+//                binding.homeCardOngoing.setVisibility(View.GONE);
+//                binding.homeTextFuture.setVisibility(View.GONE);
+//                binding.homeCardFuture.setVisibility(View.GONE);
+//            } else if (travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null ||
+//                        travelsResponse.getOnGoingTravel() == travelsResponse.getFutureTravel()) {
+//                binding.homeTextFuture.setVisibility(View.GONE);
+//                binding.homeCardFuture.setVisibility(View.GONE);
+//
+//                setOngoingView();
+//            } else {
+//                setOngoingView();
+//                setFutureView();
+//            }
+//        } else {
+//            Log.e(TAG, "TravelsResponse is null");
+//            binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
+//            binding.homeLayoutStandard.setVisibility(View.GONE);
+//        }
+//
+//        binding.seeAll.setOnClickListener(v -> {
+//            NavController navController = Navigation.findNavController(view);
+//            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
+//            navController.navigate(val);
+//        });
+//
+//        binding.homeCardOngoing.setOnClickListener(v -> {
+//            NavController navController = Navigation.findNavController(view);
+//            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
+//            navController.navigate(val);
+//        });
+//
+//        binding.homeCardFuture.setOnClickListener(v -> {
+//            NavController navController = Navigation.findNavController(view);
+//            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
+//            navController.navigate(val);
+//        });
 
         //travelsViewModel.addTravel(TRAVEL);
 
