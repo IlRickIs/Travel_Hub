@@ -98,7 +98,7 @@
         android:label="activity_travel"
         tools:layout="@layout/activity_travel" >
         <argument
-            android:name="travels"
+            android:name="travel"
             app:argType="it.unimib.travelhub.model.Travels" />
     </activity>
 
