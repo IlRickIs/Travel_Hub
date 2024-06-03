@@ -19,8 +19,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -49,10 +51,15 @@ import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
+import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.databinding.FragmentEditTravelBinding;
+import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
+import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.ui.welcome.UserViewModel;
+import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
 
 
@@ -69,9 +76,12 @@ public class EditTravelFragment extends Fragment {
     private List<String> hintsList;
     private List<String> friendHintsList;
     private Activity mainActivity;
-
     private TravelsViewModel travelsViewModel;
     private DataEncryptionUtil dataEncryptionUtil;
+
+    private UserViewModel userViewModel;
+
+    AtomicBoolean exists = new AtomicBoolean(false);
     public EditTravelFragment() {
     }
 
@@ -111,6 +121,20 @@ public class EditTravelFragment extends Fragment {
             travelsViewModel = new ViewModelProvider(
                     requireActivity(),
                     new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
+        IUserRepository userRepository =
+                ServiceLocator.getInstance().getUserRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (userRepository != null) {
+            userViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         } else {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
@@ -205,11 +229,20 @@ public class EditTravelFragment extends Fragment {
         mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> { //TODO: finish to implement this method
             // Save the data
             String username = binding.friendsEmailFormEditText.getText().toString();
-            if(checkIfUserExists(username)){
-                Log.d(TAG, "checking firs user in list, it exists " + username);
-            }else{
-                Log.d(TAG, "checking firs user in list, it does not exist " + username);
-            }
+            Log.d(TAG, "username: " + username);
+
+            userViewModel.isUserRegistered(username).observe(getViewLifecycleOwner(), result -> {
+                if(result.isSuccess()){
+                    User user = ((Result.UserResponseSuccess) result).getData();
+                    Log.d(TAG, "user exists: " + user.toString());
+
+                } else {
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                            ((Result.Error) result).getMessage(),
+                            Snackbar.LENGTH_SHORT).show();
+                    Log.d(TAG, "user does not exist: " + ((Result.Error) result).getMessage());
+                }
+            });
 
             //TODO: before the next part of the code we should put some ifs to check nulls values
             /*if(checkNullValues()){
@@ -310,19 +343,22 @@ public class EditTravelFragment extends Fragment {
         return isNull;
     }
 
-    private boolean checkIfUserExists(String username){
-        AtomicBoolean exists = new AtomicBoolean(false);
+    private void checkIfUserExists(String username){
+
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
         DatabaseReference dbReference = firebaseDatabase.getReference().getRef();
         dbReference.child(FIREBASE_USERNAMES_COLLECTION).child(username).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                exists.set(true);
                 Log.d(TAG, "checkIfUserExists: " + task.getResult().getValue());
+                if(task.getResult().getValue() != null){
+                    exists.set(true);
+                } else {
+                    exists.set(false);
+                }
             } else {
                 exists.set(false);
                 Log.d(TAG, "checkIfUserExists: " + task.getException().getMessage());
-        }});;
-        return exists.get();
+        }});
     }
     private void updateItem(TextBoxesRecyclerAdapter adapter, int id){
         adapter.getTextBoxesHints().add(getString(id));

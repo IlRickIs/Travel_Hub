@@ -1,5 +1,6 @@
 package it.unimib.travelhub.data.repository.user;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Set;
@@ -17,4 +18,6 @@ public interface IUserRepository {
     void signUp(String email, String password);
     void signIn(String email, String password);
     void signInWithGoogle(String token);
+
+    MutableLiveData<Result> isUserRegistered(String username);
 }

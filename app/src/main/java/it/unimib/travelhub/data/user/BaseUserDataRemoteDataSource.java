@@ -1,7 +1,5 @@
 package it.unimib.travelhub.data.user;
 
-import java.util.Set;
-
 import it.unimib.travelhub.data.repository.user.UserResponseCallback;
 import it.unimib.travelhub.model.User;
 
@@ -24,4 +22,5 @@ public abstract class BaseUserDataRemoteDataSource {
 
     public abstract void isUsernameTaken(String username, String email, String password);
 
+    public abstract void isUserRegistered(String username);
 }

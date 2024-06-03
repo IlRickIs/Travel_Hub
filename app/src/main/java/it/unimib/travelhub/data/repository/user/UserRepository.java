@@ -4,6 +4,7 @@ import static it.unimib.travelhub.util.Constants.USERNAME_NOT_AVAILABLE;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
@@ -102,6 +103,12 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         userRemoteDataSource.signInWithGoogle(token);
     }
 
+    @Override
+    public MutableLiveData<Result> isUserRegistered(String username) {
+        userDataRemoteDataSource.isUserRegistered(username);
+        return userMutableLiveData;
+    }
+
 
     @Override
     public void onSuccessFromAuthentication(User user) {
@@ -139,4 +146,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         Result.UserResponseSuccess result = new Result.UserResponseSuccess(null);
         userMutableLiveData.postValue(result);
     }
+
+
 }

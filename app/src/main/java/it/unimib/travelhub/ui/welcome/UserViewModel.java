@@ -18,6 +18,8 @@ public class UserViewModel extends ViewModel {
 
     private final IUserRepository userRepository;
     private MutableLiveData<Result> userMutableLiveData;
+
+    private MutableLiveData<Result> queryMutableLiveData;
     private MutableLiveData<Result> userPreferencesMutableLiveData;
     private boolean authenticationError;
 
@@ -94,15 +96,21 @@ public class UserViewModel extends ViewModel {
         } else {
             userRepository.logout();
         }
-
         try{
             dataEncryptionUtil.flushEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME);
         } catch (Exception e){
             e.printStackTrace();
             Log.d(TAG, "Error while flushing encrypted shared preferences");
         }
-
         return userMutableLiveData;
     }
 
+    public MutableLiveData<Result> isUserRegistered(String username) {
+        if(userMutableLiveData == null) {
+            userMutableLiveData = userRepository.isUserRegistered(username);
+        } else {
+            userRepository.isUserRegistered(username);
+        }
+        return userMutableLiveData;
+    }
 }
