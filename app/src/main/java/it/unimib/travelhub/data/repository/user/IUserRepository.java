@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.Set;
 
+import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 
@@ -19,5 +20,5 @@ public interface IUserRepository {
     void signIn(String email, String password);
     void signInWithGoogle(String token);
 
-    MutableLiveData<Result> isUserRegistered(String username);
+    MutableLiveData<Result> isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
 }

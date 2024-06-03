@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
+import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 
@@ -19,7 +20,7 @@ public class UserViewModel extends ViewModel {
     private final IUserRepository userRepository;
     private MutableLiveData<Result> userMutableLiveData;
 
-    private MutableLiveData<Result> queryMutableLiveData;
+    private MutableLiveData<Result> isUserRegistered;
     private MutableLiveData<Result> userPreferencesMutableLiveData;
     private boolean authenticationError;
 
@@ -105,12 +106,19 @@ public class UserViewModel extends ViewModel {
         return userMutableLiveData;
     }
 
-    public MutableLiveData<Result> isUserRegistered(String username) {
-        if(userMutableLiveData == null) {
-            userMutableLiveData = userRepository.isUserRegistered(username);
-        } else {
-            userRepository.isUserRegistered(username);
+    public void isUserRegistered(String username) {
+        userRepository.isUserRegistered(username, new UserDataRemoteDataSource.UsernameCheckCallback() {
+            @Override
+            public void onUsernameResponse(Result result) {
+                isUserRegistered.postValue(result);
+            }
+        });
+    }
+
+    public MutableLiveData<Result> getIsUserRegistered() {
+        if (isUserRegistered == null) {
+            isUserRegistered = new MutableLiveData<Result>();
         }
-        return userMutableLiveData;
+        return isUserRegistered;
     }
 }

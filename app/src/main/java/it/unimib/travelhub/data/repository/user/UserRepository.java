@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
+import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 
@@ -104,8 +105,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
     }
 
     @Override
-    public MutableLiveData<Result> isUserRegistered(String username) {
-        userDataRemoteDataSource.isUserRegistered(username);
+    public MutableLiveData<Result> isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback userDataCallback) {
+        userDataRemoteDataSource.isUserRegistered(username, userDataCallback);
         return userMutableLiveData;
     }
 

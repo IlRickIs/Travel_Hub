@@ -152,6 +152,19 @@ public class EditTravelFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentEditTravelBinding.inflate(inflater, container, false);
         mainActivity = (Activity) requireActivity();
+
+        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()){
+                User user = ((Result.UserResponseSuccess) result).getData();
+                Log.d(TAG, "user exists: " + user.toString());
+            } else {
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        ((Result.Error) result).getMessage(),
+                        Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "user does not exist: " + ((Result.Error) result).getMessage());
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -231,18 +244,7 @@ public class EditTravelFragment extends Fragment {
             String username = binding.friendsEmailFormEditText.getText().toString();
             Log.d(TAG, "username: " + username);
 
-            userViewModel.isUserRegistered(username).observe(getViewLifecycleOwner(), result -> {
-                if(result.isSuccess()){
-                    User user = ((Result.UserResponseSuccess) result).getData();
-                    Log.d(TAG, "user exists: " + user.toString());
-
-                } else {
-                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                            ((Result.Error) result).getMessage(),
-                            Snackbar.LENGTH_SHORT).show();
-                    Log.d(TAG, "user does not exist: " + ((Result.Error) result).getMessage());
-                }
-            });
+            userViewModel.isUserRegistered(username);
 
             //TODO: before the next part of the code we should put some ifs to check nulls values
             /*if(checkNullValues()){
