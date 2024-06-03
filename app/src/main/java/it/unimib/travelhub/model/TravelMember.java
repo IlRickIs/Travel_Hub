@@ -1,6 +1,6 @@
 package it.unimib.travelhub.model;
 
-public class TravelMember {
+public class TravelMember extends User {
     private String id;
     private Role role;
     public enum Role {MEMBER, SUPPORTER, CREATOR}

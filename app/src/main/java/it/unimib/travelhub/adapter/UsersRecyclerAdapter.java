@@ -12,12 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.User;
 
 public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdapter.ViewHolder> {
-    List<User> data;
+    List<TravelMember> data;
 
-    public UsersRecyclerAdapter(List<User> data) {
+    public UsersRecyclerAdapter(List<TravelMember> data) {
         this.data = data;
     }
 
@@ -53,7 +54,7 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
             friend_image = itemView.findViewById(R.id.friend_image);
         }
 
-        public void bind(User user) {
+        public void bind(TravelMember user) {
             friend_name.setText(user.getName());
         }
     }

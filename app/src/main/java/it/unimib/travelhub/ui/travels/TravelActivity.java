@@ -5,37 +5,57 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import it.unimib.travelhub.databinding.ActivityTravelBinding;
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
+import it.unimib.travelhub.model.TravelMember;
+import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.User;
 
 public class TravelActivity extends AppCompatActivity {
 
     protected RecyclerView.LayoutManager mLayoutManager;
 
+    private ActivityTravelBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_travel);
+        binding = ActivityTravelBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
-        RecyclerView recyclerView = findViewById(R.id.friends_recycler_view);
+        TravelActivityArgs args = TravelActivityArgs.fromBundle(getIntent().getExtras());
+        Travels travel = args.getTravel();
+
+
+        binding.travelTitle.setText(travel.getTitle());
+        binding.travelDescription.setText(travel.getDescription());
+
+        String startDate = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0))
+                .format(travel.getStartDate());
+        String endDate = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0))
+                .format(travel.getEndDate());
+        binding.travelData.setText(startDate + " - " + endDate);
+
+
+        RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        ArrayList<User> dataSource = new ArrayList<>();
+        ArrayList<TravelMember> dataSource = new ArrayList<>();
 
-        dataSource.add(new User("John", 23));
-        dataSource.add(new User("Jane", 25));
-        dataSource.add(new User("Doe", 30));
-        dataSource.add(new User("Smith", 28));
-        dataSource.add(new User("Doe", 30));
-        dataSource.add(new User("Smith", 28));
-        dataSource.add(new User("Doe", 30));
-        dataSource.add(new User("Smith", 28));
-        dataSource.add(new User("Doe", 30));
-        dataSource.add(new User("Smith", 28));
+        dataSource.add(new TravelMember("John"));
+        dataSource.add(new TravelMember("Jane"));
+        dataSource.add(new TravelMember("Doe"));
+        dataSource.add(new TravelMember("Smith"));
+
+
 
 
         UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource);
@@ -43,4 +63,7 @@ public class TravelActivity extends AppCompatActivity {
         recyclerView.setAdapter(usersRecyclerAdapter);
         findViewById(R.id.buttonBack).setOnClickListener(v -> this.getOnBackPressedDispatcher().onBackPressed());
     }
+
+
+
 }

@@ -129,7 +129,7 @@ public class OngoingTravelsFragment extends Fragment {
                                     @Override
                                     public void onTravelsItemClick(Travels travels) {
                                         Navigation.findNavController(requireView())
-                                                .navigate(ProfileFragmentDirections.actionProfileFragmentToTravelActivity());
+                                                .navigate(ProfileFragmentDirections.actionProfileFragmentToTravelActivity(travels));
                                     }
                                 });
                         travelRecyclerViewRunning.setLayoutManager(layoutManagerRunning);

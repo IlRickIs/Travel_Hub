@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -129,7 +130,8 @@ public class TerminatedTravelsFragment extends Fragment {
                                 new TravelRecyclerAdapter.OnItemClickListener() {
                                     @Override
                                     public void onTravelsItemClick(Travels travels) {
-                                        Snackbar.make(view, travels.getTitle(), Snackbar.LENGTH_SHORT).show();
+                                        Navigation.findNavController(requireView())
+                                                .navigate(ProfileFragmentDirections.actionProfileFragmentToTravelActivity(travels));
                                     }
                                 });
 
