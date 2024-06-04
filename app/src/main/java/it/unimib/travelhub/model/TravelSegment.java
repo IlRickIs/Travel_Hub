@@ -1,7 +1,8 @@
 package it.unimib.travelhub.model;
 
+import java.io.Serializable;
 import java.util.Date;
-public class TravelSegment {
+public class TravelSegment implements Serializable {
     private String location;
     private Date dateFrom;
     private Date dateTo;

@@ -36,6 +36,7 @@ public class TravelActivity extends AppCompatActivity {
         Travels travel = args.getTravel();
 
 
+
         binding.travelTitle.setText(travel.getTitle());
         binding.travelDescription.setText(travel.getDescription());
 
@@ -48,22 +49,13 @@ public class TravelActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        ArrayList<TravelMember> dataSource = new ArrayList<>();
 
-        dataSource.add(new TravelMember("John"));
-        dataSource.add(new TravelMember("Jane"));
-        dataSource.add(new TravelMember("Doe"));
-        dataSource.add(new TravelMember("Smith"));
-
-
-
+        ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
 
         UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(usersRecyclerAdapter);
         findViewById(R.id.buttonBack).setOnClickListener(v -> this.getOnBackPressedDispatcher().onBackPressed());
     }
-
-
 
 }

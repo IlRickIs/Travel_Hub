@@ -54,8 +54,8 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
             friend_image = itemView.findViewById(R.id.friend_image);
         }
 
-        public void bind(TravelMember user) {
-            friend_name.setText(user.getName());
+        public void bind(TravelMember travelMember) {
+            friend_name.setText(travelMember.getUsername());
         }
     }
 
