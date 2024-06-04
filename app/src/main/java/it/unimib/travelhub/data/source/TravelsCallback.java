@@ -1,5 +1,6 @@
 package it.unimib.travelhub.data.source;
 
+import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 
 public interface TravelsCallback {
@@ -10,4 +11,6 @@ public interface TravelsCallback {
     void onSuccessFromCloudReading(TravelsResponse travelsResponse);
     void onSuccessSynchronization();
     void onSuccessDeletion();
+
+    void onSuccessFromCloudWriting(Travels travel);
 }

@@ -172,7 +172,7 @@ public class LoginFragment extends Fragment {
 
         // Inflate the layout for this fragment
 
-        if(userViewModel.getLoggedUser() != null) {
+        if(userViewModel. getLoggedUser() != null) {
             try {
                 String mail = dataEncryptionUtil.
                         readSecretDataWithEncryptedSharedPreferences(
@@ -348,6 +348,8 @@ public class LoginFragment extends Fragment {
                 });
     }
 
-
-
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }

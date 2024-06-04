@@ -12,9 +12,7 @@ public class Constants {
     public static final String EMAIL_ADDRESS = "email_address";
     public static final String PASSWORD = "password";
     public static final String USERNAME = "username";
-
     public static final String FIREBASE_REALTIME_DATABASE = "https://travelhub-9bc21-default-rtdb.europe-west1.firebasedatabase.app/";
-
     public static final String ID_TOKEN = "google_token";
     public static final String FIREBASE_USERS_COLLECTION = "users";
     public static final String FIREBASE_USERNAMES_COLLECTION = "usernames";
@@ -24,8 +22,12 @@ public class Constants {
     public static final String USER_COLLISION_ERROR = "userCollisionError";
     public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
     public static final String USERNAME_NOT_AVAILABLE = "Username already taken";
-
     public static final String TRAVELS_TEST_JSON_FILE = "travels_data.json";
+    public static final String TRAVEL_TITLE = "title";
+    public static final String TRAVEL_DESCRIPTION = "description";
+
+    public static final String DESTINATION = "first_destination";
+    public static final String FRIEND = "first_friend";
 
     public static final int TRAVELS_DATABASE_VERSION = 2;
     public static final String TRAVELS_DATABASE_NAME = "travels_database";

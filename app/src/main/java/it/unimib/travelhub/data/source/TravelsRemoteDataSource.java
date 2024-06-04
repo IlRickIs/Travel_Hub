@@ -75,14 +75,14 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
     }
 
     @Override
-    public void addTravel(Travels travel) {
+    public void addTravel(Travels travel) { //TODO add callback onfailure
         try {
             String idToken = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
             databaseReference.child("travels").child(Long.toString(travel.getId())).setValue(travel)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            //travelsCallback.onSuccessFromCloudWriting();
+                            addTravelIdToUser(idToken, travel.getId(), travel);
                             Log.d(TAG, "Travel added successfully");
                         }
                     })
@@ -93,6 +93,42 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                             Log.d(TAG, "Error adding travel", e);
                         }
                     });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addTravelIdToUser(String userId, long travelId, Travels travel) {
+        try {
+            databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").get().addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Log.d(TAG, "Error getting data", task.getException());
+                    //TODO callback call
+                } else {
+                    List<Long> travelsIdList = new ArrayList<>();
+                    for (DataSnapshot ds : task.getResult().getChildren()) {
+                        Long id = ds.getValue(Long.class);
+                        travelsIdList.add(id);
+                    }
+                    travelsIdList.add((long) travelId);
+
+                    databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").setValue(travelsIdList) //TODO add the travel to the members
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "Travel id added to user successfully");
+                                    travelsCallback.onSuccessFromCloudWriting(travel);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "Error adding travel id to user", e);
+                                }
+                            });
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

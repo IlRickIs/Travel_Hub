@@ -114,10 +114,10 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="return_to_the_previous_screen">return to the previous screen</string>
     <string name="from_fragment_edit">from</string>
-    <string name="title">title</string>
-    <string name="to">to</string>
+    <string name="title" translatable="false">title*</string>
+    <string name="to" translatable="false">to*</string>
     <string name="save">Save</string>
-    <string name="from">from</string>
+    <string name="from" translatable="false">from*</string>
     <string name="description">description</string>
     <string name="title_activity_add_travel" translatable="false">AddTravel</string>
     <string name="title_home" translatable="false">Home</string>
@@ -138,9 +138,14 @@
 
 
     <string name="dash">-</string>
-    <string name="destination">destination</string>
-    <string name="add_friends_email">add friends email</string>
+    <string name="destination" translatable="false">destination*</string>
+    <string name="add_friends_username" translatable="false">add friends username</string>
     <string name="update_from_gallery">Update from gallery</string>
     <string name="open_camera" translatable="false">open camera</string>
+    <string name="title_empty_error" translatable="false">Empty title</string>
+    <string name="date_empty_error" translatable="false">Date is missing</string>
+    <string name="departure_empty_error" translatable="false">Empty departure location</string>
+    <string name="destination_error" translatable="false">Empty destination location</string>
+    <string name="departure" translatable="false">departure*</string>
 
 </resources>
