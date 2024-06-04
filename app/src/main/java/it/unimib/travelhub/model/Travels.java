@@ -1,18 +1,16 @@
 package it.unimib.travelhub.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Travels implements Parcelable, Comparable<Travels> {
+public class Travels implements Serializable, Comparable<Travels> {
     //@SerializedName("publishedAt")
     @PrimaryKey(autoGenerate = true)
     private long id;
@@ -106,47 +104,5 @@ public class Travels implements Parcelable, Comparable<Travels> {
                 ", endDate=" + endDate +
                 '}';
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
-        dest.writeString(this.title);
-        dest.writeString(this.description);
-        dest.writeSerializable(this.startDate);
-        dest.writeSerializable(this.endDate);
-    }
-
-    public void readFromParcel(Parcel source) {
-        this.id = source.readLong();
-        this.title = source.readString();
-        this.description = source.readString();
-        this.startDate = (Date) source.readSerializable();
-        this.endDate = (Date) source.readSerializable();
-    }
-
-    protected Travels(Parcel in) {
-        this.id = in.readLong();
-        this.title = in.readString();
-        this.description = in.readString();
-        this.startDate = (Date) in.readSerializable();
-        this.endDate = (Date) in.readSerializable();
-    }
-
-    public static final Parcelable.Creator<Travels> CREATOR = new Parcelable.Creator<Travels>() {
-        @Override
-        public Travels createFromParcel(Parcel source) {
-            return new Travels(source);
-        }
-
-        @Override
-        public Travels[] newArray(int size) {
-            return new Travels[size];
-        }
-    };
 
 }

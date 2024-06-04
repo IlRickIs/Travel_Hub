@@ -7,7 +7,6 @@ import com.google.firebase.database.Exclude;
 
 public class User implements Parcelable {
     private String username;
-
     private String name;
     private String surname;
     private int age;
@@ -18,9 +17,8 @@ public class User implements Parcelable {
     public User() {
     }
 
-    public User(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public User(String username) {
+        this.username = username;
     }
     public User(String name, String email, String idToken) {
         this.username = name;
@@ -35,10 +33,6 @@ public class User implements Parcelable {
         this.photoUrl = photoUrl;
         this.email = email;
         this.idToken = idToken;
-    }
-
-    public User(String username){
-        this.username = username;
     }
 
     public String getUsername() {

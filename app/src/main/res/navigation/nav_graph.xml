@@ -96,6 +96,10 @@
         android:id="@+id/travelActivity"
         android:name="it.unimib.travelhub.ui.travels.TravelActivity"
         android:label="activity_travel"
-        tools:layout="@layout/activity_travel" />
+        tools:layout="@layout/activity_travel" >
+        <argument
+            android:name="travel"
+            app:argType="it.unimib.travelhub.model.Travels" />
+    </activity>
 
 </navigation>

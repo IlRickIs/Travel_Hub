@@ -1,18 +1,18 @@
 package it.unimib.travelhub.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import it.unimib.travelhub.data.source.TravelsCallback;
 
-public class TravelsResponse implements Parcelable {
+public class TravelsResponse implements Serializable {
     private static final String TAG = "TravelsResponse";
     private List<Travels> travelsList;
     private TravelsCallback travelsCallback;
@@ -98,33 +98,5 @@ public class TravelsResponse implements Parcelable {
                 '}';
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.travelsList);
-    }
-
-    public void readFromParcel(Parcel source) {
-        this.travelsList = source.createTypedArrayList(Travels.CREATOR);
-    }
-
-    protected TravelsResponse(Parcel in) {
-        this.travelsList = in.createTypedArrayList(Travels.CREATOR);
-    }
-
-    public static final Parcelable.Creator<TravelsResponse> CREATOR = new Parcelable.Creator<TravelsResponse>() {
-        @Override
-        public TravelsResponse createFromParcel(Parcel source) {
-            return new TravelsResponse(source);
-        }
-
-        @Override
-        public TravelsResponse[] newArray(int size) {
-            return new TravelsResponse[size];
-        }
-    };
 }

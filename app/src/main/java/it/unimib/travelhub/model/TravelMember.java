@@ -1,6 +1,8 @@
 package it.unimib.travelhub.model;
 
-public class TravelMember {
+import java.io.Serializable;
+
+public class TravelMember implements Serializable {
     private String username;
     private Role role;
     public enum Role {MEMBER, SUPPORTER, CREATOR}
@@ -14,7 +16,6 @@ public class TravelMember {
         this.username = username;
         this.role = role;
     }
-
 
     public TravelMember(String username) {
         this.username = username;
@@ -40,5 +41,4 @@ public class TravelMember {
     public void setRole() {
         this.role = Role.MEMBER;
     }
-
 }
