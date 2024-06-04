@@ -123,19 +123,21 @@ public class HomeFragment extends Fragment {
                 result -> {
                     if (result.isSuccess()) {
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
+                        Travels onGoingTravel = travelsResponse.getOnGoingTravel();
+                        Travels futureTravel = travelsResponse.getFutureTravel();
+                        Travels doneTravel = travelsResponse.getDoneTravel();
 
                         if (travelsResponse != null) {
-                            if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
+                            if (doneTravel == null && onGoingTravel == null) {
                                 binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
                                 binding.homeLayoutStandard.setVisibility(View.GONE);
-                            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
+                            } else if (doneTravel != null && onGoingTravel == null) {
                                 binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
                                 binding.homeTextOngoing.setVisibility(View.GONE);
                                 binding.homeCardOngoing.setVisibility(View.GONE);
                                 binding.homeTextFuture.setVisibility(View.GONE);
                                 binding.homeCardFuture.setVisibility(View.GONE);
-                            } else if (travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null ||
-                                    travelsResponse.getOnGoingTravel() == travelsResponse.getFutureTravel()) {
+                            } else if (futureTravel == null || onGoingTravel == futureTravel) {
                                 binding.homeTextFuture.setVisibility(View.GONE);
                                 binding.homeCardFuture.setVisibility(View.GONE);
 
@@ -150,23 +152,23 @@ public class HomeFragment extends Fragment {
                             binding.homeLayoutStandard.setVisibility(View.GONE);
                         }
 
-//                        binding.seeAll.setOnClickListener(v -> {
-//                            NavController navController = Navigation.findNavController(view);
-//                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
-//                            navController.navigate(val);
-//                        });
-//
-//                        binding.homeCardOngoing.setOnClickListener(v -> {
-//                            NavController navController = Navigation.findNavController(view);
-//                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
-//                            navController.navigate(val);
-//                        });
-//
-//                        binding.homeCardFuture.setOnClickListener(v -> {
-//                            NavController navController = Navigation.findNavController(view);
-//                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
-//                            navController.navigate(val);
-//                        });
+                        binding.seeAll.setOnClickListener(v -> {
+                            NavController navController = Navigation.findNavController(view);
+                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
+                            navController.navigate(val);
+                        });
+
+                        binding.homeCardOngoing.setOnClickListener(v -> {
+                            NavController navController = Navigation.findNavController(view);
+                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(onGoingTravel);
+                            navController.navigate(val);
+                        });
+
+                        binding.homeCardFuture.setOnClickListener(v -> {
+                            NavController navController = Navigation.findNavController(view);
+                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(futureTravel);
+                            navController.navigate(val);
+                        });
 
                     } else {
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
