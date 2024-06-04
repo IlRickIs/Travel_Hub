@@ -61,6 +61,7 @@ import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
+import it.unimib.travelhub.util.UserListVerification;
 
 
 public class EditTravelFragment extends Fragment {
@@ -243,14 +244,14 @@ public class EditTravelFragment extends Fragment {
             // Save the data
             String username = binding.friendsEmailFormEditText.getText().toString();
             Log.d(TAG, "username: " + username);
-
             userViewModel.isUserRegistered(username);
 
             //TODO: before the next part of the code we should put some ifs to check nulls values
-            /*if(checkNullValues()){
+            /*
+
+            if(checkNullValues()){
                 return;
             }
-
             Travels travel = new Travels();
             String id;
             String userId;
@@ -318,6 +319,94 @@ public class EditTravelFragment extends Fragment {
 
     }
 
+    public Travels buildTravel(){
+        Travels travel = new Travels();
+
+        String userId = getLoggedUserId();
+        String travelId = buildTravelId(userId);
+        String title = binding.titleFormEditText.getText().toString();
+        String description = binding.descriptionFormEditText.getText().toString();
+
+        String start = binding.editTxtFromForm.getText().toString();
+        String end = binding.editTxtToForm.getText().toString();
+        Date startDate = parseStringToDate(start);
+        Date endDate = parseStringToDate(end);
+        if(startDate == null || endDate == null){
+            throw new RuntimeException("Error while parsing dates, impossible to build the travel");
+        }
+
+        String departure = binding.departureFormEditText.getText().toString();
+        String destination = binding.destinationFormEditText.getText().toString();
+        List<TravelSegment> destinations = buildDestinationsList(departure, destination);
+
+        String firstMember = binding.friendsEmailFormEditText.getText().toString();
+        List<TravelMember> members = buildFriendsList(firstMember);
+
+        travel.setId(Long.parseLong(travelId));
+        travel.setTitle(title);
+        travel.setDescription(description);
+        travel.setStartDate(startDate);
+        travel.setEndDate(endDate);
+        travel.setDestinations(destinations);
+        travel.setMembers(members);
+
+        return travel;
+    }
+
+    public List<TravelMember> buildFriendsList(String firstMember){
+        List<TravelMember> members = new ArrayList<>();
+        String userId = getLoggedUserId();
+        TravelMember creator = new TravelMember(userId, TravelMember.Role.CREATOR);
+        members.add(creator);
+        if(!firstMember.isEmpty()){
+            TravelMember member = new TravelMember(firstMember, TravelMember.Role.MEMBER);
+            members.add(member);
+        }
+        for(String s : friendTextList){
+            TravelMember member = new TravelMember(s, TravelMember.Role.MEMBER);
+            members.add(member);
+        }
+        return members;
+    }
+    public List <TravelSegment> buildDestinationsList(String departure, String destination){
+        List<TravelSegment> destinations = new ArrayList<>();
+        destinations.add(new TravelSegment(departure));
+        destinations.add(new TravelSegment(destination));
+        for(String s : destinationsText){
+            TravelSegment segment = new TravelSegment(s);
+            destinations.add(segment);
+        }
+        return destinations;
+    }
+    public Date parseStringToDate(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
+        Date parsedDate = null;
+        try {
+            parsedDate = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return parsedDate;
+    }
+
+    public String buildTravelId(String userId){
+        String hashId = (userId + System.currentTimeMillis()).hashCode() + "";
+        return hashId;
+    }
+    public String getLoggedUserId(){
+        String userId;
+        try {
+            userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
+                    ID_TOKEN);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return userId;
+    }
+
     private boolean checkNullValues() {
         boolean isNull = false;
         //mandatory fields are title, from, to, departure, destinations
@@ -345,23 +434,6 @@ public class EditTravelFragment extends Fragment {
         return isNull;
     }
 
-    private void checkIfUserExists(String username){
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
-        DatabaseReference dbReference = firebaseDatabase.getReference().getRef();
-        dbReference.child(FIREBASE_USERNAMES_COLLECTION).child(username).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d(TAG, "checkIfUserExists: " + task.getResult().getValue());
-                if(task.getResult().getValue() != null){
-                    exists.set(true);
-                } else {
-                    exists.set(false);
-                }
-            } else {
-                exists.set(false);
-                Log.d(TAG, "checkIfUserExists: " + task.getException().getMessage());
-        }});
-    }
     private void updateItem(TextBoxesRecyclerAdapter adapter, int id){
         adapter.getTextBoxesHints().add(getString(id));
         adapter.getDestinationsTexts().add("");
@@ -391,18 +463,6 @@ public class EditTravelFragment extends Fragment {
         printdataset(destinationsText);
         printdataset(friendTextList);
     }
-
-    public String mockRetrieveIdFromUsername(String username){
-        String[] userIds = {"CO1KWBzCi9P8NX0CO3h4BUFwSgR2", "YsFsAeSDcxNTWhKavdETgw5CuPa2", "d1VZw72r1aSyrXM7ntFTFhxQcJo2", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1",
-        "oH8EFtZMyhOE7dwmH0XJxzZC1Ar2"};
-
-        Random rand = new Random();
-        int randomIndex = rand.nextInt(userIds.length);
-
-        return userIds[randomIndex];
-
-    }
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
