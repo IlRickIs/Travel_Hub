@@ -8,6 +8,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
@@ -113,6 +117,32 @@ public class UserViewModel extends ViewModel {
                 isUserRegistered.postValue(result);
             }
         });
+    }
+
+    public void checkUsernames(List<String> usernames){
+        List<String> unregistered = new ArrayList<>();
+        AtomicInteger count = new AtomicInteger(usernames.size());
+
+        for(String u : usernames){
+            userRepository.isUserRegistered(u, new UserDataRemoteDataSource.UsernameCheckCallback() {
+                @Override
+                public void onUsernameResponse(Result result) {
+                    if(result instanceof Result.Error){
+                        unregistered.add(u);
+                        isUserRegistered.postValue(new Result.Error("error " + u.toString() + " not registered"));
+                    }
+                    else{
+                        count.set(count.get()-1);
+                        if(count.get() == 0){
+                            User u = new User();
+                            u.setIdToken("Success");
+                            isUserRegistered.postValue(new Result.UserResponseSuccess(u));
+                        }
+
+                    }
+                }
+            });
+        }
     }
 
     public MutableLiveData<Result> getIsUserRegistered() {

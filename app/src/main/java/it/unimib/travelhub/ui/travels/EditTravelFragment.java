@@ -61,8 +61,6 @@ import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
-import it.unimib.travelhub.util.UserListVerification;
-
 
 public class EditTravelFragment extends Fragment {
     private FragmentEditTravelBinding binding;
@@ -242,16 +240,14 @@ public class EditTravelFragment extends Fragment {
 
         mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> { //TODO: finish to implement this method
             // Save the data
-            String username = binding.friendsEmailFormEditText.getText().toString();
-            Log.d(TAG, "username: " + username);
-            userViewModel.isUserRegistered(username);
+
 
             //TODO: before the next part of the code we should put some ifs to check nulls values
-            /*
-
             if(checkNullValues()){
                 return;
             }
+            checkUsers();
+            /*
             Travels travel = new Travels();
             String id;
             String userId;
@@ -317,6 +313,21 @@ public class EditTravelFragment extends Fragment {
             //TODO: implement the code to save the travel under users collection on firebase database
         });
 
+    }
+
+    private void checkUsers(){
+        List<String> userToCheck = new ArrayList<>();
+        String firstUser = binding.friendsEmailFormEditText.getText().toString();
+        if(!firstUser.isEmpty() && firstUser != null){
+            userToCheck.add(firstUser);
+        }
+        for(String s : friendTextList){
+            if(s != null && !s.isEmpty()) {
+                userToCheck.add(s);
+            }
+        }
+        Log.d(TAG, "users: " + userToCheck.toString());
+        userViewModel.checkUsernames(userToCheck);
     }
 
     public Travels buildTravel(){
