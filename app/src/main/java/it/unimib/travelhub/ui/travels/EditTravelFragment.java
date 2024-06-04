@@ -4,14 +4,12 @@ import static it.unimib.travelhub.util.Constants.DESTINATION;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
-import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static it.unimib.travelhub.util.Constants.FIREBASE_USERNAMES_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
-import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
 import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
+import static it.unimib.travelhub.util.Constants.USERNAME;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -19,10 +17,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.Insets;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -32,8 +28,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -44,7 +38,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.travelhub.R;
@@ -156,6 +149,8 @@ public class EditTravelFragment extends Fragment {
             if(result.isSuccess()){
                 User user = ((Result.UserResponseSuccess) result).getData();
                 Log.d(TAG, "user exists: " + user.toString());
+                Travels travels = buildTravel();
+                travelsViewModel.addTravel(travels);
             } else {
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                         ((Result.Error) result).getMessage(),
@@ -238,78 +233,11 @@ public class EditTravelFragment extends Fragment {
             updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_username);
         });
 
-        mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> { //TODO: finish to implement this method
-            // Save the data
-
-
-            //TODO: before the next part of the code we should put some ifs to check nulls values
+        mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> {
             if(checkNullValues()){
                 return;
             }
             checkUsers();
-            /*
-            Travels travel = new Travels();
-            String id;
-            String userId;
-            try {
-                userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
-            } catch (GeneralSecurityException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            if (userId != null) {
-                id = userId + System.currentTimeMillis();
-            }else{
-                id = System.currentTimeMillis() + "";
-            }
-            id = String.valueOf(id.hashCode());
-            travel.setId(Long.parseLong(id));
-
-            travel.setTitle(binding.titleFormEditText.getText().toString());
-            travel.setDescription(binding.descriptionFormEditText.getText().toString());
-            try {
-                String endDateString = binding.editTxtToForm.getText().toString();
-                String startDateString = binding.editTxtFromForm.getText().toString();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
-                Date endDate = sdf.parse(endDateString);
-
-                Date startDate = sdf.parse(startDateString);
-
-                travel.setStartDate(startDate);
-                travel.setEndDate(endDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            List<TravelSegment> destinations = new ArrayList<TravelSegment>();
-            destinations.add(new TravelSegment(binding.departureFormEditText.getText().toString()));
-            destinations.add(new TravelSegment(binding.destinationFormEditText.getText().toString()));
-            for(String s : destinationsText){
-                TravelSegment segment = new TravelSegment(s);
-                destinations.add(segment);
-            }
-            travel.setDestinations(destinations);
-
-            List<TravelMember> members = new ArrayList<>();
-            members.add(new TravelMember(userId, TravelMember.Role.CREATOR));
-            String memberUsername = binding.friendsEmailFormEditText.getText().toString();
-            if(!memberUsername.isEmpty()){
-                if(checkIfUserExists(memberUsername)){
-                    members.add(new TravelMember(memberUsername, TravelMember.Role.MEMBER));
-                    Log.d(TAG, "checking firs user in list, it exists");
-                }
-            }
-            for(String s : friendTextList){
-                String memberId = s; //TODO: implement this method
-                //check if the user exists
-                TravelMember member = new TravelMember(memberId);
-                members.add(member);
-            }
-            travel.setMembers(members);
-
-            travelsViewModel.addTravel(travel);*/
-
             //TODO: implement the code to save the travel under users collection on firebase database
         });
 
@@ -333,7 +261,7 @@ public class EditTravelFragment extends Fragment {
     public Travels buildTravel(){
         Travels travel = new Travels();
 
-        String userId = getLoggedUserId();
+        String userId = getLoggedUsername();
         String travelId = buildTravelId(userId);
         String title = binding.titleFormEditText.getText().toString();
         String description = binding.descriptionFormEditText.getText().toString();
@@ -366,7 +294,7 @@ public class EditTravelFragment extends Fragment {
 
     public List<TravelMember> buildFriendsList(String firstMember){
         List<TravelMember> members = new ArrayList<>();
-        String userId = getLoggedUserId();
+        String userId = getLoggedUsername();
         TravelMember creator = new TravelMember(userId, TravelMember.Role.CREATOR);
         members.add(creator);
         if(!firstMember.isEmpty()){
@@ -374,6 +302,9 @@ public class EditTravelFragment extends Fragment {
             members.add(member);
         }
         for(String s : friendTextList){
+            if(s.isEmpty()){
+                continue;
+            }
             TravelMember member = new TravelMember(s, TravelMember.Role.MEMBER);
             members.add(member);
         }
@@ -384,6 +315,9 @@ public class EditTravelFragment extends Fragment {
         destinations.add(new TravelSegment(departure));
         destinations.add(new TravelSegment(destination));
         for(String s : destinationsText){
+            if(s == null || s.isEmpty()){
+                continue;
+            }
             TravelSegment segment = new TravelSegment(s);
             destinations.add(segment);
         }
@@ -404,12 +338,12 @@ public class EditTravelFragment extends Fragment {
         String hashId = (userId + System.currentTimeMillis()).hashCode() + "";
         return hashId;
     }
-    public String getLoggedUserId(){
+    public String getLoggedUsername(){
         String userId;
         try {
             userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
-                    ID_TOKEN);
+                    USERNAME);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
