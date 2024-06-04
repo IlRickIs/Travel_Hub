@@ -1,16 +1,24 @@
 package it.unimib.travelhub.ui.travels;
 
+import static it.unimib.travelhub.util.Constants.DESTINATION;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
+import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
+import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
+import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
+import static it.unimib.travelhub.util.Constants.USERNAME;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -19,19 +27,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
+import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
+import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
+import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.databinding.FragmentEditTravelBinding;
-
+import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.TravelMember;
+import it.unimib.travelhub.model.TravelSegment;
+import it.unimib.travelhub.model.Travels;
+import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.ui.welcome.UserViewModel;
+import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
+import it.unimib.travelhub.util.ServiceLocator;
 
 public class EditTravelFragment extends Fragment {
-
     private FragmentEditTravelBinding binding;
 
     private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
@@ -43,6 +67,13 @@ public class EditTravelFragment extends Fragment {
     private List<String> destinationsText;
     private List<String> hintsList;
     private List<String> friendHintsList;
+    private Activity mainActivity;
+    private TravelsViewModel travelsViewModel;
+    private DataEncryptionUtil dataEncryptionUtil;
+
+    private UserViewModel userViewModel;
+
+    AtomicBoolean exists = new AtomicBoolean(false);
     public EditTravelFragment() {
     }
 
@@ -61,11 +92,44 @@ public class EditTravelFragment extends Fragment {
             friendTextList = savedInstanceState.getStringArrayList(FRIENDS_TEXTS);
             hintsList = savedInstanceState.getStringArrayList(DESTINATIONS_HINTS);
             friendHintsList = savedInstanceState.getStringArrayList(FRIENDS_HINTS);
+            binding.titleFormEditText.setText(savedInstanceState.getString(TRAVEL_TITLE));
+            binding.descriptionFormEditText.setText(savedInstanceState.getString(TRAVEL_DESCRIPTION));
         } else {
             destinationsText = new ArrayList<>();
             friendTextList = new ArrayList<>();
             hintsList = new ArrayList<>();
             friendHintsList = new ArrayList<>();
+        }
+        dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
+
+        ITravelsRepository travelsRepository =
+                ServiceLocator.getInstance().getTravelsRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (travelsRepository != null) {
+            // This is the way to create a ViewModel with custom parameters
+            // (see NewsViewModelFactory class for the implementation details)
+            travelsViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
+        IUserRepository userRepository =
+                ServiceLocator.getInstance().getUserRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (userRepository != null) {
+            userViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -79,13 +143,28 @@ public class EditTravelFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentEditTravelBinding.inflate(inflater, container, false);
+        mainActivity = (Activity) requireActivity();
+
+        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()){
+                User user = ((Result.UserResponseSuccess) result).getData();
+                Log.d(TAG, "user exists: " + user.toString());
+                Travels travels = buildTravel();
+                travelsViewModel.addTravel(travels);
+            } else {
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        ((Result.Error) result).getMessage(),
+                        Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "user does not exist: " + ((Result.Error) result).getMessage());
+            }
+        });
+
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         DatePickerDialog.OnDateSetListener date = (v, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR,year);
             myCalendar.set(Calendar.MONTH,month);
@@ -115,6 +194,7 @@ public class EditTravelFragment extends Fragment {
             @Override
             public void onKeyPressed(int position, String text) {
                 textBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
+                destinationsText = textBoxesRecyclerAdapter.getDestinationsTexts(); // Update the list immediately
             }
         });
 
@@ -139,6 +219,7 @@ public class EditTravelFragment extends Fragment {
             @Override
             public void onKeyPressed(int position, String text) {
                 friendTextBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
+                friendTextList = friendTextBoxesRecyclerAdapter.getDestinationsTexts(); // Update the list immediately
             }
         });
         LinearLayoutManager friendLayoutManager =
@@ -149,20 +230,164 @@ public class EditTravelFragment extends Fragment {
         binding.recyclerFriends.setAdapter(friendTextBoxesRecyclerAdapter);
 
         binding.addFriendButton.setOnClickListener(v -> {
-            updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_email);
+            updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_username);
+        });
+
+        mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> {
+            if(checkNullValues()){
+                return;
+            }
+            checkUsers();
+            //TODO: implement the code to save the travel under users collection on firebase database
         });
 
     }
 
-private void updateItem(TextBoxesRecyclerAdapter adapter, int id){
-    adapter.getTextBoxesHints().add(getString(id));
-    adapter.getDestinationsTexts().add("");
-    adapter.notifyDataSetChanged();
+    private void checkUsers(){
+        List<String> userToCheck = new ArrayList<>();
+        String firstUser = binding.friendsEmailFormEditText.getText().toString();
+        if(!firstUser.isEmpty() && firstUser != null){
+            userToCheck.add(firstUser);
+        }
+        for(String s : friendTextList){
+            if(s != null && !s.isEmpty()) {
+                userToCheck.add(s);
+            }
+        }
+        Log.d(TAG, "users: " + userToCheck.toString());
+        userViewModel.checkUsernames(userToCheck);
+    }
+
+    public Travels buildTravel(){
+        Travels travel = new Travels();
+
+        String userId = getLoggedUsername();
+        String travelId = buildTravelId(userId);
+        String title = binding.titleFormEditText.getText().toString();
+        String description = binding.descriptionFormEditText.getText().toString();
+
+        String start = binding.editTxtFromForm.getText().toString();
+        String end = binding.editTxtToForm.getText().toString();
+        Date startDate = parseStringToDate(start);
+        Date endDate = parseStringToDate(end);
+        if(startDate == null || endDate == null){
+            throw new RuntimeException("Error while parsing dates, impossible to build the travel");
+        }
+
+        String departure = binding.departureFormEditText.getText().toString();
+        String destination = binding.destinationFormEditText.getText().toString();
+        List<TravelSegment> destinations = buildDestinationsList(departure, destination);
+
+        String firstMember = binding.friendsEmailFormEditText.getText().toString();
+        List<TravelMember> members = buildFriendsList(firstMember);
+
+        travel.setId(Long.parseLong(travelId));
+        travel.setTitle(title);
+        travel.setDescription(description);
+        travel.setStartDate(startDate);
+        travel.setEndDate(endDate);
+        travel.setDestinations(destinations);
+        travel.setMembers(members);
+
+        return travel;
+    }
+
+    public List<TravelMember> buildFriendsList(String firstMember){
+        List<TravelMember> members = new ArrayList<>();
+        String userId = getLoggedUsername();
+        TravelMember creator = new TravelMember(userId, TravelMember.Role.CREATOR);
+        members.add(creator);
+        if(!firstMember.isEmpty()){
+            TravelMember member = new TravelMember(firstMember, TravelMember.Role.MEMBER);
+            members.add(member);
+        }
+        for(String s : friendTextList){
+            if(s.isEmpty()){
+                continue;
+            }
+            TravelMember member = new TravelMember(s, TravelMember.Role.MEMBER);
+            members.add(member);
+        }
+        return members;
+    }
+    public List <TravelSegment> buildDestinationsList(String departure, String destination){
+        List<TravelSegment> destinations = new ArrayList<>();
+        destinations.add(new TravelSegment(departure));
+        destinations.add(new TravelSegment(destination));
+        for(String s : destinationsText){
+            if(s == null || s.isEmpty()){
+                continue;
+            }
+            TravelSegment segment = new TravelSegment(s);
+            destinations.add(segment);
+        }
+        return destinations;
+    }
+    public Date parseStringToDate(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
+        Date parsedDate = null;
+        try {
+            parsedDate = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return parsedDate;
+    }
+
+    public String buildTravelId(String userId){
+        String hashId = (userId + System.currentTimeMillis()).hashCode() + "";
+        return hashId;
+    }
+    public String getLoggedUsername(){
+        String userId;
+        try {
+            userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
+                    USERNAME);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return userId;
+    }
+
+    private boolean checkNullValues() {
+        boolean isNull = false;
+        //mandatory fields are title, from, to, departure, destinations
+        if (binding.titleFormEditText.getText().toString().isEmpty()) {
+            binding.titleFormEditText.setError(getString(R.string.title_empty_error));
+            isNull = true;
+        }
+        if (binding.editTxtFromForm.getText().toString().isEmpty()) {
+            binding.editTxtFromForm.setError(getString(R.string.date_empty_error));
+            isNull = true;
+        }
+        if (binding.editTxtToForm.getText().toString().isEmpty()) {
+            binding.editTxtToForm.setError(getString(R.string.date_empty_error));
+            isNull = true;
+        }
+        if (binding.departureFormEditText.getText().toString().isEmpty()) {
+            binding.departureFormEditText.setError(getString(R.string.departure_empty_error));
+            isNull = true;
+        }
+        if (binding.destinationFormEditText.getText().toString().isEmpty()) {
+                binding.destinationFormEditText.setError(getString(R.string.destination_error));
+                isNull = true;
+
+        }
+        return isNull;
+    }
+
+    private void updateItem(TextBoxesRecyclerAdapter adapter, int id){
+        adapter.getTextBoxesHints().add(getString(id));
+        adapter.getDestinationsTexts().add("");
+        adapter.notifyDataSetChanged();
 }
-private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
-    adapter.getTextBoxesHints().remove(position);
-    adapter.getDestinationsTexts().remove(position);
-    adapter.notifyDataSetChanged();
+    private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
+        adapter.getTextBoxesHints().remove(position);
+        adapter.getDestinationsTexts().remove(position);
+        adapter.notifyDataSetChanged();
 }
     private void printdataset(List<String> dataset) {
         for (String s : dataset) {
@@ -177,11 +402,22 @@ private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+        printdataset(destinationsText);
+        printdataset(friendTextList);
+    }
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(DESTINATIONS_TEXTS, (ArrayList<String>) destinationsText);
         outState.putStringArrayList(FRIENDS_TEXTS, (ArrayList<String>) friendTextList);
         outState.putStringArrayList(DESTINATIONS_HINTS, (ArrayList<String>) hintsList);
         outState.putStringArrayList(FRIENDS_HINTS, (ArrayList<String>) friendHintsList);
+        outState.putString(DESTINATION, binding.destinationFormEditText.getText().toString());
+        outState.putString(FRIEND, binding.friendsEmailFormEditText.getText().toString());
+        outState.putString(TRAVEL_TITLE, binding.titleFormEditText.getText().toString());
+        outState.putString(TRAVEL_DESCRIPTION, binding.descriptionFormEditText.getText().toString());
     }
 }

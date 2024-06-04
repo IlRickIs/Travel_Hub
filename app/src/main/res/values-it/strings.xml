@@ -85,15 +85,11 @@
     <string name="other_travels">Altri viaggi</string>
     <string name="return_to_the_previous_screen">return to the previous screen</string>
     <string name="from_fragment_edit">from</string>
-    <string name="title">titolo</string>
-    <string name="to">to</string>
     <string name="save">Save</string>
-    <string name="from">from</string>
     <string name="description">description</string>
     <string name="travel_images">travel images</string>
     <string name="edit">edit</string>
     <string name="map_preview">map preview</string>
-    <string name="destination">destination</string>
     <string name="add_friends_email">add friends email</string>
     <string name="update_from_gallery">Update from gallery</string>
 

@@ -1,35 +1,36 @@
 package it.unimib.travelhub.model;
 
-public class TravelMember extends User {
-    private String id;
+public class TravelMember {
+    private String username;
     private Role role;
     public enum Role {MEMBER, SUPPORTER, CREATOR}
 
     public TravelMember() {
-        this.id = null;
+        this.username = null;
         this.role = Role.MEMBER;
     }
 
-    public TravelMember(String id, Role role) {
-        this.id = id;
+    public TravelMember(String username, Role role) {
+        this.username = username;
         this.role = role;
     }
 
-    public TravelMember(String id) {
-        this.id = id;
+
+    public TravelMember(String username) {
+        this.username = username;
         this.role = Role.MEMBER;
     }
 
-    public String getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
     public Role getRole() {
         return role;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setRole(Role role) {
@@ -39,4 +40,5 @@ public class TravelMember extends User {
     public void setRole() {
         this.role = Role.MEMBER;
     }
+
 }

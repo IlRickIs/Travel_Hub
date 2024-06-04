@@ -36,6 +36,10 @@ public class User implements Parcelable {
         this.idToken = idToken;
     }
 
+    public User(String username){
+        this.username = username;
+    }
+
     public String getUsername() {
         return this.username;
     }

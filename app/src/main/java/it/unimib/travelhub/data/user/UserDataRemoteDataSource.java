@@ -10,8 +10,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
 
@@ -78,14 +77,41 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "onCancelled");
+                userResponseCallback.onFailureFromRemoteDatabase(error.getMessage());
+                Log.d(TAG, error.toString() + "onCancelled");
             }
         });
 
     }
 
+    public interface UsernameCheckCallback {
+        void onUsernameResponse(Result result);
+    }
 
-private void mapUsernameToId(User user) {
+    @Override
+    public void isUserRegistered(String username, final UsernameCheckCallback usernameCheckCallback) {
+        databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(username).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "checkIfUserExists: " + task.getResult().getValue());
+                if(task.getResult().getValue() != null){
+                    User u = new User();
+                    u.setUsername(username);
+                    u.setIdToken(task.getResult().getValue().toString());
+                    //userResponseCallback.onSuccessFromRemoteDatabase(u);
+                    usernameCheckCallback.onUsernameResponse(new Result.UserResponseSuccess(u));
+                } else {
+                    //userResponseCallback.onFailureFromRemoteDatabase("User not found");
+                    usernameCheckCallback.onUsernameResponse(new Result.Error("User not found"));
+                }
+            } else {
+                Log.d(TAG, "checkIfUserExists: " + task.getException().getMessage());
+                //userResponseCallback.onFailureFromRemoteDatabase(task.getException().getMessage());
+                usernameCheckCallback.onUsernameResponse(new Result.Error(task.getException().getMessage()));
+            }});
+    }
+
+
+    private void mapUsernameToId(User user) {
         Log.d(TAG, "Mapping username to id");
         databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(user.getUsername()).setValue(user.getIdToken())
                 .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
