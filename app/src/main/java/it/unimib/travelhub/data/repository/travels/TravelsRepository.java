@@ -2,8 +2,6 @@ package it.unimib.travelhub.data.repository.travels;
 
 import static it.unimib.travelhub.util.Constants.FRESH_TIMEOUT;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
