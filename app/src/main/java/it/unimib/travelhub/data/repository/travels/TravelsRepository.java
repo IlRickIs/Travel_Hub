@@ -70,8 +70,9 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     @Override
     public void onSuccessFromLocal(TravelsResponse travelsResponse) {
         if (travelsMutableLiveData.getValue() != null && travelsMutableLiveData.getValue().isSuccess()) {
-            List<Travels> travelsList = ((Result.TravelsResponseSuccess)travelsMutableLiveData.getValue()).getData().getTravelsList();
-            travelsList.addAll(travelsResponse.getTravelsList());
+            ArrayList<Travels> travelsList = addDifferentTravels( //TODO: Vedere se serve
+                    ((Result.TravelsResponseSuccess)travelsMutableLiveData.getValue()).getData().getTravelsList(),
+                    travelsResponse.getTravelsList());
             travelsResponse.setTravelsList(travelsList);
             Result.TravelsResponseSuccess result = new Result.TravelsResponseSuccess(travelsResponse);
             travelsMutableLiveData.postValue(result);
@@ -79,6 +80,16 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
             Result.TravelsResponseSuccess result = new Result.TravelsResponseSuccess(travelsResponse);
             travelsMutableLiveData.postValue(result);
         }
+    }
+
+    private ArrayList<Travels> addDifferentTravels(List<Travels> travelsListMLD, List<Travels> travelsList) {
+        ArrayList<Travels> newTravelsList = new ArrayList<>(travelsListMLD);
+        for (Travels travel : travelsList) {
+            if (!travelsListMLD.contains(travel)) {
+                newTravelsList.add(travel);
+            }
+        }
+        return newTravelsList;
     }
 
     @Override
