@@ -151,6 +151,7 @@ public class EditTravelFragment extends Fragment {
                 Log.d(TAG, "user exists: " + user.toString());
                 Travels travels = buildTravel();
                 travelsViewModel.addTravel(travels);
+                attachTravelObserver();
             } else {
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                         ((Result.Error) result).getMessage(),
@@ -255,7 +256,30 @@ public class EditTravelFragment extends Fragment {
             }
         }
         Log.d(TAG, "users: " + userToCheck.toString());
-        userViewModel.checkUsernames(userToCheck);
+        if(userToCheck.isEmpty()){
+            Travels upload = buildTravel();
+            travelsViewModel.addTravel(upload);
+            attachTravelObserver();
+        }else {
+            userViewModel.checkUsernames(userToCheck);
+        }
+    }
+
+    private void attachTravelObserver(){
+        travelsViewModel.getTravelAddLiveData().observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()){
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        "TRAVEL ADDED SUCCESSFULLY",
+                        Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "travel " + ((Result.TravelsResponseSuccess) result).getData().toString() + " added successfully");
+
+            } else {
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        ((Result.Error)result).getMessage(),
+                        Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "Error while adding travel: " + ((Result.Error)result).getMessage());
+            }
+        });
     }
 
     public Travels buildTravel(){

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
+import it.unimib.travelhub.model.TravelsResponse;
 
 public class TravelsViewModel extends ViewModel {
 
@@ -48,7 +49,7 @@ public class TravelsViewModel extends ViewModel {
         }
 
         public void addTravel(Travels travel) {
-            travelsRepository.addTravel(travel);
+            travelAddLiveData = travelsRepository.addTravel(travel);
         }
 
         public MutableLiveData<Result> getTravelAddLiveData() {
