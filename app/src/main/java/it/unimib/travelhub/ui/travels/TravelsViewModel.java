@@ -14,6 +14,8 @@ public class TravelsViewModel extends ViewModel {
         private final ITravelsRepository travelsRepository;
         private MutableLiveData<Result> travelsListLiveData;
 
+        private MutableLiveData<Result> travelAddLiveData;
+
         public TravelsViewModel(ITravelsRepository iTravelsRepository) {
             this.travelsRepository = iTravelsRepository;
         }
@@ -47,5 +49,12 @@ public class TravelsViewModel extends ViewModel {
 
         public void addTravel(Travels travel) {
             travelsRepository.addTravel(travel);
+        }
+
+        public MutableLiveData<Result> getTravelAddLiveData() {
+            if (travelAddLiveData == null) {
+                travelAddLiveData = new MutableLiveData<>();
+            }
+            return travelAddLiveData;
         }
 }
