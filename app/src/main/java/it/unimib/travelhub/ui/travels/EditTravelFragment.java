@@ -71,6 +71,7 @@ public class EditTravelFragment extends Fragment {
     private TravelsViewModel travelsViewModel;
     private DataEncryptionUtil dataEncryptionUtil;
 
+    private List<TravelMember> memberList;
     private UserViewModel userViewModel;
 
     AtomicBoolean exists = new AtomicBoolean(false);
@@ -147,11 +148,12 @@ public class EditTravelFragment extends Fragment {
 
         userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()){
-                User user = ((Result.UserResponseSuccess) result).getData();
-                Log.d(TAG, "user exists: " + user.toString());
-                Travels travels = buildTravel();
-                travelsViewModel.addTravel(travels);
-                attachTravelObserver();
+                List<User> users = ((Result.UsersResponseSuccess) result).getData();
+                Log.d(TAG, "user exists: " + users.toString());
+
+                //Travels travels = buildTravel();
+                //travelsViewModel.addTravel(travels);
+                //attachTravelObserver();
             } else {
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                         ((Result.Error) result).getMessage(),
@@ -235,9 +237,9 @@ public class EditTravelFragment extends Fragment {
         });
 
         mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> {
-            if(checkNullValues()){
+            /*if(checkNullValues()){
                 return;
-            }
+            }*/
             checkUsers();
             //TODO: implement the code to save the travel under users collection on firebase database
         });

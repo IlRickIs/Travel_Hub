@@ -17,8 +17,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
+import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 
@@ -82,6 +84,10 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            List<String> usersId = new ArrayList<>();
+                            for(TravelMember s : travel.getMembers()){
+                                usersId.add(s.getUsername());
+                            }
                             addTravelIdToUser(idToken, travel.getId(), travel);
                             Log.d(TAG, "Travel added successfully");
                         }
@@ -103,7 +109,6 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
             databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").get().addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
                     Log.d(TAG, "Error getting data", task.getException());
-                    //TODO callback call
                 } else {
                     List<Long> travelsIdList = new ArrayList<>();
                     for (DataSnapshot ds : task.getResult().getChildren()) {
@@ -131,6 +136,53 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void addTravelIdToUsers(List<String> usersId, long travelId, Travels travel) {
+        AtomicInteger count = new AtomicInteger(0);
+        for(int i=0;i<usersId.size();i++){
+            String userId = usersId.get(i);
+            try {
+                databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").get().addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.d(TAG, "Error getting data", task.getException());
+                    } else {
+                        List<Long> travelsIdList = new ArrayList<>();
+                        for (DataSnapshot ds : task.getResult().getChildren()) {
+                            Long id = ds.getValue(Long.class);
+                            travelsIdList.add(id);
+                        }
+                        travelsIdList.add((long) travelId);
+
+                        databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").setValue(travelsIdList) //TODO add the travel to the members
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "Travel id added to all users successfully");
+                                        count.set(count.get() + 1);
+                                        if(count.get() == usersId.size()){
+                                            travelsCallback.onSuccessFromCloudWriting(travel);
+                                        }
+                                        else{
+                                            travelsCallback.onFailureFromRemote(new Exception("travel id not added to all users"));
+                                            Log.d(TAG, "travel id not added to all users");
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
+                                        Log.d(TAG, "Error adding travel id to user", e);
+                                    }
+                                });
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

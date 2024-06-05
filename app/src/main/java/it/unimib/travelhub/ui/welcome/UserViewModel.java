@@ -120,7 +120,7 @@ public class UserViewModel extends ViewModel {
     }
 
     public void checkUsernames(List<String> usernames){
-        List<String> unregistered = new ArrayList<>();
+        List<User> registered = new ArrayList<>();
         AtomicInteger count = new AtomicInteger(usernames.size());
 
         for(String u : usernames){
@@ -128,15 +128,14 @@ public class UserViewModel extends ViewModel {
                 @Override
                 public void onUsernameResponse(Result result) {
                     if(result instanceof Result.Error){
-                        unregistered.add(u);
                         isUserRegistered.postValue(new Result.Error("error " + u.toString() + " not registered"));
                     }
                     else{
+                        User u = ((Result.UserResponseSuccess) result).getData();
+                        registered.add(u);
                         count.set(count.get()-1);
                         if(count.get() == 0){
-                            User u = new User();
-                            u.setIdToken("Success");
-                            isUserRegistered.postValue(new Result.UserResponseSuccess(u));
+                            isUserRegistered.postValue(new Result.UsersResponseSuccess(registered));
                         }
 
                     }
