@@ -97,12 +97,13 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            //travelsCallback.onFailureFromCloud(e);
+                            travelsCallback.onFailureFromRemote(e);
                             Log.d(TAG, "Error adding travel", e);
                         }
                     });
         } catch (Exception e) {
             e.printStackTrace();
+            travelsCallback.onFailureFromRemote(e);
         }
     }
 
@@ -111,6 +112,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
             databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").get().addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
                     Log.d(TAG, "Error getting data", task.getException());
+                    travelsCallback.onFailureFromRemote(task.getException());
                 } else {
                     List<Long> travelsIdList = new ArrayList<>();
                     for (DataSnapshot ds : task.getResult().getChildren()) {
@@ -131,6 +133,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Log.d(TAG, "Error adding travel id to user", e);
+                                    travelsCallback.onFailureFromRemote(e);
                                 }
                             });
                 }
@@ -138,6 +141,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
 
         } catch (Exception e) {
             e.printStackTrace();
+            travelsCallback.onFailureFromRemote(e);
         }
     }
 
