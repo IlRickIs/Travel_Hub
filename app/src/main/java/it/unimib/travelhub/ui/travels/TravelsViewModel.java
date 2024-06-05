@@ -29,7 +29,7 @@ public class TravelsViewModel extends ViewModel {
         * @return The LiveData object associated with the travels list.
         */
         public MutableLiveData<Result> getTravels(long lastUpdate) {
-            if (travelsListLiveData == null) {
+            if (travelsListLiveData == null) { //TODO FIX THIS METHOD
                 fetchTravels(lastUpdate);
             }
             return travelsListLiveData;

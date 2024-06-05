@@ -172,7 +172,7 @@ public class HomeFragment extends Fragment {
 
                     } else {
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+                                ((Result.Error) result).getMessage(), Snackbar.LENGTH_SHORT).show();
                     }
                 });
 
