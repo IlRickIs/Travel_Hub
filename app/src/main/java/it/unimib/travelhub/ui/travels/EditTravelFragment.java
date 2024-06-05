@@ -7,6 +7,7 @@ import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FI
 import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
+import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
 import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 import static it.unimib.travelhub.util.Constants.USERNAME;
@@ -132,6 +133,8 @@ public class EditTravelFragment extends Fragment {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
+
+        memberList = new ArrayList<>();
     }
 
     private void updateLabel(EditText editText) {
@@ -150,10 +153,15 @@ public class EditTravelFragment extends Fragment {
             if(result.isSuccess()){
                 List<User> users = ((Result.UsersResponseSuccess) result).getData();
                 Log.d(TAG, "user exists: " + users.toString());
-
-                //Travels travels = buildTravel();
-                //travelsViewModel.addTravel(travels);
-                //attachTravelObserver();
+                for(User u : users){
+                    TravelMember member = new TravelMember(u.getUsername(),
+                            u.getIdToken(),
+                            TravelMember.Role.MEMBER);
+                    memberList.add(member);
+                }
+                Travels travels = buildTravel();
+                travelsViewModel.addTravel(travels);
+                attachTravelObserver();
             } else {
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                         ((Result.Error) result).getMessage(),
@@ -237,9 +245,9 @@ public class EditTravelFragment extends Fragment {
         });
 
         mainActivity.findViewById(R.id.button_save_activity).setOnClickListener(v -> {
-            /*if(checkNullValues()){
+            if(checkNullValues()){
                 return;
-            }*/
+            }
             checkUsers();
             //TODO: implement the code to save the travel under users collection on firebase database
         });
@@ -250,11 +258,14 @@ public class EditTravelFragment extends Fragment {
         List<String> userToCheck = new ArrayList<>();
         String firstUser = binding.friendsEmailFormEditText.getText().toString();
         if(!firstUser.isEmpty() && firstUser != null){
-            userToCheck.add(firstUser);
+            if( !firstUser.equals(getLoggedUsername()))
+                userToCheck.add(firstUser);
         }
         for(String s : friendTextList){
             if(s != null && !s.isEmpty()) {
-                userToCheck.add(s);
+                Log.d(TAG, "userToChek: '" + s + "'\t loggedUser: '" + getLoggedUsername()+"'");
+                if( !s.equals(getLoggedUsername()))
+                    userToCheck.add(s);
             }
         }
         Log.d(TAG, "users: " + userToCheck.toString());
@@ -305,7 +316,7 @@ public class EditTravelFragment extends Fragment {
         List<TravelSegment> destinations = buildDestinationsList(departure, destination);
 
         String firstMember = binding.friendsEmailFormEditText.getText().toString();
-        List<TravelMember> members = buildFriendsList(firstMember);
+        List<TravelMember> members = buildFriendsList();
 
         travel.setId(Long.parseLong(travelId));
         travel.setTitle(title);
@@ -318,22 +329,13 @@ public class EditTravelFragment extends Fragment {
         return travel;
     }
 
-    public List<TravelMember> buildFriendsList(String firstMember){
+    public List<TravelMember> buildFriendsList(){
         List<TravelMember> members = new ArrayList<>();
-        String userId = getLoggedUsername();
-        TravelMember creator = new TravelMember(userId, TravelMember.Role.CREATOR);
+        TravelMember creator = new TravelMember(TravelMember.Role.CREATOR);
+        creator.setUsername(getLoggedUsername());
+        creator.setIdToken(getLoggedIdToken());
         members.add(creator);
-        if(!firstMember.isEmpty()){
-            TravelMember member = new TravelMember(firstMember, TravelMember.Role.MEMBER);
-            members.add(member);
-        }
-        for(String s : friendTextList){
-            if(s.isEmpty()){
-                continue;
-            }
-            TravelMember member = new TravelMember(s, TravelMember.Role.MEMBER);
-            members.add(member);
-        }
+        members.addAll(memberList);
         return members;
     }
     public List <TravelSegment> buildDestinationsList(String departure, String destination){
@@ -370,6 +372,20 @@ public class EditTravelFragment extends Fragment {
             userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
                     USERNAME);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return userId;
+    }
+
+    public String getLoggedIdToken(){
+        String userId;
+        try {
+            userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
+                    ID_TOKEN);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

@@ -2,36 +2,32 @@ package it.unimib.travelhub.model;
 
 import java.io.Serializable;
 
-public class TravelMember implements Serializable {
-    private String username;
+public class TravelMember extends User implements Serializable {
     private Role role;
     public enum Role {MEMBER, SUPPORTER, CREATOR}
 
     public TravelMember() {
-        this.username = null;
+        super();
         this.role = Role.MEMBER;
     }
 
-    public TravelMember(String username, Role role) {
-        this.username = username;
+    public TravelMember(Role role) {
+        super();
         this.role = role;
     }
 
-    public TravelMember(String username) {
-        this.username = username;
+    public TravelMember(String username){
+        super(username);
         this.role = Role.MEMBER;
     }
 
-    public String getUsername() {
-        return username;
+    public TravelMember(String username, String id, Role role){
+        super(username, id);
+        this.role = role;
     }
 
     public Role getRole() {
         return role;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public void setRole(Role role) {

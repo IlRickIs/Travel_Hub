@@ -86,9 +86,11 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                         public void onSuccess(Void aVoid) {
                             List<String> usersId = new ArrayList<>();
                             for(TravelMember s : travel.getMembers()){
-                                usersId.add(s.getUsername());
+                                usersId.add(s.getIdToken());
                             }
-                            addTravelIdToUser(idToken, travel.getId(), travel);
+                            Log.d(TAG, usersId.toString());
+                            //addTravelIdToUser(idToken, travel.getId(), travel);
+                            addTravelIdToUsers(usersId, travel.getId(), travel);
                             Log.d(TAG, "Travel added successfully");
                         }
                     })
