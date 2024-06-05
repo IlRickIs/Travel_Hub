@@ -52,7 +52,7 @@ public class TravelActivity extends AppCompatActivity {
 
         ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
 
-        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource);
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(usersRecyclerAdapter);
         findViewById(R.id.buttonBack).setOnClickListener(v -> this.getOnBackPressedDispatcher().onBackPressed());

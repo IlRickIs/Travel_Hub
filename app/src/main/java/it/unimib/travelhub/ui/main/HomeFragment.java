@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,13 +29,19 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
+import it.unimib.travelhub.adapter.TravelSegmentRecyclerAdapter;
+import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
+import it.unimib.travelhub.ui.main.profile.ProfileFragmentDirections;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.JSONParserUtil;
@@ -52,6 +60,12 @@ public class HomeFragment extends Fragment {
     private TravelsViewModel travelsViewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
+
+    protected RecyclerView.LayoutManager mLayoutManager;
+
+    protected RecyclerView friendsRecyclerView;
+
+    protected RecyclerView travelSegmentsRecyclerView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -95,7 +109,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
+        mLayoutManager = new LinearLayoutManager(getActivity());
         return binding.getRoot();
     }
 
@@ -118,6 +132,10 @@ public class HomeFragment extends Fragment {
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
             lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
         }
+
+        friendsRecyclerView = binding.friendsRecyclerView;
+        travelSegmentsRecyclerView = binding.segmentsRecyclerView;
+
 
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
@@ -230,6 +248,21 @@ public class HomeFragment extends Fragment {
 
     private void setOngoingView() {
         Travels onGoingTravel = travelsResponse.getOnGoingTravel();
+
+        RecyclerView.LayoutManager layoutManagerRunning =
+                new LinearLayoutManager(requireContext(),
+                        LinearLayoutManager.HORIZONTAL, false);
+
+        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2);
+        friendsRecyclerView.setLayoutManager(layoutManagerRunning);
+        friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
+
+        List<TravelSegment> destinations = onGoingTravel.getDestinations();
+
+
+        TravelSegmentRecyclerAdapter travelSegmentRecyclerAdapterRunning = new TravelSegmentRecyclerAdapter(onGoingTravel.getDestinations());
+        travelSegmentsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        travelSegmentsRecyclerView.setAdapter(travelSegmentRecyclerAdapterRunning);
 
         binding.homeOngoingTitle.setText(onGoingTravel.getTitle());
         binding.homeOngoingStartDate.setText(
