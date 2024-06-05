@@ -2,6 +2,8 @@ package it.unimib.travelhub.data.repository.travels;
 
 import static it.unimib.travelhub.util.Constants.FRESH_TIMEOUT;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         } else {
             travelsLocalDataSource.getTravels();
         }
-        travelsRemoteDataSource.getAllUserTravel();
+        //travelsRemoteDataSource.getAllUserTravel();
         return travelsMutableLiveData;
     }
 
@@ -52,6 +54,10 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     public MutableLiveData<Result> addTravel(Travels travel) {
         travelsRemoteDataSource.addTravel(travel);
         return travelsMutableLiveData;
+    }
+
+    public void deleteAll() {
+        travelsLocalDataSource.deleteAll();
     }
 
     @Override
@@ -111,7 +117,7 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
 
     @Override
     public void onSuccessDeletion() {
-
+        Log.d("TravelsRepository", "Travels deleted");
     }
 
     @Override

@@ -15,5 +15,7 @@ public interface ITravelsRepository {
 
     MutableLiveData<Result> addTravel(Travels travel);
 
+    void deleteAll();
+
 
 }

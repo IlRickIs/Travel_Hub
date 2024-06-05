@@ -1,14 +1,11 @@
 package it.unimib.travelhub.ui.travels;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
-import it.unimib.travelhub.model.TravelsResponse;
 
 public class TravelsViewModel extends ViewModel {
 
@@ -16,8 +13,6 @@ public class TravelsViewModel extends ViewModel {
 
         private final ITravelsRepository travelsRepository;
         private MutableLiveData<Result> travelsListLiveData;
-
-        private MutableLiveData<Result> travelAddLiveData;
 
         public TravelsViewModel(ITravelsRepository iTravelsRepository) {
             this.travelsRepository = iTravelsRepository;
@@ -51,13 +46,13 @@ public class TravelsViewModel extends ViewModel {
         }
 
         public void addTravel(Travels travel) {
-            travelAddLiveData = travelsRepository.addTravel(travel);
+            travelsListLiveData = travelsRepository.addTravel(travel);
         }
 
         public MutableLiveData<Result> getTravelAddLiveData() {
-            if (travelAddLiveData == null) {
-                travelAddLiveData = new MutableLiveData<>();
+            if (travelsListLiveData == null) {
+                travelsListLiveData = new MutableLiveData<>();
             }
-            return travelAddLiveData;
+            return travelsListLiveData;
         }
 }
