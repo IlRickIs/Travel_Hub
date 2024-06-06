@@ -31,10 +31,17 @@ public class TravelsViewModel extends ViewModel {
         public MutableLiveData<Result> getTravels(long lastUpdate) {
             if (travelsListLiveData == null) { //TODO FIX THIS METHOD
                 fetchTravels(lastUpdate);
+                Log.d(TAG, "Travels list fetched");
+            }else{
+                updateLiveData(lastUpdate);
+                Log.d(TAG, "Travels list updated");
             }
             return travelsListLiveData;
         }
 
+        private void updateLiveData(long lastUpdate) {
+            travelsRepository.updateExistingLiveData(lastUpdate);
+        }
         /**
         * Fetches the travels list from the repository.
         */

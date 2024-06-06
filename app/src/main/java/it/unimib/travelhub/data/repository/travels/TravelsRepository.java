@@ -2,6 +2,8 @@ package it.unimib.travelhub.data.repository.travels;
 
 import static it.unimib.travelhub.util.Constants.FRESH_TIMEOUT;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import it.unimib.travelhub.data.source.TravelsCallback;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
+import it.unimib.travelhub.ui.travels.TravelsViewModel;
 
 public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     private final BaseTravelsLocalDataSource travelsLocalDataSource;
@@ -35,8 +38,17 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         } else {
             travelsLocalDataSource.getTravels();
         }
-        travelsRemoteDataSource.getAllUserTravel();
         return travelsMutableLiveData;
+    }
+
+    @Override
+    public void updateExistingLiveData(long lastUpdate) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdate > FRESH_TIMEOUT) {
+            travelsRemoteDataSource.getAllUserTravel();
+        } else {
+            travelsLocalDataSource.getTravels();
+        }
     }
 
     @Override
@@ -67,16 +79,20 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
 
     @Override
     public void onSuccessFromLocal(TravelsResponse travelsResponse) {
+        Log.d("TravelsRepository", "OnSuccessFromLocal called ");
         if (travelsMutableLiveData.getValue() != null && travelsMutableLiveData.getValue().isSuccess()) {
             ArrayList<Travels> travelsList = addDifferentTravels( //TODO: Vedere se serve
                     ((Result.TravelsResponseSuccess)travelsMutableLiveData.getValue()).getData().getTravelsList(),
                     travelsResponse.getTravelsList());
             travelsResponse.setTravelsList(travelsList);
             Result.TravelsResponseSuccess result = new Result.TravelsResponseSuccess(travelsResponse);
+            Log.d("TravelsRepository", "OnSuccessFromLocal called if branch, posting: " + result.getData());
             travelsMutableLiveData.postValue(result);
+
         } else {
             Result.TravelsResponseSuccess result = new Result.TravelsResponseSuccess(travelsResponse);
             travelsMutableLiveData.postValue(result);
+            Log.d("TravelsRepository", "OnSuccessFromLocal called ELSE branch, posting: " + result.getData());
         }
     }
 

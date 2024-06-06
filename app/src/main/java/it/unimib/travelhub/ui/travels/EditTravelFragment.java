@@ -74,7 +74,6 @@ public class EditTravelFragment extends Fragment {
 
     private List<TravelMember> memberList;
     private UserViewModel userViewModel;
-
     AtomicBoolean exists = new AtomicBoolean(false);
     public EditTravelFragment() {
     }

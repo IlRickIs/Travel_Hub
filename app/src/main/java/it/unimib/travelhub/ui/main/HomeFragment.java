@@ -74,7 +74,6 @@ public class HomeFragment extends Fragment {
                 ServiceLocator.getInstance().getTravelsRepository(
                         requireActivity().getApplication()
                 );
-
         if (travelsRepository != null) {
             // This is the way to create a ViewModel with custom parameters
             // (see NewsViewModelFactory class for the implementation details)
@@ -122,6 +121,7 @@ public class HomeFragment extends Fragment {
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
+                        Log.d(TAG, "TravelsResponseSuccess" + ((Result.TravelsResponseSuccess) result).getData());
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
                         Travels onGoingTravel = travelsResponse.getOnGoingTravel();
                         Travels futureTravel = travelsResponse.getFutureTravel();
