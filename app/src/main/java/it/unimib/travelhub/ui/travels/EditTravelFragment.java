@@ -136,12 +136,6 @@ public class EditTravelFragment extends Fragment {
         memberList = new ArrayList<>();
     }
 
-    private void updateLabel(EditText editText) {
-        String myFormat = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ITALY);
-        editText.setText(sdf.format(myCalendar.getTime()));
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -172,25 +166,35 @@ public class EditTravelFragment extends Fragment {
         return binding.getRoot();
     }
 
+    private void updateLabel(EditText editText) {
+        String myFormat = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ITALY);
+        editText.setText(sdf.format(myCalendar.getTime()));
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        DatePickerDialog.OnDateSetListener date = (v, year, month, dayOfMonth) -> {
+        DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR,year);
             myCalendar.set(Calendar.MONTH,month);
             myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-
+            updateLabel(binding.editTxtFromForm);
+        };
+        DatePickerDialog.OnDateSetListener date2 = (v, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR,year);
+            myCalendar.set(Calendar.MONTH,month);
+            myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            updateLabel(binding.editTxtToForm);
         };
         binding.editTxtFromForm.setOnClickListener(v ->
         {
-            new DatePickerDialog(getContext(),date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            updateLabel(binding.editTxtFromForm);
+            new DatePickerDialog(getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
         binding.editTxtToForm.setOnClickListener(v ->
         {
-            new DatePickerDialog(getContext(),date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            updateLabel(binding.editTxtToForm);
+            new DatePickerDialog(getContext(),date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
         textBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(hintsList, destinationsText,new TextBoxesRecyclerAdapter.OnItemClickListener() {
