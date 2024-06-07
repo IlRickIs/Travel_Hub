@@ -313,8 +313,8 @@ public class EditTravelFragment extends Fragment {
         String title = binding.titleFormEditText.getText().toString();
         String description = binding.descriptionFormEditText.getText().toString();
 
-        String start = binding.editTxtFromForm.getText().toString();
-        String end = binding.editTxtToForm.getText().toString();
+        String start = binding.editTxtFromForm.getText().toString() + " 00:00:00";
+        String end = binding.editTxtToForm.getText().toString() + " 23:59:59";
         Date startDate = parseStringToDate(start);
         Date endDate = parseStringToDate(end);
         if(startDate == null || endDate == null){
@@ -362,7 +362,7 @@ public class EditTravelFragment extends Fragment {
         return destinations;
     }
     public Date parseStringToDate(String date){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.ITALY);
         Date parsedDate = null;
         try {
             parsedDate = sdf.parse(date);
