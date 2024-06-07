@@ -221,12 +221,12 @@ public class EditTravelFragment extends Fragment {
                 new LinearLayoutManager(requireContext(),
                         LinearLayoutManager.VERTICAL, false);
 
-        binding.recyclerDestinations.setLayoutManager(mLayoutManager);
+       /* binding.recyclerDestinations.setLayoutManager(mLayoutManager);
         binding.recyclerDestinations.setAdapter(textBoxesRecyclerAdapter);
 
         binding.addDestinationButton.setOnClickListener(v -> {
             updateItem(textBoxesRecyclerAdapter, R.string.destination);
-        });
+        });*/
         friendTextBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(friendHintsList, friendTextList, new TextBoxesRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {

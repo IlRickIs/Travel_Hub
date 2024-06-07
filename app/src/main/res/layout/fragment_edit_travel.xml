@@ -127,34 +127,17 @@
                 app:helperTextEnabled="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/add_destination_button"
-            style="?attr/materialIconButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/return_to_the_previous_screen"
-            app:icon="@drawable/baseline_add_34"
-            android:layout_marginTop="10dp"
-            app:layout_constraintStart_toEndOf="@+id/destination_form"
-            app:layout_constraintTop_toBottomOf="@+id/departure_form" />
+
 
         <View
             android:id="@+id/reference_for_barrier"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintStart_toEndOf="@id/add_destination_button"
+            app:layout_constraintStart_toEndOf="@id/destination_form"
             app:layout_constraintTop_toBottomOf="@id/departure_form" />
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_destinations"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="0dp"
-            app:layout_constraintTop_toBottomOf="@id/destination_form"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/reference_for_barrier"/>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/description_form"
@@ -168,7 +151,7 @@
             app:layout_constraintBottom_toTopOf="@+id/friends_email_form"
             app:layout_constraintHeight_percent=".23"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recycler_destinations"
+            app:layout_constraintTop_toBottomOf="@id/destination_form"
             app:layout_constraintWidth_percent=".7">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -220,6 +203,17 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="24dp"
             app:layout_constraintEnd_toStartOf="@id/reference_for_barrier"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_destination"
+            app:layout_constraintTop_toBottomOf="@id/recycler_friends"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginRight="24dp"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

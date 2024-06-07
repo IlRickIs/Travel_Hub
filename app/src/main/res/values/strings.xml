@@ -136,7 +136,6 @@
        </string>
 
 
-
     <string name="dash">-</string>
     <string name="destination" translatable="false">destination*</string>
     <string name="add_friends_username" translatable="false">add friends username</string>
@@ -147,5 +146,6 @@
     <string name="departure_empty_error" translatable="false">Empty departure location</string>
     <string name="destination_error" translatable="false">Empty destination location</string>
     <string name="departure" translatable="false">departure*</string>
+    <string name="add_destination" translatable="false">Add Destination ></string>
 
 </resources>
