@@ -31,7 +31,7 @@ public class Constants {
 
     public static final String TRAVEL_ADDED = "TRAVEL_ADDED";
 
-    public static final int TRAVELS_DATABASE_VERSION = 1;
+    public static final int TRAVELS_DATABASE_VERSION = 2;
     public static final String TRAVELS_DATABASE_NAME = "travels_database";
     public static final String LAST_UPDATE = "last_update";
 
