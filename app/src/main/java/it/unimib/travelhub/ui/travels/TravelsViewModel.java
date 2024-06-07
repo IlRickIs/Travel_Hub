@@ -30,15 +30,11 @@ public class TravelsViewModel extends ViewModel {
         * @return The LiveData object associated with the travels list.
         */
         public MutableLiveData<Result> getTravels(long lastUpdate) {
-            if (travelsListLiveData == null) { //TODO FIX THIS METHOD
+            if (travelsListLiveData == null) {
                 fetchTravels(lastUpdate);
             }
             Log.d(TAG, "Travels list: " + travelsListLiveData.getValue());
             return travelsListLiveData;
-        }
-
-        private void updateLiveData(long lastUpdate) {
-            travelsRepository.updateExistingLiveData(lastUpdate);
         }
         /**
         * Fetches the travels list from the repository.
@@ -46,31 +42,6 @@ public class TravelsViewModel extends ViewModel {
         private void fetchTravels(long lastUpdate) {
             travelsListLiveData = travelsRepository.fetchTravels(lastUpdate);
         }
-
-        /**
-        * Updates the travel status.
-        * @param travel The travel to be updated.
-        */
-        public void updateTravel(Travels travel) {
-            travelsRepository.updateTravel(travel);
-        }
-
-//        public void addTravel(Travels travel) {
-//            travelsListLiveData = travelsRepository.addTravel(travel);
-//            Observer<Result> observer = new Observer<Result>() {
-//                @Override
-//                public void onChanged(Result result) {
-//                    if (result.isSuccess()) {
-//                        fetchTravels(System.currentTimeMillis());
-//                    }
-//                    travelsListLiveData.setValue(result);
-//                    Log.d(TAG, "Travel ADDED: " + travelsListLiveData.getValue());
-//                    travelsListLiveData.removeObserver(this);
-//                }
-//            };
-//            travelsListLiveData.observeForever(observer);
-//        }
-
         public void addTravel(Travels travel) {
             travelsListLiveData = travelsRepository.addTravel(travel);
         }
