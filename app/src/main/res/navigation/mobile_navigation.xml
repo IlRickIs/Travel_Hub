@@ -10,7 +10,11 @@
         android:id="@+id/navigation_edit"
         android:name="it.unimib.travelhub.ui.travels.EditTravelFragment"
         android:label="@string/edit"
-        tools:layout="@layout/fragment_edit_travel" />
+        tools:layout="@layout/fragment_edit_travel" >
+        <action
+            android:id="@+id/action_navigation_edit_to_editTravelSegment"
+            app:destination="@id/editTravelSegment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_images"
@@ -21,4 +25,13 @@
         android:id="@+id/navigation_map_preview"
         android:name="it.unimib.travelhub.ui.travels.MapPreviewFragment"
         tools:layout="@layout/fragment_map_preview" />
+    <fragment
+        android:id="@+id/editTravelSegment"
+        android:name="it.unimib.travelhub.ui.travels.EditTravelSegment"
+        android:label="fragment_edit_travel_segment"
+        tools:layout="@layout/fragment_edit_travel_segment" >
+        <action
+            android:id="@+id/action_editTravelSegment_self"
+            app:destination="@id/editTravelSegment" />
+    </fragment>
 </navigation>

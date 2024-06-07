@@ -21,6 +21,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -96,8 +98,8 @@ public class EditTravelFragment extends Fragment {
             friendTextList = savedInstanceState.getStringArrayList(FRIENDS_TEXTS);
             hintsList = savedInstanceState.getStringArrayList(DESTINATIONS_HINTS);
             friendHintsList = savedInstanceState.getStringArrayList(FRIENDS_HINTS);
-            binding.titleFormEditText.setText(savedInstanceState.getString(TRAVEL_TITLE));
-            binding.descriptionFormEditText.setText(savedInstanceState.getString(TRAVEL_DESCRIPTION));
+            //binding.titleFormEditText.setText(savedInstanceState.getString(TRAVEL_TITLE));
+            //binding.descriptionFormEditText.setText(savedInstanceState.getString(TRAVEL_DESCRIPTION));
         } else {
             destinationsText = new ArrayList<>();
             friendTextList = new ArrayList<>();
@@ -258,6 +260,15 @@ public class EditTravelFragment extends Fragment {
             }
             checkUsers();
             //TODO: implement the code to save the travel under users collection on firebase database
+        });
+
+        binding.addDestinationButton.setOnClickListener(v -> {
+            // navigate to EditTravelSegment
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.activityAddFragmentContainerView, new EditTravelSegment());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         });
 
     }
@@ -469,7 +480,7 @@ public class EditTravelFragment extends Fragment {
         outState.putStringArrayList(FRIENDS_HINTS, (ArrayList<String>) friendHintsList);
         outState.putString(DESTINATION, binding.destinationFormEditText.getText().toString());
         outState.putString(FRIEND, binding.friendsEmailFormEditText.getText().toString());
-        outState.putString(TRAVEL_TITLE, binding.titleFormEditText.getText().toString());
-        outState.putString(TRAVEL_DESCRIPTION, binding.descriptionFormEditText.getText().toString());
+        //outState.putString(TRAVEL_TITLE, binding.titleFormEditText.getText().toString());
+        //outState.putString(TRAVEL_DESCRIPTION, binding.descriptionFormEditText.getText().toString());
     }
 }

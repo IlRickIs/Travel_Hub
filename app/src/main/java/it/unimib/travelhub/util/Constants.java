@@ -37,4 +37,7 @@ public class Constants {
 
     public static final long FRESH_TIMEOUT = 60 * 60 * 1000;
 
+    //TRAVELSEGMENT
+    public static final String DESTINATION_TITLE = "DESTINATION";
+
 }

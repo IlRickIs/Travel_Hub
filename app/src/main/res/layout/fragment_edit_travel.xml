@@ -205,7 +205,7 @@
             app:layout_constraintEnd_toStartOf="@id/reference_for_barrier"/>
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/addDestinationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_destination"
