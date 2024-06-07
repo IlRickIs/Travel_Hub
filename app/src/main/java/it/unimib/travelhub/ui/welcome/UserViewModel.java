@@ -2,6 +2,7 @@ package it.unimib.travelhub.ui.welcome;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 
+import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -13,10 +14,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
+import it.unimib.travelhub.data.database.TravelsDao;
+import it.unimib.travelhub.data.database.TravelsRoomDatabase;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.util.ServiceLocator;
 
 public class UserViewModel extends ViewModel {
     private static final String TAG = UserViewModel.class.getSimpleName();
@@ -95,7 +99,7 @@ public class UserViewModel extends ViewModel {
         return userMutableLiveData;
     }
 
-    public MutableLiveData<Result> logout(DataEncryptionUtil dataEncryptionUtil) {
+    public MutableLiveData<Result> logout(DataEncryptionUtil dataEncryptionUtil, Application application) {
         if (userMutableLiveData == null) {
             userMutableLiveData = userRepository.logout();
         } else {
@@ -103,6 +107,7 @@ public class UserViewModel extends ViewModel {
         }
         try{
             dataEncryptionUtil.flushEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME);
+            ServiceLocator.getInstance().getTravelsRepository(application).deleteAll();
         } catch (Exception e){
             e.printStackTrace();
             Log.d(TAG, "Error while flushing encrypted shared preferences");

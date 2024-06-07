@@ -15,7 +15,6 @@ import it.unimib.travelhub.data.source.TravelsCallback;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
-import it.unimib.travelhub.ui.travels.TravelsViewModel;
 
 public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     private final BaseTravelsLocalDataSource travelsLocalDataSource;
@@ -38,17 +37,8 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         } else {
             travelsLocalDataSource.getTravels();
         }
+        //travelsRemoteDataSource.getAllUserTravel();
         return travelsMutableLiveData;
-    }
-
-    @Override
-    public void updateExistingLiveData(long lastUpdate) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastUpdate > FRESH_TIMEOUT) {
-            travelsRemoteDataSource.getAllUserTravel();
-        } else {
-            travelsLocalDataSource.getTravels();
-        }
     }
 
     @Override
@@ -66,6 +56,10 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         return travelsMutableLiveData;
     }
 
+    public void deleteAll() {
+        travelsLocalDataSource.deleteAll();
+    }
+
     @Override
     public void onSuccessFromRemote(TravelsResponse travelsResponse, long lastUpdate) {
         travelsLocalDataSource.insertTravels(travelsResponse.getTravelsList());
@@ -79,20 +73,16 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
 
     @Override
     public void onSuccessFromLocal(TravelsResponse travelsResponse) {
-        Log.d("TravelsRepository", "OnSuccessFromLocal called ");
         if (travelsMutableLiveData.getValue() != null && travelsMutableLiveData.getValue().isSuccess()) {
             ArrayList<Travels> travelsList = addDifferentTravels( //TODO: Vedere se serve
                     ((Result.TravelsResponseSuccess)travelsMutableLiveData.getValue()).getData().getTravelsList(),
                     travelsResponse.getTravelsList());
             travelsResponse.setTravelsList(travelsList);
             Result.TravelsResponseSuccess result = new Result.TravelsResponseSuccess(travelsResponse);
-            Log.d("TravelsRepository", "OnSuccessFromLocal called if branch, posting: " + result.getData());
             travelsMutableLiveData.postValue(result);
-
         } else {
             Result.TravelsResponseSuccess result = new Result.TravelsResponseSuccess(travelsResponse);
             travelsMutableLiveData.postValue(result);
-            Log.d("TravelsRepository", "OnSuccessFromLocal called ELSE branch, posting: " + result.getData());
         }
     }
 
@@ -127,7 +117,7 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
 
     @Override
     public void onSuccessDeletion() {
-
+        Log.d("TravelsRepository", "Travels deleted");
     }
 
     @Override

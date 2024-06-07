@@ -116,7 +116,7 @@ public class PersonalInfoFragment extends Fragment {
 
             builder1.setPositiveButton(
                     "Yes",
-                    (dialog, id) -> userViewModel.logout(dataEncryptionUtil).observe(getViewLifecycleOwner(), result -> {
+                    (dialog, id) -> userViewModel.logout(dataEncryptionUtil, requireActivity().getApplication()).observe(getViewLifecycleOwner(), result -> {
                         if (result.isSuccess()) {
                             try {
                                 String mail = dataEncryptionUtil.

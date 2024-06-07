@@ -117,7 +117,8 @@ public class OngoingTravelsFragment extends Fragment {
                     if (result.isSuccess()) {
 
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
-                        runningTravelsList.add(travelsResponse.getOnGoingTravel());
+                        if (travelsResponse.getOnGoingTravel() != null)
+                            runningTravelsList.add(travelsResponse.getOnGoingTravel());
                         runningTravelsList.addAll(travelsResponse.getFutureTravelsList());
 
                         RecyclerView travelRecyclerViewRunning = binding.ongoingActivitiesRecyclerView;

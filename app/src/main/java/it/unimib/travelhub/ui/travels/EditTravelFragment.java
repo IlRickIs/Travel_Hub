@@ -8,12 +8,14 @@ import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
+import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
 import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 import static it.unimib.travelhub.util.Constants.USERNAME;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -52,6 +54,7 @@ import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
@@ -162,6 +165,8 @@ public class EditTravelFragment extends Fragment {
                 Log.d(TAG, "user does not exist: " + ((Result.Error) result).getMessage());
             }
         });
+
+        Log.d(TAG, "travelsViewModel: " + travelsViewModel);
 
         return binding.getRoot();
     }
@@ -284,10 +289,12 @@ public class EditTravelFragment extends Fragment {
     private void attachTravelObserver(){
         travelsViewModel.getTravelAddLiveData().observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()){
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        "TRAVEL ADDED SUCCESSFULLY",
-                        Snackbar.LENGTH_SHORT).show();
                 Log.d(TAG, "travel " + ((Result.TravelsResponseSuccess) result).getData().toString() + " added successfully");
+
+                Intent intent = new Intent(requireActivity(), MainActivity.class);
+                intent.putExtra(TRAVEL_ADDED, true);
+                startActivity(intent);
+                requireActivity().finish();
 
             } else {
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
