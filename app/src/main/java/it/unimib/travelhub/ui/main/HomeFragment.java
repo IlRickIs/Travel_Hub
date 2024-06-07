@@ -3,7 +3,9 @@ package it.unimib.travelhub.ui.main;
 import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
 import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
+import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -114,6 +116,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        Intent intent = requireActivity().getIntent();
+        if (intent.getBooleanExtra(TRAVEL_ADDED, false)) {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    "TRAVEL ADDED SUCCESSFULLY",
+                    Snackbar.LENGTH_SHORT).show();
+        }
+
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
             lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
@@ -122,6 +131,7 @@ public class HomeFragment extends Fragment {
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
+                        Log.d(TAG, "Result: " + ((Result.TravelsResponseSuccess) result).getData());
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
                         Travels onGoingTravel = travelsResponse.getOnGoingTravel();
                         Travels futureTravel = travelsResponse.getFutureTravel();

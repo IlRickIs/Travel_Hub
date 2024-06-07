@@ -1,7 +1,13 @@
 package it.unimib.travelhub.ui.travels;
 
+import android.content.Intent;
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
+
+import java.util.Objects;
 
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.model.Result;
@@ -27,6 +33,7 @@ public class TravelsViewModel extends ViewModel {
             if (travelsListLiveData == null) { //TODO FIX THIS METHOD
                 fetchTravels(lastUpdate);
             }
+            Log.d(TAG, "Travels list: " + travelsListLiveData.getValue());
             return travelsListLiveData;
         }
 
@@ -44,6 +51,22 @@ public class TravelsViewModel extends ViewModel {
         public void updateTravel(Travels travel) {
             travelsRepository.updateTravel(travel);
         }
+
+//        public void addTravel(Travels travel) {
+//            travelsListLiveData = travelsRepository.addTravel(travel);
+//            Observer<Result> observer = new Observer<Result>() {
+//                @Override
+//                public void onChanged(Result result) {
+//                    if (result.isSuccess()) {
+//                        fetchTravels(System.currentTimeMillis());
+//                    }
+//                    travelsListLiveData.setValue(result);
+//                    Log.d(TAG, "Travel ADDED: " + travelsListLiveData.getValue());
+//                    travelsListLiveData.removeObserver(this);
+//                }
+//            };
+//            travelsListLiveData.observeForever(observer);
+//        }
 
         public void addTravel(Travels travel) {
             travelsListLiveData = travelsRepository.addTravel(travel);
