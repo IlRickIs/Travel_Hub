@@ -7,12 +7,15 @@ import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FI
 import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
+import static it.unimib.travelhub.util.Constants.ID_TOKEN;
+import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
 import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 import static it.unimib.travelhub.util.Constants.USERNAME;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -51,6 +54,7 @@ import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
@@ -71,8 +75,8 @@ public class EditTravelFragment extends Fragment {
     private TravelsViewModel travelsViewModel;
     private DataEncryptionUtil dataEncryptionUtil;
 
+    private List<TravelMember> memberList;
     private UserViewModel userViewModel;
-
     AtomicBoolean exists = new AtomicBoolean(false);
     public EditTravelFragment() {
     }
@@ -131,12 +135,8 @@ public class EditTravelFragment extends Fragment {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
-    }
 
-    private void updateLabel(EditText editText) {
-        String myFormat = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ITALY);
-        editText.setText(sdf.format(myCalendar.getTime()));
+        memberList = new ArrayList<>();
     }
 
     @Override
@@ -147,8 +147,14 @@ public class EditTravelFragment extends Fragment {
 
         userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()){
-                User user = ((Result.UserResponseSuccess) result).getData();
-                Log.d(TAG, "user exists: " + user.toString());
+                List<User> users = ((Result.UsersResponseSuccess) result).getData();
+                Log.d(TAG, "user exists: " + users.toString());
+                for(User u : users){
+                    TravelMember member = new TravelMember(u.getUsername(),
+                            u.getIdToken(),
+                            TravelMember.Role.MEMBER);
+                    memberList.add(member);
+                }
                 Travels travels = buildTravel();
                 travelsViewModel.addTravel(travels);
                 attachTravelObserver();
@@ -160,28 +166,40 @@ public class EditTravelFragment extends Fragment {
             }
         });
 
+        Log.d(TAG, "travelsViewModel: " + travelsViewModel);
+
         return binding.getRoot();
+    }
+
+    private void updateLabel(EditText editText) {
+        String myFormat = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ITALY);
+        editText.setText(sdf.format(myCalendar.getTime()));
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        DatePickerDialog.OnDateSetListener date = (v, year, month, dayOfMonth) -> {
+        DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR,year);
             myCalendar.set(Calendar.MONTH,month);
             myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-
+            updateLabel(binding.editTxtFromForm);
+        };
+        DatePickerDialog.OnDateSetListener date2 = (v, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR,year);
+            myCalendar.set(Calendar.MONTH,month);
+            myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            updateLabel(binding.editTxtToForm);
         };
         binding.editTxtFromForm.setOnClickListener(v ->
         {
-            new DatePickerDialog(getContext(),date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            updateLabel(binding.editTxtFromForm);
+            new DatePickerDialog(getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
         binding.editTxtToForm.setOnClickListener(v ->
         {
-            new DatePickerDialog(getContext(),date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            updateLabel(binding.editTxtToForm);
+            new DatePickerDialog(getContext(),date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
         textBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(hintsList, destinationsText,new TextBoxesRecyclerAdapter.OnItemClickListener() {
@@ -248,11 +266,14 @@ public class EditTravelFragment extends Fragment {
         List<String> userToCheck = new ArrayList<>();
         String firstUser = binding.friendsEmailFormEditText.getText().toString();
         if(!firstUser.isEmpty() && firstUser != null){
-            userToCheck.add(firstUser);
+            if( !firstUser.equals(getLoggedUsername()))
+                userToCheck.add(firstUser);
         }
         for(String s : friendTextList){
             if(s != null && !s.isEmpty()) {
-                userToCheck.add(s);
+                Log.d(TAG, "userToChek: '" + s + "'\t loggedUser: '" + getLoggedUsername()+"'");
+                if( !s.equals(getLoggedUsername()))
+                    userToCheck.add(s);
             }
         }
         Log.d(TAG, "users: " + userToCheck.toString());
@@ -268,10 +289,12 @@ public class EditTravelFragment extends Fragment {
     private void attachTravelObserver(){
         travelsViewModel.getTravelAddLiveData().observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()){
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        "TRAVEL ADDED SUCCESSFULLY",
-                        Snackbar.LENGTH_SHORT).show();
                 Log.d(TAG, "travel " + ((Result.TravelsResponseSuccess) result).getData().toString() + " added successfully");
+
+                Intent intent = new Intent(requireActivity(), MainActivity.class);
+                intent.putExtra(TRAVEL_ADDED, true);
+                startActivity(intent);
+                requireActivity().finish();
 
             } else {
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
@@ -303,7 +326,7 @@ public class EditTravelFragment extends Fragment {
         List<TravelSegment> destinations = buildDestinationsList(departure, destination);
 
         String firstMember = binding.friendsEmailFormEditText.getText().toString();
-        List<TravelMember> members = buildFriendsList(firstMember);
+        List<TravelMember> members = buildFriendsList();
 
         travel.setId(Long.parseLong(travelId));
         travel.setTitle(title);
@@ -316,22 +339,13 @@ public class EditTravelFragment extends Fragment {
         return travel;
     }
 
-    public List<TravelMember> buildFriendsList(String firstMember){
+    public List<TravelMember> buildFriendsList(){
         List<TravelMember> members = new ArrayList<>();
-        String userId = getLoggedUsername();
-        TravelMember creator = new TravelMember(userId, TravelMember.Role.CREATOR);
+        TravelMember creator = new TravelMember(TravelMember.Role.CREATOR);
+        creator.setUsername(getLoggedUsername());
+        creator.setIdToken(getLoggedIdToken());
         members.add(creator);
-        if(!firstMember.isEmpty()){
-            TravelMember member = new TravelMember(firstMember, TravelMember.Role.MEMBER);
-            members.add(member);
-        }
-        for(String s : friendTextList){
-            if(s.isEmpty()){
-                continue;
-            }
-            TravelMember member = new TravelMember(s, TravelMember.Role.MEMBER);
-            members.add(member);
-        }
+        members.addAll(memberList);
         return members;
     }
     public List <TravelSegment> buildDestinationsList(String departure, String destination){
@@ -368,6 +382,20 @@ public class EditTravelFragment extends Fragment {
             userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
                     USERNAME);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return userId;
+    }
+
+    public String getLoggedIdToken(){
+        String userId;
+        try {
+            userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
+                    ID_TOKEN);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

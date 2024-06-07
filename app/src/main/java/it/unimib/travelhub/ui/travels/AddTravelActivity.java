@@ -1,10 +1,12 @@
 package it.unimib.travelhub.ui.travels;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -63,5 +65,17 @@ private Travels myTravel;
                 ).addTravel(myTravel);
             }
         });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Back is pressed... Finishing the activity
+                Intent intent = new Intent(AddTravelActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
+
+
 }

@@ -2,6 +2,7 @@ package it.unimib.travelhub.ui.welcome;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 
+import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -13,10 +14,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
+import it.unimib.travelhub.data.database.TravelsDao;
+import it.unimib.travelhub.data.database.TravelsRoomDatabase;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.util.ServiceLocator;
 
 public class UserViewModel extends ViewModel {
     private static final String TAG = UserViewModel.class.getSimpleName();
@@ -95,7 +99,7 @@ public class UserViewModel extends ViewModel {
         return userMutableLiveData;
     }
 
-    public MutableLiveData<Result> logout(DataEncryptionUtil dataEncryptionUtil) {
+    public MutableLiveData<Result> logout(DataEncryptionUtil dataEncryptionUtil, Application application) {
         if (userMutableLiveData == null) {
             userMutableLiveData = userRepository.logout();
         } else {
@@ -103,6 +107,7 @@ public class UserViewModel extends ViewModel {
         }
         try{
             dataEncryptionUtil.flushEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME);
+            ServiceLocator.getInstance().getTravelsRepository(application).deleteAll();
         } catch (Exception e){
             e.printStackTrace();
             Log.d(TAG, "Error while flushing encrypted shared preferences");
@@ -120,7 +125,7 @@ public class UserViewModel extends ViewModel {
     }
 
     public void checkUsernames(List<String> usernames){
-        List<String> unregistered = new ArrayList<>();
+        List<User> registered = new ArrayList<>();
         AtomicInteger count = new AtomicInteger(usernames.size());
 
         for(String u : usernames){
@@ -128,15 +133,14 @@ public class UserViewModel extends ViewModel {
                 @Override
                 public void onUsernameResponse(Result result) {
                     if(result instanceof Result.Error){
-                        unregistered.add(u);
                         isUserRegistered.postValue(new Result.Error("error " + u.toString() + " not registered"));
                     }
                     else{
+                        User u = ((Result.UserResponseSuccess) result).getData();
+                        registered.add(u);
                         count.set(count.get()-1);
                         if(count.get() == 0){
-                            User u = new User();
-                            u.setIdToken("Success");
-                            isUserRegistered.postValue(new Result.UserResponseSuccess(u));
+                            isUserRegistered.postValue(new Result.UsersResponseSuccess(registered));
                         }
 
                     }

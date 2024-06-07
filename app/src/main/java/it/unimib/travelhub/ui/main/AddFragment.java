@@ -1,5 +1,6 @@
 package it.unimib.travelhub.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.AddRecyclerAdapter;
 import it.unimib.travelhub.databinding.FragmentAddBinding;
+import it.unimib.travelhub.ui.travels.AddTravelActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,8 +79,11 @@ public class AddFragment extends Fragment {
         });
         binding.ongoingActivitiesRecyclerView.setLayoutManager(mLayoutManager);
         binding.ongoingActivitiesRecyclerView.setAdapter(addRecyclerAdapter);
-        binding.buttonAddActivity.setOnClickListener(v -> Navigation.findNavController(view).
-                navigate(AddFragmentDirections.actionAddFragmentToAddTravelActivity()));
+        binding.buttonAddActivity.setOnClickListener(v ->{
+            Intent intent = new Intent(getActivity(), AddTravelActivity.class);
+            startActivity(intent);
+            requireActivity().finish();
+        });
     }
 
     @Override

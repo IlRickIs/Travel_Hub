@@ -1,5 +1,7 @@
 package it.unimib.travelhub.model;
 
+import java.util.List;
+
 /**
  * Class that represents the result of an action that requires
  * the use of a Web Service or a local database.
@@ -8,7 +10,7 @@ public abstract class Result {
     private Result() {}
 
     public boolean isSuccess() {
-        return this instanceof UserResponseSuccess || this instanceof TravelsResponseSuccess;
+        return this instanceof UserResponseSuccess || this instanceof TravelsResponseSuccess || this instanceof UsersResponseSuccess;
     }
 
     public static final class TravelsResponseSuccess extends Result {
@@ -28,6 +30,16 @@ public abstract class Result {
         }
         public User getData() {
             return user;
+        }
+    }
+
+    public static final class UsersResponseSuccess extends Result {
+        private final List<User> users;
+        public UsersResponseSuccess(List<User> users) {
+            this.users = users;
+        }
+        public List<User> getData() {
+            return users;
         }
     }
 

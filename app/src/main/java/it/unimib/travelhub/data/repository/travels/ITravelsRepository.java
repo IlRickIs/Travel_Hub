@@ -9,11 +9,12 @@ import it.unimib.travelhub.model.Travels;
 
 public interface ITravelsRepository {
     MutableLiveData<Result> fetchTravels(long lastUpdate);
-
     void updateTravel(Travels travel);
     void addTravels(List<Travels> travelsList);
 
     MutableLiveData<Result> addTravel(Travels travel);
+
+    void deleteAll();
 
 
 }

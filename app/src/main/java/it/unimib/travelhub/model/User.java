@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import com.google.firebase.database.Exclude;
 
-public class User implements Parcelable {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String username;
     private String name;
     private String surname;
@@ -14,7 +16,19 @@ public class User implements Parcelable {
     private String email;
     private String idToken;
 
+    public User(String username, String idToken) {
+        this.username = username;
+        this.idToken = idToken;
+    }
+
     public User() {
+        this.username = null;
+        this.name = null;
+        this.surname = null;
+        this.age = 0;
+        this.photoUrl = null;
+        this.email = null;
+        this.idToken=null;
     }
 
     public User(String username) {
@@ -25,6 +39,8 @@ public class User implements Parcelable {
         this.email = email;
         this.idToken = idToken;
     }
+
+
 
     public User(String name, String surname, int age, String photoUrl, String email, String idToken) {
         this.name = name;
@@ -68,43 +84,6 @@ public class User implements Parcelable {
                 ", idToken='" + idToken + '\'' +
                 '}';
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.username);
-        dest.writeString(this.email);
-        dest.writeString(this.idToken);
-    }
-
-    public void readFromParcel(Parcel source) {
-        this.username = source.readString();
-        this.email = source.readString();
-        this.idToken = source.readString();
-    }
-
-    protected User(Parcel in) {
-        this.username = in.readString();
-        this.email = in.readString();
-        this.idToken = in.readString();
-    }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
-
     public String getName() {
         return name;
     }
