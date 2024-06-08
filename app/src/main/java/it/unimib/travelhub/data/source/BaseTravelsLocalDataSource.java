@@ -15,4 +15,5 @@ public abstract class BaseTravelsLocalDataSource {
     public abstract void updateTravel(Travels travels);
     public abstract void insertTravels(List<Travels> travelsList);
     public abstract void deleteAll();
+    public abstract void deleteAllAfterSync(List<Travels> travelsList);
 }

@@ -148,5 +148,7 @@
     <string name="destination_error" translatable="false">Empty destination location</string>
     <string name="departure" translatable="false">departure*</string>
     <string name="add_destination" translatable="false">Add Destination ></string>
+    <string name="date_over_limit" translatable="false">This date exceeds the travel end date</string>
+    <string name="date_under_limit" translatable="false">This date is before the travel start date</string>
 
 </resources>

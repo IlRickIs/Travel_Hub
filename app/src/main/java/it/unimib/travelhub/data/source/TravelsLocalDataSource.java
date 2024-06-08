@@ -89,4 +89,20 @@ public class TravelsLocalDataSource extends BaseTravelsLocalDataSource {
         });
     }
 
+    @Override
+    public void deleteAllAfterSync(List<Travels> travelsList) {
+        TravelsRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                int deleted = travelsDao.deleteAll();
+                if (deleted == 0) {
+                    travelsCallback.onFailureFromLocal(new Exception("No travels deleted after sync"));
+                } else {
+                    travelsCallback.onSuccessDeletionAfterSync(travelsList);
+                }
+            } catch (Exception e) {
+                travelsCallback.onFailureFromLocal(e);
+            }
+        });
+    }
+
 }

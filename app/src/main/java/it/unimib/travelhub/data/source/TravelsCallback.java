@@ -1,5 +1,7 @@
 package it.unimib.travelhub.data.source;
 
+import java.util.List;
+
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 
@@ -11,6 +13,6 @@ public interface TravelsCallback {
     void onSuccessFromCloudReading(TravelsResponse travelsResponse);
     void onSuccessSynchronization();
     void onSuccessDeletion();
-
     void onSuccessFromCloudWriting(Travels travel);
+    void onSuccessDeletionAfterSync(List<Travels> travelsList);
 }

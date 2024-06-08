@@ -110,6 +110,11 @@ public class EditTravelSegment extends Fragment {
 
         Log.d("EditTravelSegment", "onCreate: " + travel);
 
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
+        Date toDate = travel.getDestinations().get(travel.getDestinations().size() - 1).getDateTo();
+        if (toDate != null)
+            binding.fromEditText.setText(sdf.format(toDate));
+
         binding.addDestinationButtonSegment.setOnClickListener(v -> {
             if(checkNulls()){
                 return;
@@ -191,6 +196,7 @@ public class EditTravelSegment extends Fragment {
             if(checkNulls()){
                 return;
             }
+            travel.getDestinations().get(0).setDateTo(null);
             travel.getDestinations().add(buildTravelSegment());
             Log.d(TAG, "TRAVEL TO CREATE: " + travel);
             //add the travel
@@ -220,24 +226,43 @@ public class EditTravelSegment extends Fragment {
         }else{
             binding.destinationEditText.setError(null);
         }
-//        if (binding.fromEditText.getText().toString().isEmpty()) {
-//            binding.fromEditText.setError(getString(R.string.date_empty_error));
-//            isNull = true;
-//        }else{
-//            binding.fromEditText.setError(null);
-//        }
-//        if (binding.toEditText.getText().toString().isEmpty()) {
-//            binding.toEditText.setError(getString(R.string.date_empty_error));
-//            isNull = true;
-//        }else{
-//            binding.toEditText.setError(null);
-//        }
+        Date dateFrom = null;
+        Date dateTo = null;
+        if (!binding.fromEditText.getText().toString().isEmpty())
+            dateFrom = parseStringToDate(binding.fromEditText.getText().toString() + " 00:00:00");
+        Date startDate = travel.getStartDate();
+        if (!binding.toEditText.getText().toString().isEmpty())
+            dateTo = parseStringToDate(binding.toEditText.getText().toString() + " 23:59:59");
+        Date endDate = travel.getEndDate();
+        if (dateFrom != null) {
+            if (dateFrom.before(startDate)) {
+                binding.fromEditText.setError(getString(R.string.date_under_limit));
+                isNull = true;
+            }else if(dateFrom.after(endDate)){
+                binding.fromEditText.setError(getString(R.string.date_over_limit));
+                isNull = true;
+            }else{
+                binding.fromEditText.setError(null);
+            }
+        }
+        if (dateTo != null) {
+            if (dateTo.before(startDate)) {
+                binding.toEditText.setError(getString(R.string.date_under_limit));
+                isNull = true;
+            }else if(dateTo.after(endDate)){
+                binding.toEditText.setError(getString(R.string.date_over_limit));
+                isNull = true;
+            }else{
+                binding.toEditText.setError(null);
+            }
+        }
+
 
         return isNull;
     }
 
     public Date parseStringToDate(String date){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.ITALY);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", getResources().getConfiguration().getLocales().get(0));
         Date parsedDate = null;
         try {
             parsedDate = sdf.parse(date);
@@ -249,7 +274,7 @@ public class EditTravelSegment extends Fragment {
 
     private void updateLabel(EditText editText) {
         String myFormat = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ITALY);
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, getResources().getConfiguration().getLocales().get(0));
         editText.setText(sdf.format(myCalendar.getTime()));
     }
 

@@ -150,7 +150,7 @@ public class EditTravelFragment extends Fragment {
 
     private void updateLabel(EditText editText) {
         String myFormat = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ITALY);
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, getResources().getConfiguration().getLocales().get(0));
         editText.setText(sdf.format(myCalendar.getTime()));
     }
 
@@ -357,11 +357,13 @@ public class EditTravelFragment extends Fragment {
     }
     public List <TravelSegment> buildDestinationsList(String departure){
         List<TravelSegment> destinations = new ArrayList<>();
-        destinations.add(new TravelSegment(departure));
+        TravelSegment start = new TravelSegment(departure);
+        start.setDateTo(parseStringToDate(binding.editTxtFromForm.getText().toString() + " 00:00:00"));
+        destinations.add(start);
         return destinations;
     }
     public Date parseStringToDate(String date){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.ITALY);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", getResources().getConfiguration().getLocales().get(0));
         Date parsedDate = null;
         try {
             parsedDate = sdf.parse(date);

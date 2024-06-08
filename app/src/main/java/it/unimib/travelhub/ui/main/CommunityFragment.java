@@ -83,7 +83,7 @@ public class CommunityFragment extends Fragment {
         travelSegments.add(new TravelSegment("Roma"));
         travel.setDestinations(travelSegments);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
         Date parsedDate = null;
         Date endDate = null;
         try {

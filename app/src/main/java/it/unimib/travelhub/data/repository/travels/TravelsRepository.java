@@ -77,7 +77,8 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     onSuccessFromRemote(TravelsResponse travelsResponse, long lastUpdate) {
         sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
                 String.valueOf(System.currentTimeMillis()));
-        travelsLocalDataSource.insertTravels(travelsResponse.getTravelsList());
+        travelsLocalDataSource.deleteAllAfterSync(travelsResponse.getTravelsList());
+        //travelsLocalDataSource.insertTravels(travelsResponse.getTravelsList());
     }
 
     @Override
@@ -133,6 +134,10 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     @Override
     public void onSuccessDeletion() {
         Log.d("TravelsRepository", "Travels deleted");
+    }
+
+    public void onSuccessDeletionAfterSync(List<Travels> travelsList) {
+        travelsLocalDataSource.insertTravels(travelsList);
     }
 
     @Override
