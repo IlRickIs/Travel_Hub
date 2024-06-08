@@ -10,9 +10,12 @@ import static it.unimib.travelhub.util.Constants.PASSWORD;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
 import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -23,6 +26,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -31,6 +36,7 @@ import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -46,11 +52,15 @@ public class EditTravelSegment extends Fragment {
     private FragmentEditTravelSegmentBinding binding;
     private Travels travel;
 
+    final Calendar myCalendar= Calendar.getInstance();
     private String destinationName;
     private String dateFrom;
     private String dateTo;
 
+    Button saveTravelBtn;
     private String description;
+
+    private static final String TAG = EditTravelSegment.class.getSimpleName();
 
     public EditTravelSegment() {
         // Required empty public constructor
@@ -69,6 +79,7 @@ public class EditTravelSegment extends Fragment {
         } else {
             Log.d("EditTravelSegment", "onCreate: no arguments");
         }
+        saveTravelBtn = requireActivity().findViewById(R.id.button_save_activity);
     }
 
     @Override
@@ -94,6 +105,12 @@ public class EditTravelSegment extends Fragment {
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });
+
+        saveTravelBtn.setClickable(true);
+       //make it visible appear clikable
+        saveTravelBtn.setAlpha(1f);
+
+
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
@@ -123,6 +140,41 @@ public class EditTravelSegment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR,year);
+            myCalendar.set(Calendar.MONTH,month);
+            myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            updateLabel(binding.fromEditText);
+        };
+        DatePickerDialog.OnDateSetListener date2 = (v, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR,year);
+            myCalendar.set(Calendar.MONTH,month);
+            myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            updateLabel(binding.toEditText);
+        };
+        binding.fromEditText.setOnClickListener(v ->
+        {
+            new DatePickerDialog(getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        binding.toEditText.setOnClickListener(v ->
+        {
+            new DatePickerDialog(getContext(),date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        saveTravelBtn.setOnClickListener(v -> {
+            if(checkNulls()){
+                return;
+            }
+            travel.getDestinations().add(buildTravelSegment());
+            Log.d(TAG, "TRAVEL TO CREATE: " + travel);
+            //add the travel
+        });
+    }
+
     private TravelSegment buildTravelSegment() {
         TravelSegment travelSegment = new TravelSegment();
         travelSegment.setLocation(binding.destinationEditText.getText().toString());
@@ -134,6 +186,30 @@ public class EditTravelSegment extends Fragment {
         return travelSegment;
     }
 
+    private boolean checkNulls(){
+        boolean isNull = false;
+        if (binding.destinationEditText.getText().toString().isEmpty()) {
+            binding.destinationEditText.setError(getString(R.string.destination_error));
+            isNull = true;
+        }else{
+            binding.destinationEditText.setError(null);
+        }
+        if (binding.fromEditText.getText().toString().isEmpty()) {
+            binding.fromEditText.setError(getString(R.string.date_empty_error));
+            isNull = true;
+        }else{
+            binding.fromEditText.setError(null);
+        }
+        if (binding.toEditText.getText().toString().isEmpty()) {
+            binding.toEditText.setError(getString(R.string.date_empty_error));
+            isNull = true;
+        }else{
+            binding.toEditText.setError(null);
+        }
+
+        return isNull;
+    }
+
     public Date parseStringToDate(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.ITALY);
         Date parsedDate = null;
@@ -143,6 +219,12 @@ public class EditTravelSegment extends Fragment {
             e.printStackTrace();
         }
         return parsedDate;
+    }
+
+    private void updateLabel(EditText editText) {
+        String myFormat = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ITALY);
+        editText.setText(sdf.format(myCalendar.getTime()));
     }
 
     @Override
