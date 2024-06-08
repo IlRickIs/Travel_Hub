@@ -143,7 +143,8 @@ public class HomeFragment extends Fragment {
         }
 
         friendsRecyclerView = binding.friendsRecyclerView;
-        travelSegmentsRecyclerView = binding.segmentsRecyclerView;
+//        travelSegmentsRecyclerView = binding.segmentsRecyclerView;
+
 
 
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
@@ -154,29 +155,10 @@ public class HomeFragment extends Fragment {
                         Travels futureTravel = travelsResponse.getFutureTravel();
                         Travels doneTravel = travelsResponse.getDoneTravel();
 
-                        if (travelsResponse != null) {
-                            if (doneTravel == null && onGoingTravel == null) {
-                                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-                                binding.homeLayoutStandard.setVisibility(View.GONE);
-                            } else if (doneTravel != null && onGoingTravel == null) {
-                                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
-                                binding.homeTextOngoing.setVisibility(View.GONE);
-                                binding.homeCardOngoing.setVisibility(View.GONE);
-                                binding.homeTextFuture.setVisibility(View.GONE);
-                                binding.homeCardFuture.setVisibility(View.GONE);
-                            } else if (futureTravel == null || onGoingTravel == futureTravel) {
-                                binding.homeTextFuture.setVisibility(View.GONE);
-                                binding.homeCardFuture.setVisibility(View.GONE);
-
-                                setOngoingView();
-                            } else {
-                                setOngoingView();
-                                setFutureView();
-                            }
-                        } else {
-                            Log.e(TAG, "TravelsResponse is null");
-                            binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-                            binding.homeLayoutStandard.setVisibility(View.GONE);
+                        if (onGoingTravel == null) {
+                            binding.homeCardNoTravel.setVisibility(View.VISIBLE);
+                        }else{
+                            setOngoingView();
                         }
 
                         binding.seeAll.setOnClickListener(v -> {
@@ -266,22 +248,22 @@ public class HomeFragment extends Fragment {
         friendsRecyclerView.setLayoutManager(layoutManagerRunning);
         friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
 
-        List<TravelSegment> destinations = onGoingTravel.getDestinations();
-
-
-        TravelSegmentRecyclerAdapter travelSegmentRecyclerAdapterRunning = new TravelSegmentRecyclerAdapter(onGoingTravel.getDestinations());
-        travelSegmentsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        travelSegmentsRecyclerView.setAdapter(travelSegmentRecyclerAdapterRunning);
+//        List<TravelSegment> destinations = onGoingTravel.getDestinations();
+//        TravelSegmentRecyclerAdapter travelSegmentRecyclerAdapterRunning = new TravelSegmentRecyclerAdapter(onGoingTravel.getDestinations());
+//        travelSegmentsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+//        travelSegmentsRecyclerView.setAdapter(travelSegmentRecyclerAdapterRunning);
 
         binding.homeOngoingTitle.setText(onGoingTravel.getTitle());
-        binding.homeOngoingStartDate.setText(
+
+        binding.homeOngoingDates.setText(
                 new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                        .format(onGoingTravel.getStartDate())
+                        .format(onGoingTravel.getStartDate()) + " - " +
+                        new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                                .format(onGoingTravel.getEndDate())
         );
-        binding.homeOngoingEndDate.setText(
-                new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                        .format(onGoingTravel.getEndDate())
-        );
+
+        binding.homeOngoingNsegremts.setText(onGoingTravel.getDestinations().size() + " destinazioni");
+
         //binding.homeOngoingDescription.setText(onGoingTravel.getDescription());
     }
 

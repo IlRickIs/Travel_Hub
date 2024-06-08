@@ -23,19 +23,27 @@
             android:id="@+id/home_layout_in_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/home_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:padding="16dp"
                 app:layout_constraintBottom_toTopOf="@+id/home_layout_standard"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="40dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/original_logo"
+                    app:layout_constraintBottom_toBottomOf="@+id/home_text_welcome"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/home_text_welcome" />
 
                 <TextView
                     android:id="@+id/home_text_welcome"
@@ -43,269 +51,205 @@
                     android:layout_height="wrap_content"
                     android:text="Travel Hub"
                     android:textAlignment="center"
-                    android:textSize="36sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <TextView
-                    android:id="@+id/home_text_ongoing"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Il tuo prossimo viaggio"
-                    android:textSize="24sp" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/home_layout_no_travels"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_margin="40dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/home_text_welcome">
-
-                    <TextView
-                        android:id="@+id/home_text_no_travels"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sembra che non hai ancora nessun viaggio...\nCrea subuito un nuovo viaggio cliccando sul bottone"
-                        android:textColor="#D3D3D3"
-                        android:textSize="24sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/home_image_no_travels"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-
-                        android:src="@drawable/baseline_add_circle_outline_100"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/home_text_no_travels" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/home_layout_no_future_travels"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/home_text_no_future_travels"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="Sembra che tu non abbia nessun viaggio programmato...\nCrea subuito un nuovo viaggio cliccando sul bottone"
                     android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/home_text_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="Simbolo di aggiunta"
-
-                    android:src="@drawable/baseline_add_circle_outline_100"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/home_text_no_future_travels" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
-                android:id="@+id/home_card_ongoing"
+            <View
+                android:id="@+id/divider_head"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/home_card_no_travel"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="4dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp">
+                <ImageView
+                    android:id="@+id/home_new_travel_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="#000000"
+                    android:cropToPadding="false"
+                    android:scaleType="centerCrop"
+                    android:tintMode="src_over"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/travel_background"
+                    app:tint="#75000000" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:selectableItemBackground"
-                    android:descendantFocusability="blocksDescendants"
-                    android:clipChildren="false">
+                    android:layout_height="match_parent"
+                    android:padding="12dp"
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/linearLayout2"
-                        android:layout_width="0dp"
-                        android:layout_height="300dp"
-                        android:clipChildren="false"
-                        android:orientation="vertical"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        >
+                    >
 
-                        <ImageView
-                            android:id="@+id/home_ongoing_image"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:backgroundTint="#000000"
-                            android:cropToPadding="false"
-                            android:scaleType="centerCrop"
-                            android:tintMode="src_over"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/travel_background"
-                            app:tint="#75000000" />
-
-                        <TextView
-                            android:id="@+id/home_ongoing_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="16dp"
-                            android:text="Zara 2023"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
-                            android:textColor="#FFFFFF"
-                            android:textSize="24sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <LinearLayout
-                            android:id="@+id/linearLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginLeft="16dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/home_ongoing_title">
-
-                            <TextView
-                                android:id="@+id/home_ongoing_start_date"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="18/09/2023"
-                                android:textAppearance="?attr/textAppearanceBodyMedium"
-                                android:textColor="#FFFFFF"
-                                android:textSize="15sp" />
-
-                            <TextView
-                                android:id="@+id/home_ongoing_separator"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingHorizontal="8dp"
-                                android:text="@string/dash"
-                                android:textAppearance="?attr/textAppearanceBodyMedium"
-                                android:textColor="#FFFFFF"
-                                android:textSize="15sp" />
-
-                            <TextView
-                                android:id="@+id/home_ongoing_end_date"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="24/09/2023"
-                                android:textAppearance="?attr/textAppearanceBodyMedium"
-                                android:textColor="#FFFFFF"
-                                android:textSize="15sp" />
-
-
-                        </LinearLayout>
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/friends_recycler_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:padding="0dp"
-                            android:scrollbars="none"
-                            app:layout_constraintBottom_toBottomOf="@+id/home_ongoing_image"
-                            app:layout_constraintStart_toStartOf="parent" />
-
-                        <Button
-                            android:id="@+id/home_ongoing_button"
-                            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minWidth="0dp"
-                            android:minHeight="0dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginRight="16dp"
-                            android:text="Vai al viaggio"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/home_ongoing_image" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--                    <View-->
-<!--                        android:id="@+id/divider2"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="1dp"-->
-<!--                        android:background="?android:attr/listDivider"-->
-<!--                        app:layout_constraintBottom_toTopOf="@+id/segments_recycler_view"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"-->
-<!--                        android:layout_marginVertical="16dp"/>-->
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/segments_recycler_view"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/home_text_no_future_travels"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:layout_marginTop="16dp"
-                        android:scrollbars="none"
-                        android:nestedScrollingEnabled="false"
+                        android:layout_margin="8dp"
+                        android:text="Sembra che tu non abbia nessun viaggio programmato"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/onPrimaryColor"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/home_button_create_travel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Crea un viaggio"
+                        app:layout_constraintBottom_toBottomOf="@+id/home_text_no_future_travels"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="0dp"
-                        android:layout_height="200dp"
-                        android:layout_margin="16dp"
-                        app:layout_constraintTop_toBottomOf="@id/segments_recycler_view"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent">
-
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cardView_days"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/cardView_members"
-                            app:layout_constraintTop_toTopOf="parent">
-                            <TextView
-                                android:id="@+id/travel_days"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Giorni" />
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cardView_members"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/cardView_days"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent">
-                            <TextView
-                                android:id="@+id/member_number"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Numero di partecipanti" />
-
-                        </androidx.cardview.widget.CardView>
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:backgroundTint="@color/secondaryColor"
+                        android:textStyle="bold"/>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/home_card_ongoing"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp">
+
+                <ImageView
+                    android:id="@+id/home_ongoing_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/primaryColor"
+                    android:cropToPadding="false"
+                    android:scaleType="centerCrop"
+                    android:tintMode="src_over"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/travel_background"
+                    app:tint="#75000000" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/home_ongoing_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Zara 2023"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/onPrimaryColor"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/home_ongoing_dates"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/baseline_calendar_month_24"
+                        android:drawableTint="@color/secondaryColor"
+                        android:gravity="center"
+                        android:drawablePadding="4dp"
+                        android:layout_marginTop="6dp"
+                        android:textColor="@color/onPrimaryColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/home_ongoing_title" />
+
+                    <TextView
+                        android:id="@+id/home_ongoing_nsegremts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/baseline_map_24"
+                        android:drawableTint="@color/secondaryColor"
+                        android:drawablePadding="4dp"
+                        android:layout_marginTop="6dp"
+                        android:textColor="@color/onPrimaryColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/home_ongoing_dates" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/friends_recycler_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        android:layout_marginTop="6dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#2A2FFF00"
+                        android:padding="5dp"
+
+                        app:cardCornerRadius="100dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                        <TextView
+                            android:id="@+id/textView_ongoing"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:text="Corrente"
+                            android:textColor="#BCECAF"
+                            android:textStyle="bold"
+
+                            />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/home_ongoing_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/secondaryColor"
+                        android:text="Vai al Viaggio"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
