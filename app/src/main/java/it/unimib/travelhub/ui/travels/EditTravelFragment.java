@@ -147,32 +147,6 @@ public class EditTravelFragment extends Fragment {
         binding = FragmentEditTravelBinding.inflate(inflater, container, false);
         mainActivity = (Activity) requireActivity();
 
-        //TODO: when adding friends logic is not correct, fix this
-        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()){
-                List<User> users = ((Result.UsersResponseSuccess) result).getData();
-                Log.d(TAG, "user exists: " + users.toString());
-                for(User u : users){
-                    TravelMember member = new TravelMember(u.getUsername(),
-                            u.getIdToken(),
-                            TravelMember.Role.MEMBER);
-                    memberList.add(member);
-                }
-                Travels travel = buildTravel();
-                //travelsViewModel.addTravel(travels);
-                //attachTravelObserver();
-                userViewModel.getIsUserRegistered().removeObservers(getViewLifecycleOwner());
-                Log.d(TAG, "DETACHING OBSERVER");
-                goToNewFragment(travel);
-                //detach observer
-            } else {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        ((Result.Error) result).getMessage(),
-                        Snackbar.LENGTH_SHORT).show();
-                Log.d(TAG, "user does not exist: " + ((Result.Error) result).getMessage());
-            }
-        });
-
         return binding.getRoot();
     }
 
@@ -265,10 +239,38 @@ public class EditTravelFragment extends Fragment {
             if(checkNullValues()){
                 return;
             }
+            observeUserRegistration();
             checkUsers();
 
         });
 
+    }
+
+    private void observeUserRegistration() {
+        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()){
+                List<User> users = ((Result.UsersResponseSuccess) result).getData();
+                Log.d(TAG, "user exists: " + users.toString());
+                for(User u : users){
+                    TravelMember member = new TravelMember(u.getUsername(),
+                            u.getIdToken(),
+                            TravelMember.Role.MEMBER);
+                    memberList.add(member);
+                }
+                Travels travel = buildTravel();
+                //travelsViewModel.addTravel(travels);
+                //attachTravelObserver();
+                userViewModel.getIsUserRegistered().removeObservers(getViewLifecycleOwner());
+                Log.d(TAG, "DETACHING OBSERVER");
+                goToNewFragment(travel);
+                //detach observer
+            } else {
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        ((Result.Error) result).getMessage(),
+                        Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "user does not exist: " + ((Result.Error) result).getMessage());
+            }
+        });
     }
 
     private void goToNewFragment(Travels travel){
