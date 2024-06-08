@@ -64,6 +64,8 @@ public class TravelSegment implements Serializable {
     public String toString() {
         return "TravelSegment{" +
                 "location='" + location + '\'' +
+                ", dateFrom=" + dateFrom +
+                ", dateTo=" + dateTo +
                 '}';
     }
 }

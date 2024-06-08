@@ -35,7 +35,7 @@ public class Constants {
     public static final String TRAVELS_DATABASE_NAME = "travels_database";
     public static final String LAST_UPDATE = "last_update";
 
-    public static final long FRESH_TIMEOUT = 60 * 60 * 1000;
+    public static final long FRESH_TIMEOUT = 0;
 
     //TRAVELSEGMENT
     public static final String DESTINATION_TITLE = "DESTINATION";

@@ -194,8 +194,8 @@ public class EditTravelSegment extends Fragment {
             travel.getDestinations().add(buildTravelSegment());
             Log.d(TAG, "TRAVEL TO CREATE: " + travel);
             //add the travel
-            travelsViewModel.addTravel(travel);
-            attachTravelObserver();
+            //travelsViewModel.addTravel(travel);
+            //attachTravelObserver();
 
         });
     }
@@ -204,8 +204,9 @@ public class EditTravelSegment extends Fragment {
         TravelSegment travelSegment = new TravelSegment();
         travelSegment.setLocation(binding.destinationEditText.getText().toString());
         travelSegment.setDescription(binding.descriptionEditText.getText().toString());
-        String dateFrom = binding.fromEditText.getText().toString();
-        String dateTo = binding.toEditText.getText().toString();
+        String dateFrom = binding.fromEditText.getText().toString() + " 00:00:00";
+        String dateTo = binding.toEditText.getText().toString() + " 23:59:59";
+        //TODO: what if the date is empty?
         travelSegment.setDateFrom(parseStringToDate(dateFrom));
         travelSegment.setDateTo(parseStringToDate(dateTo));
         return travelSegment;
