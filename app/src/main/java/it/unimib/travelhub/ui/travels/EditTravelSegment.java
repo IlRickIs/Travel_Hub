@@ -7,10 +7,12 @@ import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FI
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
+import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
 import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -20,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -41,16 +44,22 @@ import java.util.Date;
 import java.util.Locale;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.ActivityAddTravelBinding;
 import it.unimib.travelhub.databinding.FragmentEditTravelBinding;
 import it.unimib.travelhub.databinding.FragmentEditTravelSegmentBinding;
+import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
+import it.unimib.travelhub.ui.main.MainActivity;
+import it.unimib.travelhub.util.ServiceLocator;
 
 public class EditTravelSegment extends Fragment {
 
     private FragmentEditTravelSegmentBinding binding;
     private Travels travel;
+
+    private TravelsViewModel travelsViewModel;
 
     final Calendar myCalendar= Calendar.getInstance();
     private String destinationName;
@@ -80,6 +89,17 @@ public class EditTravelSegment extends Fragment {
             Log.d("EditTravelSegment", "onCreate: no arguments");
         }
         saveTravelBtn = requireActivity().findViewById(R.id.button_save_activity);
+
+        ITravelsRepository travelsRepository =
+                ServiceLocator.getInstance().getTravelsRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (travelsRepository != null) {
+            travelsViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
+        }
     }
 
     @Override
@@ -91,8 +111,10 @@ public class EditTravelSegment extends Fragment {
         Log.d("EditTravelSegment", "onCreate: " + travel);
 
         binding.addDestinationButtonSegment.setOnClickListener(v -> {
+            if(checkNulls()){
+                return;
+            }
             Bundle bundle = new Bundle();
-
             travel.getDestinations().add(buildTravelSegment());
             bundle.putSerializable("travel", travel);
 
@@ -172,6 +194,9 @@ public class EditTravelSegment extends Fragment {
             travel.getDestinations().add(buildTravelSegment());
             Log.d(TAG, "TRAVEL TO CREATE: " + travel);
             //add the travel
+            travelsViewModel.addTravel(travel);
+            attachTravelObserver();
+
         });
     }
 
@@ -225,6 +250,26 @@ public class EditTravelSegment extends Fragment {
         String myFormat = "dd/MM/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ITALY);
         editText.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private void attachTravelObserver(){
+        travelsViewModel.getTravelAddLiveData().observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()){
+                Log.d(TAG, "travel " + ((Result.TravelsResponseSuccess) result).getData().toString() + " added successfully");
+
+                Intent intent = new Intent(requireActivity(), MainActivity.class);
+                intent.putExtra(TRAVEL_ADDED, true);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                requireActivity().finish();
+
+            } else {
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        ((Result.Error)result).getMessage(),
+                        Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "Error while adding travel: " + ((Result.Error)result).getMessage());
+            }
+        });
     }
 
     @Override

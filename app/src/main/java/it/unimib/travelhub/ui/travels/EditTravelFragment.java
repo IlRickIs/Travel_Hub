@@ -307,31 +307,11 @@ public class EditTravelFragment extends Fragment {
 //            Travels upload = buildTravel();
 //            travelsViewModel.addTravel(upload);
 //            attachTravelObserver();
-
             //here we dont need to do anything just build the travel
             goToNewFragment(buildTravel());
         }else {
             userViewModel.checkUsernames(userToCheck);
         }
-    }
-
-    private void attachTravelObserver(){
-        travelsViewModel.getTravelAddLiveData().observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()){
-                Log.d(TAG, "travel " + ((Result.TravelsResponseSuccess) result).getData().toString() + " added successfully");
-
-                Intent intent = new Intent(requireActivity(), MainActivity.class);
-                intent.putExtra(TRAVEL_ADDED, true);
-                startActivity(intent);
-                requireActivity().finish();
-
-            } else {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        ((Result.Error)result).getMessage(),
-                        Snackbar.LENGTH_SHORT).show();
-                Log.d(TAG, "Error while adding travel: " + ((Result.Error)result).getMessage());
-            }
-        });
     }
 
     public Travels buildTravel(){

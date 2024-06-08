@@ -39,12 +39,6 @@ public class AddTravelActivity extends AppCompatActivity {
 
      viewModel = new ViewModelProvider(this).get(FragmentActivityAddViewModel.class);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                 R.id.navigation_edit, R.id.navigation_images, R.id.navigation_map_preview)
-                .build();
-
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
                 findFragmentById(R.id.activityAddFragmentContainerView);
 
