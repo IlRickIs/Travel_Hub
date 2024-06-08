@@ -70,9 +70,9 @@ public class ServiceLocator {
 //        travelsRemoteDataSource = new TravelsMockRemoteDataSource(jsonParserUtil);
         travelsRemoteDataSource = new TravelsRemoteDataSource(dataEncryptionUtil);
 
-        travelsLocalDataSource = new TravelsLocalDataSource(getTravelsDao(application), sharedPreferencesUtil);
+        travelsLocalDataSource = new TravelsLocalDataSource(getTravelsDao(application));
 
-        return new TravelsRepository(travelsLocalDataSource, travelsRemoteDataSource);
+        return new TravelsRepository(travelsLocalDataSource, travelsRemoteDataSource, sharedPreferencesUtil);
 
     }
 

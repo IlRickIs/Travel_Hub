@@ -15,12 +15,10 @@ import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class TravelsLocalDataSource extends BaseTravelsLocalDataSource {
     private final TravelsDao travelsDao;
-    private final SharedPreferencesUtil sharedPreferencesUtil;
     private static final String TAG = TravelsLocalDataSource.class.getSimpleName();
 
-    public TravelsLocalDataSource(TravelsRoomDatabase travelsRoomDatabase, SharedPreferencesUtil sharedPreferencesUtil) {
+    public TravelsLocalDataSource(TravelsRoomDatabase travelsRoomDatabase) {
         this.travelsDao = travelsRoomDatabase.travelsDao();
-        this.sharedPreferencesUtil = sharedPreferencesUtil;
     }
 
     @Override
@@ -66,8 +64,6 @@ public class TravelsLocalDataSource extends BaseTravelsLocalDataSource {
                     travelsCallback.onFailureFromLocal(new Exception("No travels inserted"));
                 } else {
                     Log.d(TAG, "Travels inserted");
-                    sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
-                            String.valueOf(System.currentTimeMillis()));
                     travelsCallback.onSuccessFromLocal(new TravelsResponse(travelsList));
                 }
             } catch (Exception e) {
