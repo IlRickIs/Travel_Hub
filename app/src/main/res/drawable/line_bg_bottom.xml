@@ -1,6 +1,0 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/fui_bgAnonymous"/>
-    <corners
-        android:bottomLeftRadius="15dp"
-        android:bottomRightRadius="15dp"/>
-</shape>

@@ -2,9 +2,11 @@ package it.unimib.travelhub.adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,28 +41,16 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
     @Override
     public void onBindViewHolder(@NonNull final TravelSegmentRecyclerAdapter.ViewHolder holder, final int position) {
         TravelSegment item = data.get(position);
-         //Populate views...
 
-
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.seg_line.getLayoutParams();
 
         switch(holder.getItemViewType()) {
             case VIEW_TYPE_TOP:
-                // The top of the line has to be rounded
-                Drawable top_rounded = holder.seg_line.getResources().getDrawable(R.drawable.line_bg_top);
-                holder.seg_line.setBackground(top_rounded);
+                holder.seg_top_line.setVisibility(View.GONE);
                 break;
             case VIEW_TYPE_MIDDLE:
-                // Only the color could be enough
-                // but a drawable can be used to make the cap rounded also here
-                Drawable middle_rounded = holder.seg_line.getResources().getDrawable(R.drawable.line_bg_middle);
-                params.setMargins(0, 0, 0, 0);
-                holder.seg_line.setBackground(middle_rounded);
                 break;
             case VIEW_TYPE_BOTTOM:
-                Drawable bottom_rounded = holder.seg_line.getResources().getDrawable(R.drawable.line_bg_bottom);
-                holder.seg_line.setBackground(bottom_rounded);
-                params.setMargins(0, 0, 0, 0);
+                holder.seg_bottom_line.setVisibility(View.GONE);
                 break;
         }
         holder.bind(item);
@@ -89,28 +79,73 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
         TextView seg_location;
         TextView seg_date_from;
         TextView seg_date_to;
+        View seg_top_line;
+        View seg_bottom_line;
 
-        TextView seg_description;
-
-        ConstraintLayout seg_line;
+        View seg_icon;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             seg_location = itemView.findViewById(R.id.seg_location);
             seg_date_from = itemView.findViewById(R.id.seg_date_from);
             seg_date_to = itemView.findViewById(R.id.seg_date_to);
-            seg_line = itemView.findViewById(R.id.item_line);
-            seg_description = itemView.findViewById(R.id.seg_description);
+            seg_icon = itemView.findViewById(R.id.item_icon);
+            seg_top_line = itemView.findViewById(R.id.seg_top_line);
+            seg_bottom_line = itemView.findViewById(R.id.seg_bottom_line);
         }
 
         public void bind(TravelSegment travelSegment) {
 
-            @SuppressLint("SimpleDateFormat") String dateFrom = new SimpleDateFormat("dd/MM/yyyy").format(travelSegment.getDateFrom());
-            @SuppressLint("SimpleDateFormat") String dateTo = new SimpleDateFormat("dd/MM/yyyy").format(travelSegment.getDateTo());
+
+
+            boolean b = travelSegment.getDateFrom() == null || travelSegment.getDateTo() == null;
+            Log.d("TravelSegmentRecyclerAdapter", "PISELLO" + travelSegment.getDateFrom() + " " + travelSegment.getDateTo() + " " + b);
+            if (!b) {
+                @SuppressLint("SimpleDateFormat") String dateFrom = new SimpleDateFormat("dd/MM/yyyy").format(travelSegment.getDateFrom());
+                @SuppressLint("SimpleDateFormat") String dateTo = new SimpleDateFormat("dd/MM/yyyy").format(travelSegment.getDateTo());
+                seg_date_from.setText(dateFrom);
+                seg_date_to.setText(dateTo);
+
+
+
+                long currentTime = System.currentTimeMillis();
+                if (currentTime >= travelSegment.getDateFrom().getTime() && currentTime <= travelSegment.getDateTo().getTime()) {
+                    //set icon background tint to orange
+                    seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
+                    seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.orange));
+                } else if (currentTime > travelSegment.getDateTo().getTime()) {
+                    //set icon background tint to grey
+                    seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
+                    seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.grey_separator));
+                } else {
+                    //set icon background tint to green
+                    seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
+                    seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.primaryVariantColor));
+            }
+            }
+
+            TextView seg_description_text = itemView.findViewById(R.id.seg_description_text);
+            LinearLayout seg_description = itemView.findViewById(R.id.seg_description);
+
+            if (travelSegment.getDescription() == null || travelSegment.getDescription().isEmpty()) {
+                seg_description_text.setText(R.string.travel_no_description);
+            } else {
+                seg_description_text.setText(travelSegment.getDescription());
+            }
+
+            TextView seg_details = itemView.findViewById(R.id.seg_details);
+
+            seg_details.setOnClickListener(v -> {
+                Log.d("TravelSegmentRecyclerAdapter", "onClick: " + seg_description.getVisibility());
+                if (seg_description.getVisibility() == View.GONE) {
+                    seg_description.setVisibility(View.VISIBLE);
+                    seg_details.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_up_24, 0);
+                } else {
+                    seg_description.setVisibility(View.GONE);
+                    seg_details.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_down_24, 0);
+                }
+            });
 
             seg_location.setText(travelSegment.getLocation());
-            seg_date_from.setText(dateFrom);
-            seg_date_to.setText(dateTo);
-            seg_description.setText(travelSegment.getDescription());
         }
     }
 }

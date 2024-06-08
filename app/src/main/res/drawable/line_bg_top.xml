@@ -1,8 +1,0 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/fui_bgAnonymous"/>
-    <corners
-        android:topLeftRadius="15dp"
-        android:topRightRadius="15dp"/>
-    <!-- this has to be at least half of line FrameLayout's
-         width to appear completely rounded -->
-</shape>

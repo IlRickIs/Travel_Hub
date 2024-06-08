@@ -185,7 +185,7 @@ public class HomeFragment extends Fragment {
                             navController.navigate(val);
                         });
 
-                        binding.homeCardOngoing.setOnClickListener(v -> {
+                        binding.homeOngoingButton.setOnClickListener(v -> {
                             NavController navController = Navigation.findNavController(view);
                             NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(onGoingTravel);
                             navController.navigate(val);
@@ -282,7 +282,7 @@ public class HomeFragment extends Fragment {
                 new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
                         .format(onGoingTravel.getEndDate())
         );
-        binding.homeOngoingDescription.setText(onGoingTravel.getDescription());
+        //binding.homeOngoingDescription.setText(onGoingTravel.getDescription());
     }
 
     private void setFutureView() {

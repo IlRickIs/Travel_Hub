@@ -1,107 +1,112 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/seg_item">
 
     <!-- the circular icon on the left -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/item_line"
-        android:layout_width="12dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
 
+        <View
+            android:id="@+id/item_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/baseline_location_on_24"
+            android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <View
-        android:id="@+id/item_dot"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:background="@drawable/baseline_circle_24"
-        android:layout_margin="4dp"
-
-        app:layout_constraintEnd_toEndOf="@+id/item_line"
-        app:layout_constraintStart_toStartOf="@+id/item_line"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/seg_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="Test"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/item_dot"
-        app:layout_constraintStart_toEndOf="@+id/item_line"
-        app:layout_constraintTop_toTopOf="@+id/item_dot" />
-
-    <TextView
-        android:id="@+id/seg_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:drawableRight="@drawable/baseline_keyboard_arrow_down_24"
-        android:text="Dettagli"
-        android:gravity="center"
-        app:layout_constraintStart_toEndOf="@+id/item_line"
-        app:layout_constraintTop_toBottomOf="@+id/seg_location" />
-
-    <TextView
-        android:id="@+id/seg_description"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/item_line"
-        app:layout_constraintTop_toBottomOf="@+id/seg_details" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/item_dot"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/item_dot">
+        <TextView
+            android:id="@+id/seg_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="12dp"
+            app:layout_constraintBottom_toBottomOf="@id/item_icon"
+            app:layout_constraintStart_toEndOf="@+id/item_icon"
+            app:layout_constraintTop_toTopOf="@+id/item_icon" />
 
         <TextView
             android:id="@+id/seg_date_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10sp" />
-
-        <TextView
-            android:id="@+id/home_ongoing_separator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="8dp"
-            android:text="@string/dash"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:layout_marginBottom="4dp"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/seg_location"
+            app:layout_constraintStart_toStartOf="@+id/seg_location" />
 
         <TextView
             android:id="@+id/seg_date_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10sp" />
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_color_hint"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@+id/seg_location"
+            app:layout_constraintTop_toBottomOf="@+id/seg_location" />
+
+
+            <View
+            android:id="@+id/seg_bottom_line"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/grey_separator" android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/item_icon"
+            app:layout_constraintStart_toStartOf="@+id/item_icon"
+            app:layout_constraintTop_toBottomOf="@+id/item_icon" />
+
+        <View
+            android:id="@+id/seg_top_line"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/grey_separator"
+            app:layout_constraintBottom_toTopOf="@+id/item_icon"
+            app:layout_constraintEnd_toEndOf="@+id/item_icon"
+            app:layout_constraintStart_toStartOf="@+id/item_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/seg_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:drawableRight="@drawable/baseline_keyboard_arrow_down_24"
+            android:text="Dettagli"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/seg_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/seg_location" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/seg_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/seg_description_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:textColor="@color/onBackgroundColor" />
+
     </LinearLayout>
 
-
-
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

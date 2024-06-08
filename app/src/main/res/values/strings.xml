@@ -52,6 +52,11 @@
     <string name="user_city">City</string>
 
 
+    <!-- Travel -->
+
+    <string name="travel_no_description">Scrivi una descrizione del tuo viaggio. Raccontaci qualcosa a riguardo!</string>
+
+
     <string name="subscription">Subscription</string>
 
     <string name="settings">Settings</string>

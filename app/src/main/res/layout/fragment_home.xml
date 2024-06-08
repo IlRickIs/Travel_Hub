@@ -217,14 +217,15 @@
                             android:id="@+id/friends_recycler_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="0dp"
                             android:layout_marginLeft="16dp"
                             android:layout_marginBottom="16dp"
+                            android:padding="0dp"
                             android:scrollbars="none"
                             app:layout_constraintBottom_toBottomOf="@+id/home_ongoing_image"
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <Button
+                            android:id="@+id/home_ongoing_button"
                             style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -238,43 +239,69 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+<!--                    <View-->
+<!--                        android:id="@+id/divider2"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="?android:attr/listDivider"-->
+<!--                        app:layout_constraintBottom_toTopOf="@+id/segments_recycler_view"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"-->
+<!--                        android:layout_marginVertical="16dp"/>-->
 
-                    <TextView
-                        android:id="@+id/home_ongoing_description"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/segments_recycler_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
-                        android:text="Viaggio a Zara con gli amici. Siamo in 10 e abbiamo prenotato un appartamento vicino al centro. Abbiamo prenotato anche un giro in barca per visitare le isole vicine"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textSize="15sp"
-
+                        android:layout_marginTop="16dp"
+                        android:scrollbars="none"
+                        android:nestedScrollingEnabled="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
-                    <View
-                        android:id="@+id/divider2"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider"
-                        app:layout_constraintBottom_toTopOf="@+id/segments_recycler_view"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_ongoing_description"
-                        android:layout_marginVertical="16dp"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_margin="16dp"
-                        android:id="@+id/segments_recycler_view"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:scrollbars="none"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_height="200dp"
+                        android:layout_margin="16dp"
+                        app:layout_constraintTop_toBottomOf="@id/segments_recycler_view"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_ongoing_description" />
+                        app:layout_constraintEnd_toEndOf="parent">
 
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardView_days"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cardView_members"
+                            app:layout_constraintTop_toTopOf="parent">
+                            <TextView
+                                android:id="@+id/travel_days"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Giorni" />
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardView_members"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/cardView_days"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+                            <TextView
+                                android:id="@+id/member_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Numero di partecipanti" />
+
+                        </androidx.cardview.widget.CardView>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
