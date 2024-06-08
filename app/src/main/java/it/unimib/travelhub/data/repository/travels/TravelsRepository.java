@@ -54,6 +54,12 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     }
 
     @Override
+    public MutableLiveData<Result> deleteTravel(Travels travel) {
+        travelsRemoteDataSource.deleteTravel(travel);
+        return travelsMutableLiveData;
+    }
+
+    @Override
     public void updateTravel(Travels travel) {
         travelsLocalDataSource.updateTravel(travel);
     }
@@ -138,6 +144,11 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
 
     public void onSuccessDeletionAfterSync(List<Travels> travelsList) {
         travelsLocalDataSource.insertTravels(travelsList);
+    }
+
+    @Override
+    public void onSuccessDeletion(Exception exception) {
+
     }
 
     @Override

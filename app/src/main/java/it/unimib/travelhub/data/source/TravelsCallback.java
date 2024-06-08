@@ -13,6 +13,7 @@ public interface TravelsCallback {
     void onSuccessFromCloudReading(TravelsResponse travelsResponse);
     void onSuccessSynchronization();
     void onSuccessDeletion();
+    void onSuccessDeletion(Exception exception);
     void onSuccessFromCloudWriting(Travels travel);
     void onSuccessDeletionAfterSync(List<Travels> travelsList);
 }
