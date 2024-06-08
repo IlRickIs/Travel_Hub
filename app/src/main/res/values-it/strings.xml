@@ -84,7 +84,10 @@
     <string name="ongoing_travel">Viaggi in corso</string>
     <string name="other_travels">Altri viaggi</string>
     <string name="return_to_the_previous_screen">return to the previous screen</string>
-    <string name="from_fragment_edit">from</string>
+    <string name="from">da</string>
+    <string name="to">a</string>
+    <string name="from_need">da*</string>
+    <string name="to_need">a*</string>
     <string name="save">Save</string>
     <string name="description">description</string>
     <string name="travel_images">travel images</string>

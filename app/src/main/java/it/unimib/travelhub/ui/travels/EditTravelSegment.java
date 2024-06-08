@@ -178,11 +178,11 @@ public class EditTravelSegment extends Fragment {
     private TravelSegment buildTravelSegment() {
         TravelSegment travelSegment = new TravelSegment();
         travelSegment.setLocation(binding.destinationEditText.getText().toString());
-//        travelSegment.setDescription(binding.descriptionEditText.getText().toString());
-//        String dateFrom = binding.fromEditText.getText().toString();
-//        String dateTo = binding.toEditText.getText().toString();
-//        travelSegment.setDateFrom(parseStringToDate(dateFrom));
-//        travelSegment.setDateTo(parseStringToDate(dateTo));
+        travelSegment.setDescription(binding.descriptionEditText.getText().toString());
+        String dateFrom = binding.fromEditText.getText().toString();
+        String dateTo = binding.toEditText.getText().toString();
+        travelSegment.setDateFrom(parseStringToDate(dateFrom));
+        travelSegment.setDateTo(parseStringToDate(dateTo));
         return travelSegment;
     }
 
@@ -194,18 +194,18 @@ public class EditTravelSegment extends Fragment {
         }else{
             binding.destinationEditText.setError(null);
         }
-        if (binding.fromEditText.getText().toString().isEmpty()) {
-            binding.fromEditText.setError(getString(R.string.date_empty_error));
-            isNull = true;
-        }else{
-            binding.fromEditText.setError(null);
-        }
-        if (binding.toEditText.getText().toString().isEmpty()) {
-            binding.toEditText.setError(getString(R.string.date_empty_error));
-            isNull = true;
-        }else{
-            binding.toEditText.setError(null);
-        }
+//        if (binding.fromEditText.getText().toString().isEmpty()) {
+//            binding.fromEditText.setError(getString(R.string.date_empty_error));
+//            isNull = true;
+//        }else{
+//            binding.fromEditText.setError(null);
+//        }
+//        if (binding.toEditText.getText().toString().isEmpty()) {
+//            binding.toEditText.setError(getString(R.string.date_empty_error));
+//            isNull = true;
+//        }else{
+//            binding.toEditText.setError(null);
+//        }
 
         return isNull;
     }
