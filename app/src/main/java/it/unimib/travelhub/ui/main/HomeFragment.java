@@ -182,8 +182,9 @@ public class HomeFragment extends Fragment {
                         });
 
                     } else {
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                ((Result.Error) result).getMessage(), Snackbar.LENGTH_SHORT).show();
+                        binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
+                        binding.homeLayoutStandard.setVisibility(View.GONE);
+                        Log.d(TAG, "Info: " + ((Result.Error) result).getMessage());
                     }
                 });
 

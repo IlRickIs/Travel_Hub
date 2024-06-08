@@ -23,9 +23,10 @@ import it.unimib.travelhub.util.ServiceLocator;
 
 public class AddTravelActivity extends AppCompatActivity {
 
-private ActivityAddTravelBinding binding;
-private FragmentActivityAddViewModel viewModel;
-private Travels myTravel;
+    private ActivityAddTravelBinding binding;
+    private FragmentActivityAddViewModel viewModel;
+    private Travels myTravel;
+    public static Bundle myBundle = new Bundle();
 
 
 

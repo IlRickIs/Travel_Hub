@@ -263,10 +263,16 @@ public class EditTravelFragment extends Fragment {
         });
 
         binding.addDestinationButton.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("travel", buildTravel());
+
+            EditTravelSegment editTravelSegment = new EditTravelSegment();
+            editTravelSegment.setArguments(bundle);
+
             // navigate to EditTravelSegment
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.activityAddFragmentContainerView, new EditTravelSegment());
+            fragmentTransaction.replace(R.id.activityAddFragmentContainerView, editTravelSegment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });
@@ -333,8 +339,7 @@ public class EditTravelFragment extends Fragment {
         }
 
         String departure = binding.departureFormEditText.getText().toString();
-        String destination = binding.destinationFormEditText.getText().toString();
-        List<TravelSegment> destinations = buildDestinationsList(departure, destination);
+        List<TravelSegment> destinations = buildDestinationsList(departure);
 
         String firstMember = binding.friendsEmailFormEditText.getText().toString();
         List<TravelMember> members = buildFriendsList();
@@ -359,17 +364,9 @@ public class EditTravelFragment extends Fragment {
         members.addAll(memberList);
         return members;
     }
-    public List <TravelSegment> buildDestinationsList(String departure, String destination){
+    public List <TravelSegment> buildDestinationsList(String departure){
         List<TravelSegment> destinations = new ArrayList<>();
         destinations.add(new TravelSegment(departure));
-        destinations.add(new TravelSegment(destination));
-        for(String s : destinationsText){
-            if(s == null || s.isEmpty()){
-                continue;
-            }
-            TravelSegment segment = new TravelSegment(s);
-            destinations.add(segment);
-        }
         return destinations;
     }
     public Date parseStringToDate(String date){
@@ -434,11 +431,6 @@ public class EditTravelFragment extends Fragment {
             binding.departureFormEditText.setError(getString(R.string.departure_empty_error));
             isNull = true;
         }
-        if (binding.destinationFormEditText.getText().toString().isEmpty()) {
-                binding.destinationFormEditText.setError(getString(R.string.destination_error));
-                isNull = true;
-
-        }
         return isNull;
     }
 
@@ -478,7 +470,6 @@ public class EditTravelFragment extends Fragment {
         outState.putStringArrayList(FRIENDS_TEXTS, (ArrayList<String>) friendTextList);
         outState.putStringArrayList(DESTINATIONS_HINTS, (ArrayList<String>) hintsList);
         outState.putStringArrayList(FRIENDS_HINTS, (ArrayList<String>) friendHintsList);
-        outState.putString(DESTINATION, binding.destinationFormEditText.getText().toString());
         outState.putString(FRIEND, binding.friendsEmailFormEditText.getText().toString());
         //outState.putString(TRAVEL_TITLE, binding.titleFormEditText.getText().toString());
         //outState.putString(TRAVEL_DESCRIPTION, binding.descriptionFormEditText.getText().toString());
