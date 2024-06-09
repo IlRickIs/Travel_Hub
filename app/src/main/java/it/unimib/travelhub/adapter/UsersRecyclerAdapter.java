@@ -1,5 +1,6 @@
 package it.unimib.travelhub.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,12 @@ import it.unimib.travelhub.model.User;
 public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdapter.ViewHolder> {
     List<TravelMember> data;
     int type;
-    public UsersRecyclerAdapter(List<TravelMember> data, int type) {
+    String textcolor;
+
+    public UsersRecyclerAdapter(List<TravelMember> data, int type, String textcolor) {
         this.data = data;
         this.type = type;
+        this.textcolor = textcolor;
     }
     @NonNull
     @Override
@@ -36,7 +40,7 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         return new ViewHolder(view, type);
     }
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(data.get(position));
+        holder.bind(data.get(position), textcolor);
     }
     @Override
     public int getItemCount() {
@@ -55,10 +59,9 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
             friend_name = itemView.findViewById(R.id.friend_name);
             friend_image = itemView.findViewById(R.id.friend_image);
         }
-        public void bind(TravelMember travelMember) {
+        public void bind(TravelMember travelMember, String textcolor) {
             friend_name.setText(travelMember.getUsername());
-
-
+            friend_name.setTextColor(Color.parseColor(textcolor));
         }
     }
 

@@ -95,32 +95,24 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
 
         public void bind(TravelSegment travelSegment) {
 
-
-
-            boolean b = travelSegment.getDateFrom() == null || travelSegment.getDateTo() == null;
-            Log.d("TravelSegmentRecyclerAdapter", "PISELLO" + travelSegment.getDateFrom() + " " + travelSegment.getDateTo() + " " + b);
-            if (!b) {
+            if (travelSegment.getDateFrom() != null && travelSegment.getDateTo() != null) {
                 @SuppressLint("SimpleDateFormat") String dateFrom = new SimpleDateFormat("dd/MM/yyyy").format(travelSegment.getDateFrom());
                 @SuppressLint("SimpleDateFormat") String dateTo = new SimpleDateFormat("dd/MM/yyyy").format(travelSegment.getDateTo());
                 seg_date_from.setText(dateFrom);
                 seg_date_to.setText(dateTo);
 
 
-
                 long currentTime = System.currentTimeMillis();
                 if (currentTime >= travelSegment.getDateFrom().getTime() && currentTime <= travelSegment.getDateTo().getTime()) {
-                    //set icon background tint to orange
                     seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
                     seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.orange));
                 } else if (currentTime > travelSegment.getDateTo().getTime()) {
-                    //set icon background tint to grey
                     seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
                     seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.grey_separator));
                 } else {
-                    //set icon background tint to green
                     seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
                     seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.primaryVariantColor));
-            }
+                }
             }
 
             TextView seg_description_text = itemView.findViewById(R.id.seg_description_text);

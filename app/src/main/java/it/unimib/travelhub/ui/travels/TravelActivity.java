@@ -133,7 +133,7 @@ public class TravelActivity extends AppCompatActivity {
         RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
-        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2);
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, "#000000");
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(usersRecyclerAdapter);
     }

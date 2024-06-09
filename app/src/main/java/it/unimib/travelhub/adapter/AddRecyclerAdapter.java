@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import it.unimib.travelhub.R;
@@ -42,7 +41,7 @@ public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.
     @Override
     public AddRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.travel_list_item, parent, false);
+                .inflate(R.layout.new_travel_list_item, parent, false);
 
         return new ViewHolder(view);
     }

@@ -37,7 +37,7 @@ public class TravelRecyclerAdapter extends RecyclerView.Adapter<TravelRecyclerAd
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.home_list_item, parent, false);
+                inflate(R.layout.travel_list_item, parent, false);
 
         return new ViewHolder(view);
     }
@@ -61,15 +61,14 @@ public class TravelRecyclerAdapter extends RecyclerView.Adapter<TravelRecyclerAd
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final TextView textViewTitle;
         private final TextView textViewStartDate;
-        private final TextView textViewEndDate;
-        private final TextView textViewDescription;
+
+        private final TextView textViewDestinations;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewTitle = itemView.findViewById(R.id.home_list_item_title);
-            textViewStartDate = itemView.findViewById(R.id.home_list_item_start_date);
-            textViewEndDate = itemView.findViewById(R.id.home_list_item_end_date);
-            textViewDescription = itemView.findViewById(R.id.home_list_item_description);
+            textViewTitle = itemView.findViewById(R.id.travel_title);
+            textViewStartDate = itemView.findViewById(R.id.travel_date);
+            textViewDestinations = itemView.findViewById(R.id.travel_destinations);
             itemView.setOnClickListener(this);
         }
 
@@ -77,8 +76,7 @@ public class TravelRecyclerAdapter extends RecyclerView.Adapter<TravelRecyclerAd
         public void bind(Travels travels) {
             textViewTitle.setText(travels.getTitle());
             textViewStartDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(travels.getStartDate()));
-            textViewEndDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(travels.getEndDate()));
-            textViewDescription.setText(travels.getDescription());
+            textViewDestinations.setText(travels.getDestinations().size() + " luoghi");
         }
 
         @Override
