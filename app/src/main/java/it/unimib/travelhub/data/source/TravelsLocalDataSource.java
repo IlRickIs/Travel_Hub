@@ -74,6 +74,22 @@ public class TravelsLocalDataSource extends BaseTravelsLocalDataSource {
     }
 
     @Override
+    public void deleteTravel(Travels travel) {
+        TravelsRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                int deleted = travelsDao.delete(travel);
+                if (deleted == 0) {
+                    travelsCallback.onFailureFromLocal(new Exception("No travels deleted"));
+                } else {
+                    travelsCallback.onSuccessDeletionFromLocal(travel);
+                }
+            } catch (Exception e) {
+                travelsCallback.onFailureFromLocal(e);
+            }
+        });
+    }
+
+    @Override
     public void deleteAll() {
         TravelsRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {

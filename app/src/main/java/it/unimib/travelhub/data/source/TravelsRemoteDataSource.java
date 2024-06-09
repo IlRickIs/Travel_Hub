@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
@@ -198,8 +200,62 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
     }
 
     @Override
-    public void deleteTravel(Travels travels) {
+    public void deleteTravel(Travels travel) {
+        databaseReference.child("travels").child(String.valueOf(travel.getId())).removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                deleteTravelFromUsers(travel);
+            } else {
+                Log.d(TAG, "Error deleting travel", task.getException());
+                travelsCallback.onFailureFromRemote(task.getException());
+            }
+        });
+    }
 
+    private void deleteTravelFromUsers(Travels travel){
+        AtomicInteger count = new AtomicInteger(0);
+        for(TravelMember member : travel.getMembers()){
+            try {
+                databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child("travels").get().addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.d(TAG, "Error getting data", task.getException());
+                        travelsCallback.onFailureFromRemote(task.getException());
+                    } else {
+                        List<Long> travelsIdList = new ArrayList<>();
+                        for (DataSnapshot ds : task.getResult().getChildren()) {
+                            Long id = ds.getValue(Long.class);
+                            travelsIdList.add(id);
+                        }
+                        travelsIdList.remove((long) travel.getId());
+
+                        databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child("travels").setValue(travelsIdList)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "Travel id removed from user successfully");
+                                        count.set(count.get() + 1);
+                                        if(count.get() == travel.getMembers().size()){
+                                            travelsCallback.onSuccessDeletionFromRemote(travel);
+                                        }
+                                        else{
+                                            travelsCallback.onFailureFromRemote(new Exception("travel id not removed from all users"));
+                                            Log.d(TAG, "travel id not removed from all users");
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
+                                        Log.d(TAG, "Error removing travel id from user", e);
+                                    }
+                                });
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

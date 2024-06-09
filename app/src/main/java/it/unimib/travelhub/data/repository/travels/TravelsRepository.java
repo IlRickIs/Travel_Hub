@@ -147,8 +147,15 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     }
 
     @Override
-    public void onSuccessDeletion(Exception exception) {
+    public void onSuccessDeletionFromLocal(Travels travel) {
+        List<Travels> travelList = new ArrayList<>();
+        travelList.add(travel);
+        travelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(new TravelsResponse(travelList)));
+    }
 
+    @Override
+    public void onSuccessDeletionFromRemote(Travels travel) {
+        travelsLocalDataSource.deleteTravel(travel);
     }
 
     @Override
