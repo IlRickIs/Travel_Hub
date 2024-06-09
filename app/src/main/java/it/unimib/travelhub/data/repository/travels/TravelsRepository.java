@@ -135,7 +135,6 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
 
     @Override
     public void onSuccessSynchronization(Travels travel) {
-
         List<Travels> travelList = new ArrayList<>();
         travelList.add(travel);
         TravelsResponse travelsResponse = new TravelsResponse(travelList);
