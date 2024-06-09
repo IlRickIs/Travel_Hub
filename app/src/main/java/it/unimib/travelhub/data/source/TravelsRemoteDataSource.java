@@ -233,7 +233,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
         AtomicInteger count = new AtomicInteger(0);
         for(TravelMember member : travel.getMembers()){
             try {
-                databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child("travels").get().addOnCompleteListener(task -> {
+                databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child(FIREBASE_TRAVELS_COLLECTION).get().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         Log.d(TAG, "Error getting data", task.getException());
                         travelsCallback.onFailureFromRemote(task.getException());
