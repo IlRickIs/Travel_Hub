@@ -73,7 +73,10 @@ public class Travels implements Serializable, Comparable<Travels> {
     public void setEndDate(Date endDate) {this.endDate = endDate;}
 
     public int compareTo(Travels travels) {
-        return this.startDate.compareTo(travels.startDate);
+        if (this.startDate.compareTo(travels.startDate) == 0)
+            return this.endDate.compareTo(travels.endDate);
+        else
+            return this.startDate.compareTo(travels.startDate);
     }
 
     @Override

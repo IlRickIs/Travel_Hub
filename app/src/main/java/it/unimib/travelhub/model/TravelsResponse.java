@@ -36,14 +36,18 @@ public class TravelsResponse implements Serializable {
     }
 
     public Travels getOnGoingTravel() {
-        Date currentDate = new Date();
+        return getOnGoingTravelList().isEmpty() ? getFutureTravel() : getOnGoingTravelList().get(0);
+    }
 
+    public List<Travels> getOnGoingTravelList() {
+        Date currentDate = new Date();
+        List<Travels> OngoingTravelsList = new java.util.ArrayList<>();
         for (Travels travel : travelsList) {
             if (travel.getStartDate().before(currentDate) && travel.getEndDate().after(currentDate)) {
-                return travel;
+                OngoingTravelsList.add(travel);
             }
         }
-        return getFutureTravel();
+        return OngoingTravelsList;
     }
 
     public Travels getFutureTravel() {

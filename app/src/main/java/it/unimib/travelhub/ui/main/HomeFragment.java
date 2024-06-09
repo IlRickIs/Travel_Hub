@@ -138,6 +138,7 @@ public class HomeFragment extends Fragment {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     "TRAVEL ADDED SUCCESSFULLY",
                     Snackbar.LENGTH_SHORT).show();
+            intent.removeExtra(TRAVEL_ADDED);
         }
 
         String lastUpdate = "0";
@@ -153,6 +154,7 @@ public class HomeFragment extends Fragment {
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
+                        Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
                         onGoingTravel = travelsResponse.getOnGoingTravel();
                         futureTravel = travelsResponse.getFutureTravel();
