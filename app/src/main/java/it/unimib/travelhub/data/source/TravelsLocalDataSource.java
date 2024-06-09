@@ -38,14 +38,14 @@ public class TravelsLocalDataSource extends BaseTravelsLocalDataSource {
     }
 
     @Override
-    public void updateTravel(Travels travels) {
+    public void updateTravel(Travels travel) {
         TravelsRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
-                int updated = travelsDao.updateSingleTravel(travels);
+                int updated = travelsDao.updateSingleTravel(travel);
                 if (updated == 0) {
                     travelsCallback.onFailureFromLocal(new Exception("No travels updated"));
                 } else {
-                    travelsCallback.onSuccessSynchronization();
+                    travelsCallback.onSuccessSynchronization(travel);
                 }
             } catch (Exception e) {
                 travelsCallback.onFailureFromLocal(e);

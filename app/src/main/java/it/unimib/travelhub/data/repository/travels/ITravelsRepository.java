@@ -11,11 +11,10 @@ public interface ITravelsRepository {
     MutableLiveData<Result> fetchTravels(long lastUpdate);
 
     MutableLiveData<Result> deleteTravel(Travels travel);
-    void updateTravel(Travels travel);
-    void addTravels(List<Travels> travelsList);
-
+    MutableLiveData<Result> updateTravel(Travels travel);
     MutableLiveData<Result> addTravel(Travels travel);
 
+    void addTravels(List<Travels> travelsList);
     void deleteAll();
 
 

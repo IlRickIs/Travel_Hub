@@ -2,6 +2,7 @@ package it.unimib.travelhub.data.source;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static it.unimib.travelhub.util.Constants.FIREBASE_TRAVELS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 
@@ -11,7 +12,6 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
@@ -194,8 +193,27 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
         }
     }
 
+
     @Override
-    public void updateTravel(Travels travels) {
+    public void updateTravel(Travels travel) {
+        try {
+            databaseReference.child(FIREBASE_TRAVELS_COLLECTION).child(String.valueOf(travel.getId())).setValue(travel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            travelsCallback.onUpdateSuccess(travel);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            travelsCallback.onFailureFromRemote(e);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            travelsCallback.onFailureFromRemote(e);
+        }
 
     }
 

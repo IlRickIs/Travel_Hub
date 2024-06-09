@@ -60,8 +60,9 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     }
 
     @Override
-    public void updateTravel(Travels travel) {
-        travelsLocalDataSource.updateTravel(travel);
+    public MutableLiveData<Result> updateTravel(Travels travel) {
+        travelsRemoteDataSource.updateTravel(travel);
+        return travelsMutableLiveData;
     }
 
     @Override
@@ -133,8 +134,12 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     }
 
     @Override
-    public void onSuccessSynchronization() {
+    public void onSuccessSynchronization(Travels travel) {
 
+        List<Travels> travelList = new ArrayList<>();
+        travelList.add(travel);
+        TravelsResponse travelsResponse = new TravelsResponse(travelList);
+        travelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(travelsResponse));
     }
 
     @Override
@@ -151,6 +156,11 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         List<Travels> travelList = new ArrayList<>();
         travelList.add(travel);
         travelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(new TravelsResponse(travelList)));
+    }
+
+    @Override
+    public void onUpdateSuccess(Travels travel) {
+        travelsLocalDataSource.updateTravel(travel);
     }
 
     @Override

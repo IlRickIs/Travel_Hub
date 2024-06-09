@@ -11,11 +11,12 @@ public interface TravelsCallback {
     void onSuccessFromLocal(TravelsResponse travelsResponse);
     void onFailureFromLocal(Exception exception);
     void onSuccessFromCloudReading(TravelsResponse travelsResponse);
-    void onSuccessSynchronization();
+    void onSuccessSynchronization(Travels travel);
     void onSuccessDeletion();
     void onSuccessDeletionFromRemote(Travels travel);
     void onSuccessFromCloudWriting(Travels travel);
     void onSuccessDeletionAfterSync(List<Travels> travelsList);
-
     void onSuccessDeletionFromLocal(Travels travel);
+
+    void onUpdateSuccess(Travels travel);
 }
