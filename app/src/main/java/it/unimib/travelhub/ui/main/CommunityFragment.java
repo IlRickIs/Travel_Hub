@@ -5,6 +5,7 @@ import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -26,6 +27,7 @@ import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.database.TravelsDao;
 import it.unimib.travelhub.data.database.TravelsRoomDatabase;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
+import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
@@ -80,11 +82,11 @@ public class CommunityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_community, container, false);
         // Inflate the layout for this fragment
         travel = new Travels();
-        makeMockTravel(); //THIS WILL MAKE A TRAVEL FOR TESTING AND SAVE IT IN travel VARIABLE
+        //makeMockTravel(); //TODO: THIS WILL MAKE A TRAVEL FOR TESTING AND SAVE IT IN travel VARIABLE
 
         Button button = view.findViewById(R.id.button3);
         button.setOnClickListener(v -> {
-            deleteMockTravel(travel); //THIS WILL DELETE THE TRAVEL CREATED BY makeMockTravel()
+        //    deleteMockTravel(travel); //TODO: THIS WILL DELETE THE TRAVEL CREATED BY makeMockTravel()
         });
 
         return view;
@@ -126,46 +128,25 @@ public class CommunityFragment extends Fragment {
     }
 
     private void deleteMockTravel(Travels travel) { //TODO for testing, remove
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
-        DatabaseReference databaseReference = firebaseDatabase.getReference().getRef();
+        Observer<Result> resultObserver = new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result != null && result.isSuccess()) {
+                    Result.TravelsResponseSuccess travelResponse = (Result.TravelsResponseSuccess) result;
+                    Travels travelDeleted = travelResponse.getData().getTravelsList().get(0);
+                    Log.d("CommunityFragment", "Travel deleted: " + travelDeleted);
 
-        databaseReference.child("travels").child(String.valueOf(travel.getId())).removeValue().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        "travel deleted from remote", Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
-            }
-        });
-
-        //delete from users collection
-        for (TravelMember member : travel.getMembers()) {
-            ArrayList travelsIds = new ArrayList<>();
-            databaseReference.child("users").child(member.getIdToken()).child("travels").get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    travelsIds.addAll((ArrayList) task.getResult().getValue());
-                    Log.d("CommunityFragment", "user: " + member.getUsername() + " travles before remove: " + travelsIds.toString());
-                    travelsIds.remove(travel.getId());
-                    Log.d("CommunityFragment", "user: " + member.getUsername() + " travles AFTER remove: " + travelsIds.toString());
-                    databaseReference.child("users").child(member.getIdToken()).child("travels").setValue(travelsIds);
+                } else {
+                    Result.Error error = (Result.Error) result;
+                    Log.d("CommunityFragment", "Travel not deleted, Error: " + error.getMessage());
                 }
-            });
-        }
 
-
-        //delete from local
-        TravelsDao travelsDao = TravelsRoomDatabase.getDatabase(requireContext()).travelsDao();
-        TravelsRoomDatabase.databaseWriteExecutor.execute(() -> {
-            int c =  travelsDao.delete(travel);
-            if (c > 0) {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        "travel deleted from local", Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+                travelsViewModel.deleteTravel(travel).removeObserver(this);
             }
-        });
+        };
+        travelsViewModel.deleteTravel(travel).observe(getViewLifecycleOwner(), resultObserver);
     }
-
 }
+
+
+
