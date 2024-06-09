@@ -9,7 +9,7 @@ public class User implements Serializable {
     private String username;
     private String name;
     private String surname;
-    private Date birthDate;
+    private Long birthDate;
     private String photoUrl;
     private String email;
     private String idToken;
@@ -36,11 +36,15 @@ public class User implements Serializable {
         this.username = name;
         this.email = email;
         this.idToken = idToken;
+        this.name = null;
+        this.surname = null;
+        this.birthDate = null;
+        this.photoUrl = null;
     }
 
 
-
-    public User(String name, String surname, Date birthDate, String photoUrl, String email, String idToken) {
+    public User(String username, String name, String surname, Long birthDate, String photoUrl, String email, String idToken) {
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.birthDate = birthDate;
@@ -90,11 +94,14 @@ public class User implements Serializable {
         return surname;
     }
 
-    public Date getBirthDate() {
+    public Long getBirthDate() {
         return birthDate;
     }
 
     public String getPhotoUrl() {
         return photoUrl;
     }
+    public void setName(String name) { this.name = name; }
+    public void setSurname(String surname) { this.surname = surname; }
+    public void setBirthDate(Long birthDate) { this.birthDate = birthDate; }
 }

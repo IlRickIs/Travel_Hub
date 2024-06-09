@@ -21,4 +21,6 @@ public interface IUserRepository {
     void signInWithGoogle(String token);
 
     MutableLiveData<Result> isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
+
+    MutableLiveData<Result> updateUserData(String oldUsername, User user, UserDataRemoteDataSource.UserCallback userCallback);
 }

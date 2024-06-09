@@ -2,8 +2,11 @@ package it.unimib.travelhub.ui.main.profile;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
+import static it.unimib.travelhub.util.Constants.USERNAME;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -23,16 +27,19 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
+import it.unimib.travelhub.GlobalClass;
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.databinding.FragmentPersonalInfoBinding;
+import it.unimib.travelhub.model.IValidator;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.model.ValidationResult;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
@@ -40,8 +47,11 @@ import it.unimib.travelhub.util.ServiceLocator;
 public class PersonalInfoFragment extends Fragment {
     private static final String TAG = PersonalInfoFragment.class.getSimpleName();
     private FragmentPersonalInfoBinding binding;
+
+    final Calendar myCalendar= Calendar.getInstance();
     private DataEncryptionUtil dataEncryptionUtil;
     private UserViewModel userViewModel;
+    private IValidator myValidator;
     public PersonalInfoFragment() {
         // Required empty public constructor
     }
@@ -58,6 +68,7 @@ public class PersonalInfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
+        myValidator = ServiceLocator.getInstance().getCredentialsValidator(GlobalClass.getContext());
 
         IUserRepository userRepository = ServiceLocator.getInstance().
                 getUserRepository(requireActivity().getApplication());
@@ -94,12 +105,33 @@ public class PersonalInfoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR,year);
+            myCalendar.set(Calendar.MONTH,month);
+            myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
+            Objects.requireNonNull(binding.textFieldBirth.getEditText()).setText(sdf.format(myCalendar.getTime()));
+        };
+
+        binding.textEditBirth.setOnClickListener(v ->
+                new DatePickerDialog(getContext(),
+                        date1,
+                        myCalendar.get(Calendar.YEAR),
+                        myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show());
+
         try {
 
             String username = dataEncryptionUtil.
-                    readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
+                    readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USERNAME);
             Objects.requireNonNull(binding.textFieldUsername.getEditText()).setHint(username);
             binding.textFieldUsername.getEditText().setText(username);
+
+            String email = dataEncryptionUtil.
+                    readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS);
+            Objects.requireNonNull(binding.textFieldUserEmail.getEditText()).setHint(email);
+            binding.textFieldUserEmail.getEditText().setText(email);
 
             String name = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name");
@@ -114,15 +146,7 @@ public class PersonalInfoFragment extends Fragment {
             String birthDate = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate");
             Objects.requireNonNull(binding.textFieldBirth.getEditText()).setHint(birthDate);
-
-            String userCity = dataEncryptionUtil.
-                    readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_city");
-            Objects.requireNonNull(binding.textFieldUserCity.getEditText()).setHint(userCity);
-            binding.textFieldUserCity.getEditText().setText(userCity);
-
-
-            String email = dataEncryptionUtil.
-                    readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS);
+            binding.textFieldBirth.getEditText().setText(birthDate);
 
         } catch (Exception e) {
             Log.e(TAG, "Error while reading data from encrypted shared preferences", e);
@@ -177,10 +201,48 @@ public class PersonalInfoFragment extends Fragment {
         });
 
         binding.buttonSaveSettings.setOnClickListener(v -> {
-            checkIfUsernameIsAlreadyTaken();
+            if (somethingIsChanged()) {
+                if (isEmailOk()) {
+                    checkIfUsernameIsAlreadyTaken();
+                }
+            } else {
+                Log.d(TAG, "Nothing is changed");
+                Snackbar.make(requireView(),
+                        requireActivity().getString(R.string.personal_info_saved),
+                        Snackbar.LENGTH_SHORT).show();
+            }
+
         });
 
         binding.buttonBack.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+    }
+
+    private Boolean somethingIsChanged() {
+        String username = Objects.requireNonNull(binding.textFieldUsername.getEditText()).getText().toString();
+        String email = Objects.requireNonNull(binding.textFieldUserEmail.getEditText()).getText().toString();
+        String name = Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString().isEmpty() ?
+                null : Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString();
+        String surname = Objects.requireNonNull(binding.textFieldSurname.getEditText()).getText().toString().isEmpty() ?
+                null : Objects.requireNonNull(binding.textFieldSurname.getEditText()).getText().toString();
+        String birthDate = Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().isEmpty() ?
+                null : Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString();
+
+        try {
+            String saved_username = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
+            String saved_email = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS);
+            String saved_name = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name");
+            String saved_surname = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname");
+            String saved_birthDate = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate");
+
+            return !username.equals(saved_username) || // TODO: check when empty fields are saved
+                    !email.equals(saved_email) ||
+                    name == null ? saved_name != null : !name.equals(saved_name == null ? "" : saved_name) ||
+                    surname == null ? saved_surname != null : !surname.equals(saved_surname == null ? "" : saved_surname) ||
+                    birthDate == null ? saved_birthDate != null : !birthDate.equals(saved_birthDate == null ? "" : saved_birthDate);
+        } catch (Exception e) {
+            Log.d(TAG, "Error while reading data from encrypted shared preferences - somethingIsChanged - ", e);
+            return false;
+        }
     }
 
     private void checkIfUsernameIsAlreadyTaken() {
@@ -196,9 +258,11 @@ public class PersonalInfoFragment extends Fragment {
 
                 if (!username.equals(saved_username)) {
                     userViewModel.isUsernameAlreadyTaken(username);
+                } else {
+                    saveUserDataRemote();
                 }
             } catch (Exception e) {
-                Log.d(TAG, "Error while reading data from encrypted shared preferences", e);
+                Log.d(TAG, "Error while reading data from encrypted shared preferences - checkIfUsernameIsAlreadyTaken - ", e);
             }
 
         }
@@ -206,26 +270,88 @@ public class PersonalInfoFragment extends Fragment {
 
     private void saveUserDataRemote() {
         String username = Objects.requireNonNull(binding.textFieldUsername.getEditText()).getText().toString();
+        String email = Objects.requireNonNull(binding.textFieldUserEmail.getEditText()).getText().toString();
         String name = Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString().isEmpty() ?
                 null : Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString();
         String surname = Objects.requireNonNull(binding.textFieldSurname.getEditText()).getText().toString().isEmpty() ?
                 null : Objects.requireNonNull(binding.textFieldSurname.getEditText()).getText().toString();
-        Date birthDate = Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().isEmpty() ?
-                null : parseStringToDate(Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString());
-        //String userCity = Objects.requireNonNull(binding.textFieldUserCity.getEditText()).getText().toString();
+        Long birthDate = Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().isEmpty() ?
+                null : parseStringToDateLong(Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString());
 
-        //TODO: Da implementare
+        try {
+            String idToken = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
+            String oldUsername = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
+            User user = new User(username, name, surname, birthDate, null, email, idToken);
+
+            userViewModel.updateUserData(oldUsername, user);
+
+            Observer<Result> observer = new Observer<Result>() {
+                @Override
+                public void onChanged(Result result) {
+                    if (result.isSuccess()) {
+                        try {
+                            Log.d(TAG, "User data saved successfully");
+
+                            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username", username);
+                            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS, email);
+                            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name", name);
+                            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname", surname);
+                            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate",
+                                    parseDateToString(birthDate == null ? null : new Date(birthDate)));
+
+                            Snackbar.make(requireView(),
+                                    requireActivity().getString(R.string.personal_info_saved),
+                                    Snackbar.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Log.d(TAG, "Error while writing data to encrypted shared preferences", e);
+                        }
+                    } else {
+                        Snackbar.make(requireView(),
+                                requireActivity().getString(R.string.unexpected_error),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    userViewModel.getUserMutableLiveData().removeObserver(this);
+                }
+            };
+
+            userViewModel.getUserMutableLiveData().observe(getViewLifecycleOwner(), observer);
+        } catch (Exception e) {
+            Log.d(TAG, "Error while reading data from encrypted shared preferences - saveUserDataRemote - ", e);
+        }
+
 
     }
 
-    public Date parseStringToDate(String date){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY); //TODO: Da cambiare in base al formato della data
-        Date parsedDate = null;
+    private String parseDateToString(Date birthDate) {
+        if (birthDate == null) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
+        return sdf.format(birthDate);
+    }
+
+    public Long parseStringToDateLong(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
         try {
-            parsedDate = sdf.parse(date);
+            Date parsedDate = sdf.parse(date);
+            return parsedDate == null ? 0L : parsedDate.getTime();
         } catch (ParseException e) {
             e.printStackTrace();
+            return 0L;
         }
-        return parsedDate;
+    }
+
+    private boolean isEmailOk() {
+        String email = Objects.requireNonNull(binding.textFieldUserEmail.getEditText()).getText().toString();
+        ValidationResult validation = myValidator.validateMail(email);
+        if (!validation.isSuccess()) {
+            binding.textFieldUserEmail.setError(validation.getMessage());
+            return false;
+        } else {
+            binding.textFieldUserEmail.setError(null);
+            binding.textFieldUserEmail.setErrorEnabled(false);
+            return true;
+        }
     }
 }

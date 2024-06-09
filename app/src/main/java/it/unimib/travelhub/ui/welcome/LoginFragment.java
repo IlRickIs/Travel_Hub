@@ -40,6 +40,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
@@ -137,7 +139,7 @@ public class LoginFragment extends Fragment {
                         userViewModel.getGoogleUserMutableLiveData(idToken).observe(getViewLifecycleOwner(), authenticationResult -> {
                             if (authenticationResult.isSuccess()) {
                                 User user = ((Result.UserResponseSuccess) authenticationResult).getData();
-                                saveLoginData(user.getEmail(), user.getUsername(), null, user.getIdToken());
+                                saveLoginData(user.getEmail(), user.getUsername(), null, user.getIdToken(), user.getName(), user.getSurname(), user.getBirthDate());
                                 userViewModel.setAuthenticationError(false);
                                 retrieveUserInformationAndStartActivity(user, R.id.action_loginFragment_to_mainActivity);
                             } else {
@@ -212,7 +214,7 @@ public class LoginFragment extends Fragment {
                             getViewLifecycleOwner(), result -> {
                                 if (result.isSuccess()) {
                                     User user = ((Result.UserResponseSuccess) result).getData();
-                                    saveLoginData(email, user.getUsername(), password, user.getIdToken());
+                                    saveLoginData(email, user.getUsername(), password, user.getIdToken(), user.getName(), user.getSurname(), user.getBirthDate());
                                     userViewModel.setAuthenticationError(false);
                                     startActivityBasedOnCondition(MainActivity.class,
                                             R.id.action_loginFragment_to_mainActivity);
@@ -293,7 +295,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void saveLoginData(String email, String username, String password, String idToken) {
+    private void saveLoginData(String email, String username, String password, String idToken, String name, String surname, Long birthdate) {
         try {
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USERNAME, username);
@@ -303,6 +305,17 @@ public class LoginFragment extends Fragment {
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD, password);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN, idToken);
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name", name);
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname", surname);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
+            if (birthdate != null)
+                dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate", sdf.format(new Date(birthdate)));
+            else dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate", null);
+
 
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();

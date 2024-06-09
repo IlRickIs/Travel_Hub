@@ -49,7 +49,7 @@
     <string name="user_name">Name</string>
     <string name="user_surname">Surname</string>
     <string name="user_birth">Birth</string>
-    <string name="user_city">City</string>
+    <string name="user_email" translatable="false">Email*</string>
 
 
     <string name="subscription">Subscription</string>
@@ -154,4 +154,5 @@
     <string name="username_needed" translatable="false">Username*</string>
     <string name="username_field_empty">Username field cannot be empty</string>
     <string name="username_already_taken">Username is already taken</string>
+    <string name="personal_info_saved">Personal information saved correctly</string>
 </resources>

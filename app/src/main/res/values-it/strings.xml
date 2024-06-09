@@ -48,7 +48,6 @@
     <string name="user_name">Nome</string>
     <string name="user_surname">Cognome</string>
     <string name="user_birth">Data di nascita</string>
-    <string name="user_city">Città</string>
 
     <string name="subscription">Subscription</string>
 
@@ -95,5 +94,6 @@
     <!--Personal info-->
     <string name="username_field_empty">Il campo username non può errere vuoto</string>
     <string name="username_already_taken">Lo username è già preso</string>
+    <string name="personal_info_saved">Informazioni personali salvate correttamente</string>
 
 </resources>

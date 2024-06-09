@@ -54,6 +54,13 @@ public class UserViewModel extends ViewModel {
         return userMutableLiveData;
     }
 
+    public MutableLiveData<Result> getUserMutableLiveData(){
+        if (userMutableLiveData == null) {
+            userMutableLiveData = new MutableLiveData<Result>();
+        }
+        return userMutableLiveData;
+    }
+
     private void getUserData(String username, String mail, String password, boolean isUserRegistered) {
         userMutableLiveData = userRepository.getUser(username, mail, password, isUserRegistered);
     }
@@ -113,8 +120,13 @@ public class UserViewModel extends ViewModel {
         return userMutableLiveData;
     }
 
-    public void updateUserData(User user) {
-        //userRepository.updateUserData(user); //TODO: Da implementare
+    public void updateUserData(String oldUsername, User user) {
+        userRepository.updateUserData(oldUsername, user, new UserDataRemoteDataSource.UserCallback() {
+            @Override
+            public void onUserResponse(Result result) {
+                userMutableLiveData.postValue(result);
+            }
+        });
     }
 
     public void isUsernameAlreadyTaken(String username) {
