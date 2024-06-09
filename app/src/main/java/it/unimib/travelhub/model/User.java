@@ -1,17 +1,15 @@
 package it.unimib.travelhub.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class User implements Serializable {
     private String username;
     private String name;
     private String surname;
-    private int age;
+    private Date birthDate;
     private String photoUrl;
     private String email;
     private String idToken;
@@ -25,7 +23,7 @@ public class User implements Serializable {
         this.username = null;
         this.name = null;
         this.surname = null;
-        this.age = 0;
+        this.birthDate = null;
         this.photoUrl = null;
         this.email = null;
         this.idToken=null;
@@ -42,10 +40,10 @@ public class User implements Serializable {
 
 
 
-    public User(String name, String surname, int age, String photoUrl, String email, String idToken) {
+    public User(String name, String surname, Date birthDate, String photoUrl, String email, String idToken) {
         this.name = name;
         this.surname = surname;
-        this.age = age;
+        this.birthDate = birthDate;
         this.photoUrl = photoUrl;
         this.email = email;
         this.idToken = idToken;
@@ -92,8 +90,8 @@ public class User implements Serializable {
         return surname;
     }
 
-    public int getAge() {
-        return age;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
     public String getPhotoUrl() {

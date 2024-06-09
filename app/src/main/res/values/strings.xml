@@ -45,7 +45,7 @@
 
     <string name="viewProfile">View Profile</string>
     <string name="personal_informations">Personal Informations</string>
-    <string name="username">Username</string>
+    <string name="username" translatable="false">Username</string>
     <string name="user_name">Name</string>
     <string name="user_surname">Surname</string>
     <string name="user_birth">Birth</string>
@@ -147,5 +147,11 @@
     <string name="departure_empty_error" translatable="false">Empty departure location</string>
     <string name="destination_error" translatable="false">Empty destination location</string>
     <string name="departure" translatable="false">departure*</string>
+    <string name="personal_info_description">In this section you can view your personal information, such as name, email address and telephone number. If you wish to update or change this information, you can do so easily by clicking on the different text fields. Keep your data always up to date for a better and personalized experience.</string>
 
+
+    <!--Personal Information-->
+    <string name="username_needed" translatable="false">Username*</string>
+    <string name="username_field_empty">Username field cannot be empty</string>
+    <string name="username_already_taken">Username is already taken</string>
 </resources>
