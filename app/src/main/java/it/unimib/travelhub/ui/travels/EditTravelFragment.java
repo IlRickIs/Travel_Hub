@@ -246,7 +246,7 @@ public class EditTravelFragment extends Fragment {
     }
 
     private void observeUserRegistration() {
-        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
+        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> { // TODO: TOFIX: bug when coming back and forth wiwth fragments
             if(result.isSuccess()){
                 List<User> users = ((Result.UsersResponseSuccess) result).getData();
                 Log.d(TAG, "user exists: " + users.toString());
