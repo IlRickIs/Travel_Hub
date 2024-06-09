@@ -87,14 +87,21 @@
     <string name="dash">-</string>
     <string name="ongoing_travel">Viaggi in corso</string>
     <string name="other_travels">Altri viaggi</string>
-    <string name="return_to_the_previous_screen">return to the previous screen</string>
-    <string name="from_fragment_edit">from</string>
-    <string name="save">Save</string>
-    <string name="description">description</string>
-    <string name="travel_images">travel images</string>
-    <string name="edit">edit</string>
+    <string name="return_to_the_previous_screen">Return to the previous screen</string>
+    <string name="add_friends_username">Aggiungi username amici</string>
+    <string name="title">Titolo*</string>
+    <string name="from">Da</string>
+    <string name="to">A</string>
+    <string name="from_need">Da*</string>
+    <string name="to_need">A*</string>
+    <string name="save">Salva</string>
+    <string name="destination">Destinazione</string>
+    <string name="add_destination">Aggiungi destinazione</string>
+    <string name="description">Descrizione</string>
+    <string name="departure">Partenza*</string>
+    <string name="travel_images">Immagini viaggio</string>
+    <string name="edit">Modifica</string>
     <string name="map_preview">map preview</string>
-    <string name="add_friends_email">add friends email</string>
     <string name="update_from_gallery">Update from gallery</string>
 
 </resources>

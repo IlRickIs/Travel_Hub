@@ -2,6 +2,7 @@ package it.unimib.travelhub.data.source;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static it.unimib.travelhub.util.Constants.FIREBASE_TRAVELS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 
@@ -192,14 +193,87 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
         }
     }
 
+
     @Override
-    public void updateTravel(Travels travels) {
+    public void updateTravel(Travels travel) {
+        try {
+            databaseReference.child(FIREBASE_TRAVELS_COLLECTION).child(String.valueOf(travel.getId())).setValue(travel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            travelsCallback.onUpdateSuccess(travel);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            travelsCallback.onFailureFromRemote(e);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            travelsCallback.onFailureFromRemote(e);
+        }
 
     }
 
     @Override
-    public void deleteTravel(Travels travels) {
+    public void deleteTravel(Travels travel) {
+        databaseReference.child("travels").child(String.valueOf(travel.getId())).removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                deleteTravelFromUsers(travel);
+            } else {
+                Log.d(TAG, "Error deleting travel", task.getException());
+                travelsCallback.onFailureFromRemote(task.getException());
+            }
+        });
+    }
 
+    private void deleteTravelFromUsers(Travels travel){
+        AtomicInteger count = new AtomicInteger(0);
+        for(TravelMember member : travel.getMembers()){
+            try {
+                databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child("travels").get().addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.d(TAG, "Error getting data", task.getException());
+                        travelsCallback.onFailureFromRemote(task.getException());
+                    } else {
+                        List<Long> travelsIdList = new ArrayList<>();
+                        for (DataSnapshot ds : task.getResult().getChildren()) {
+                            Long id = ds.getValue(Long.class);
+                            travelsIdList.add(id);
+                        }
+                        travelsIdList.remove((long) travel.getId());
+
+                        databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child("travels").setValue(travelsIdList)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "Travel id removed from user successfully");
+                                        count.set(count.get() + 1);
+                                        if(count.get() == travel.getMembers().size()){
+                                            travelsCallback.onSuccessDeletionFromRemote(travel);
+                                        }
+                                        else{
+                                            travelsCallback.onFailureFromRemote(new Exception("travel id not removed from all users"));
+                                            Log.d(TAG, "travel id not removed from all users");
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
+                                        Log.d(TAG, "Error removing travel id from user", e);
+                                    }
+                                });
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

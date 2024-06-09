@@ -13,6 +13,7 @@ public abstract class BaseTravelsRemoteDataSource {
     public abstract void addTravel(Travels travel);
     // public abstract void getTravelById(String travelId);
     public abstract void updateTravel(Travels travels);
+
     public abstract void deleteTravel(Travels travels);
     public abstract void deleteAllTravels();
 

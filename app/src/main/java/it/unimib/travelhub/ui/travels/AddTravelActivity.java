@@ -23,9 +23,10 @@ import it.unimib.travelhub.util.ServiceLocator;
 
 public class AddTravelActivity extends AppCompatActivity {
 
-private ActivityAddTravelBinding binding;
-private FragmentActivityAddViewModel viewModel;
-private Travels myTravel;
+    private ActivityAddTravelBinding binding;
+    private FragmentActivityAddViewModel viewModel;
+    private Travels myTravel;
+    public static Bundle myBundle = new Bundle();
 
 
 
@@ -37,12 +38,6 @@ private Travels myTravel;
      setContentView(binding.getRoot());
 
      viewModel = new ViewModelProvider(this).get(FragmentActivityAddViewModel.class);
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                 R.id.navigation_edit, R.id.navigation_images, R.id.navigation_map_preview)
-                .build();
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
                 findFragmentById(R.id.activityAddFragmentContainerView);
@@ -66,15 +61,15 @@ private Travels myTravel;
             }
         });
 
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                // Back is pressed... Finishing the activity
-                Intent intent = new Intent(AddTravelActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+//        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) { TODO: check if this is needed
+//            @Override
+//            public void handleOnBackPressed() {
+//                // Back is pressed... Finishing the activity
+//                Intent intent = new Intent(AddTravelActivity.this, MainActivity.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
     }
 
 

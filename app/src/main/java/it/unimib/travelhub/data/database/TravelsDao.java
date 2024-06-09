@@ -29,7 +29,7 @@ public interface TravelsDao {
     int updateListTravels(List<Travels> travels);
 
     @Delete
-    void delete(Travels travels);
+    int delete(Travels travels);
 
     @Query("DELETE FROM travels")
     int deleteAll();

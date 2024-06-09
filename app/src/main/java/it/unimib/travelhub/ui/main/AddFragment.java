@@ -65,16 +65,7 @@ public class AddFragment extends Fragment {
         addRecyclerAdapter = new AddRecyclerAdapter(localDataset, new AddRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                String[] attualDataset = addRecyclerAdapter.getDataSet();
-                Log.d(TAG, "onItemClick: " +  attualDataset.toString());
-                if (position == 0) {
-                    String[] newDataset = new String[attualDataset.length + 1];
-                    for(int i = 0; i < attualDataset.length; i++) {
-                        newDataset[i] = attualDataset[i];
-                    }
-                    newDataset[attualDataset.length] = "activity " + (attualDataset.length + 1);
-                    addRecyclerAdapter.setDataSet(newDataset);
-                }
+
             }
         });
         binding.ongoingActivitiesRecyclerView.setLayoutManager(mLayoutManager);
@@ -82,7 +73,7 @@ public class AddFragment extends Fragment {
         binding.buttonAddActivity.setOnClickListener(v ->{
             Intent intent = new Intent(getActivity(), AddTravelActivity.class);
             startActivity(intent);
-            requireActivity().finish();
+           // requireActivity().finish(); TODO: fix this
         });
     }
 
