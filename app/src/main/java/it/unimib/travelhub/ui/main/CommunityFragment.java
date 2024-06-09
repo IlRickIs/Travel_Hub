@@ -86,11 +86,66 @@ public class CommunityFragment extends Fragment {
 
         Button button = view.findViewById(R.id.button3);
         button.setOnClickListener(v -> {
-        //    deleteMockTravel(travel); //TODO: THIS WILL DELETE THE TRAVEL CREATED BY makeMockTravel()
+            //deleteMockTravel(travel); //TODO: THIS WILL DELETE THE TRAVEL CREATED BY makeMockTravel()
+        });
+
+        Button button2 = view.findViewById(R.id.button2);
+        button2.setOnClickListener(v -> {
+            //mockUpdateTravel(travel); //TODO: THIS WILL UPDATE THE TRAVEL CREATED BY makeMockTravel()
         });
 
         return view;
 
+    }
+
+    private void mockUpdateTravel(Travels travel) {
+        Travels updatedTravel = new Travels();
+        updatedTravel.setId(travel.getId());
+        updatedTravel.setTitle("UPDATED TITLE");
+
+        ArrayList<TravelSegment> travelSegments = new ArrayList<>();
+        travelSegments.add(new TravelSegment("Milano"));
+        travelSegments.add(new TravelSegment("Roma"));
+        travelSegments.add(new TravelSegment("Napoli"));
+        updatedTravel.setDestinations(travelSegments);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
+        Date parsedDate = null;
+        Date endDate = null;
+        try {
+            parsedDate = sdf.parse("05/06/2024");
+            endDate = sdf.parse("10/06/2024");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        updatedTravel.setStartDate(parsedDate);
+
+        updatedTravel.setEndDate(endDate);
+
+        ArrayList<TravelMember> members = new ArrayList<>();
+        members.add(new TravelMember("Roberto", "kO2tepwx7Lea92hyRVwITcfL2ak2", TravelMember.Role.CREATOR));
+        members.add(new TravelMember("ciao", "oH8EFtZMyhOE7dwmH0XJxzZC1Ar2", TravelMember.Role.MEMBER));
+
+        updatedTravel.setMembers(members);
+
+        Observer<Result> resultObserve = new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result != null && result.isSuccess()) {
+                    Result.TravelsResponseSuccess travelResponse = (Result.TravelsResponseSuccess) result;
+                    Travels travelCreated = travelResponse.getData().getTravelsList().get(0);
+                    Log.d("CommunityFragment", "Travel updated: " + travelCreated);
+
+                } else {
+                    Result.Error error = (Result.Error) result;
+                    Log.d("CommunityFragment", "Travel not updated, Error: " + error.getMessage());
+                }
+
+                travelsViewModel.updateTravel(updatedTravel).removeObserver(this);
+            }
+        };
+
+        travelsViewModel.updateTravel(updatedTravel).observe(getViewLifecycleOwner(), resultObserve);
     }
 
     private void makeMockTravel() { //TODO for testing, remove
@@ -124,6 +179,7 @@ public class CommunityFragment extends Fragment {
         travel.setMembers(members);
 
         this.travel = travel;
+
         travelsViewModel.addTravel(travel);
     }
 
