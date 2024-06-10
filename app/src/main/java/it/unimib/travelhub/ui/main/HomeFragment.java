@@ -6,16 +6,21 @@ import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
 import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,18 +29,28 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
+import it.unimib.travelhub.adapter.TravelSegmentRecyclerAdapter;
+import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
+import it.unimib.travelhub.ui.main.profile.ProfileFragmentDirections;
+import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.JSONParserUtil;
@@ -54,6 +69,13 @@ public class HomeFragment extends Fragment {
     private TravelsViewModel travelsViewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
+
+    private Travels onGoingTravel;
+    private Travels futureTravel;
+    private Travels doneTravel;
+    protected RecyclerView.LayoutManager mLayoutManager;
+    protected RecyclerView friendsRecyclerView;
+    protected RecyclerView travelSegmentsRecyclerView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -97,7 +119,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
+        mLayoutManager = new LinearLayoutManager(getActivity());
         return binding.getRoot();
     }
 
@@ -117,6 +139,7 @@ public class HomeFragment extends Fragment {
         });
 
         Intent intent = requireActivity().getIntent();
+
         if (intent.getBooleanExtra(TRAVEL_ADDED, false)) {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     "TRAVEL ADDED SUCCESSFULLY",
@@ -129,39 +152,61 @@ public class HomeFragment extends Fragment {
             lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
         }
 
+        friendsRecyclerView = binding.friendsRecyclerView;
+//        travelSegmentsRecyclerView = binding.segmentsRecyclerView;
+
+        binding.homeCardOther.setVisibility(View.GONE);
+        binding.homeCardNoTravel.setVisibility(View.GONE);
+        binding.homeLayoutOther.setVisibility(View.GONE);
+        binding.homeCardOngoing.setVisibility(View.GONE);
+
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
-                        Travels onGoingTravel = travelsResponse.getOnGoingTravel();
-                        Travels futureTravel = travelsResponse.getFutureTravel();
-                        Travels doneTravel = travelsResponse.getDoneTravel();
 
-                        if (travelsResponse != null) {
-                            if (doneTravel == null && onGoingTravel == null) {
-                                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-                                binding.homeLayoutStandard.setVisibility(View.GONE);
-                            } else if (doneTravel != null && onGoingTravel == null) {
-                                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
-                                binding.homeTextOngoing.setVisibility(View.GONE);
-                                binding.homeCardOngoing.setVisibility(View.GONE);
-                                binding.homeTextFuture.setVisibility(View.GONE);
-                                binding.homeCardFuture.setVisibility(View.GONE);
-                            } else if (futureTravel == null || onGoingTravel == futureTravel) {
-                                binding.homeTextFuture.setVisibility(View.GONE);
-                                binding.homeCardFuture.setVisibility(View.GONE);
+                        onGoingTravel = travelsResponse.getOnGoingTravel();
+                        futureTravel = travelsResponse.getFutureTravel();
+                        doneTravel = travelsResponse.getDoneTravel();
 
-                                setOngoingView();
-                            } else {
-                                setOngoingView();
-                                setFutureView();
+                        if (onGoingTravel != null) {
+                            setOngoingView(onGoingTravel);
+
+                            if (futureTravel != null) {
+                                setFutureView(futureTravel);
+                            } else if (doneTravel != null) {
+                                setPastView(doneTravel);
+                            }else{
+                                binding.homeCardNoTravel.setCardBackgroundColor(getResources().getColor(R.color.primaryVariantColor));
+                                binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
+                                binding.homeNewTravelImage.setVisibility(View.GONE);
+                                binding.homeCardNoTravel.setVisibility(View.VISIBLE);
                             }
+
+                        } else if (futureTravel != null) {
+                            setOngoingView(futureTravel);
+
+                            if (doneTravel != null) {
+                                setPastView(doneTravel);
+                            }else {
+                                binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
+                                binding.homeCardNoTravel.setVisibility(View.VISIBLE);
+                            }
+
+
                         } else {
-                            Log.e(TAG, "TravelsResponse is null");
-                            binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-                            binding.homeLayoutStandard.setVisibility(View.GONE);
+                            binding.homeCardNoTravel.setVisibility(View.VISIBLE);
+                            if (doneTravel != null) {
+                                setPastView(doneTravel);
+                            }
                         }
+
+                        binding.homeButtonCreateTravel.setOnClickListener(v -> {
+                            Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
+                            startActivity(AddTravelintent);
+                            requireActivity().finish();
+                        });
 
                         binding.seeAll.setOnClickListener(v -> {
                             NavController navController = Navigation.findNavController(view);
@@ -169,106 +214,101 @@ public class HomeFragment extends Fragment {
                             navController.navigate(val);
                         });
 
-                        binding.homeCardOngoing.setOnClickListener(v -> {
+                        binding.homeOngoingButton.setOnClickListener(v -> {
                             NavController navController = Navigation.findNavController(view);
                             NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(onGoingTravel);
                             navController.navigate(val);
                         });
 
-                        binding.homeCardFuture.setOnClickListener(v -> {
+                        binding.homeCardOther.setOnClickListener(v -> {
                             NavController navController = Navigation.findNavController(view);
                             NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(futureTravel);
                             navController.navigate(val);
                         });
 
                     } else {
-                        binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-                        binding.homeLayoutStandard.setVisibility(View.GONE);
-                        Log.d(TAG, "Info: " + ((Result.Error) result).getMessage());
+                        binding.homeCardNoTravel.setVisibility(View.VISIBLE);
                     }
                 });
 
         //travelsResponse = getTravelsResponseWithGSon(); //TODO: Cambiare e mettere il get dal repository
 
-//        if (travelsResponse != null) {
-//            if (travelsResponse.getDoneTravel() == null && travelsResponse.getOnGoingTravel() == null) {
-//                binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-//                binding.homeLayoutStandard.setVisibility(View.GONE);
-//            } else if (travelsResponse.getDoneTravel() != null && travelsResponse.getOnGoingTravel() == null) {
-//                binding.homeLayoutNoFutureTravels.setVisibility(View.VISIBLE);
-//                binding.homeTextOngoing.setVisibility(View.GONE);
-//                binding.homeCardOngoing.setVisibility(View.GONE);
-//                binding.homeTextFuture.setVisibility(View.GONE);
-//                binding.homeCardFuture.setVisibility(View.GONE);
-//            } else if (travelsResponse.getOnGoingTravel() != null && travelsResponse.getFutureTravel() == null ||
-//                        travelsResponse.getOnGoingTravel() == travelsResponse.getFutureTravel()) {
-//                binding.homeTextFuture.setVisibility(View.GONE);
-//                binding.homeCardFuture.setVisibility(View.GONE);
-//
-//                setOngoingView();
-//            } else {
-//                setOngoingView();
-//                setFutureView();
-//            }
-//        } else {
-//            Log.e(TAG, "TravelsResponse is null");
-//            binding.homeLayoutNoTravels.setVisibility(View.VISIBLE);
-//            binding.homeLayoutStandard.setVisibility(View.GONE);
-//        }
-//
-//        binding.seeAll.setOnClickListener(v -> {
-//            NavController navController = Navigation.findNavController(view);
-//            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
-//            navController.navigate(val);
-//        });
-//
-//        binding.homeCardOngoing.setOnClickListener(v -> {
-//            NavController navController = Navigation.findNavController(view);
-//            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
-//            navController.navigate(val);
-//        });
-//
-//        binding.homeCardFuture.setOnClickListener(v -> {
-//            NavController navController = Navigation.findNavController(view);
-//            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity();
-//            navController.navigate(val);
-//        });
-
-        //travelsViewModel.addTravel(TRAVEL);
-
-
-
     }
 
-    private void setOngoingView() {
-        Travels onGoingTravel = travelsResponse.getOnGoingTravel();
+    private void setOngoingView(Travels onGoingTravel) {
+        RecyclerView.LayoutManager layoutManagerRunning =
+                new LinearLayoutManager(requireContext(),
+                        LinearLayoutManager.HORIZONTAL, false);
+
+        binding.homeCardOngoing.setVisibility(View.VISIBLE);
+        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, "#FFFFFF");
+        friendsRecyclerView.setLayoutManager(layoutManagerRunning);
+        friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
+
+        long currentTime = System.currentTimeMillis();
+
+        binding.cardViewStatus.setVisibility(View.VISIBLE);
+
+        if(onGoingTravel.getStartDate().getTime() <= currentTime && onGoingTravel.getEndDate().getTime() >= currentTime){
+            binding.textViewStatus.setText("In corso");
+            binding.textViewStatus.setTextColor(Color.parseColor("#BCECAF"));
+            binding.cardViewStatus.getBackground().setTint(Color.parseColor("#2A2FFF00"));
+            binding.imageViewStatus.setColorFilter(Color.parseColor("#BCECAF"));
+        } else {
+            binding.textViewStatus.setText("In programma");
+            binding.textViewStatus.setTextColor(Color.parseColor("#BCECAF"));
+            binding.cardViewStatus.getBackground().setTint(Color.parseColor("#7A8959DF"));
+            binding.imageViewStatus.setColorFilter(Color.parseColor("#BCECAF"));
+        }
 
         binding.homeOngoingTitle.setText(onGoingTravel.getTitle());
-        binding.homeOngoingStartDate.setText(
+        binding.homeOngoingLocation.setText(onGoingTravel.getDestinations().get(0).getLocation());
+        binding.homeOngoingDates.setText(
                 new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                        .format(onGoingTravel.getStartDate())
+                        .format(onGoingTravel.getStartDate()) + " - " +
+                        new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                                .format(onGoingTravel.getEndDate())
         );
-        binding.homeOngoingEndDate.setText(
-                new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                        .format(onGoingTravel.getEndDate())
-        );
-        binding.homeOngoingDescription.setText(onGoingTravel.getDescription());
+
+        binding.homeOngoingNsegremts.setText(onGoingTravel.getDestinations().size() + " destinazioni");
     }
 
-    private void setFutureView() {
-        Travels futureTravel = travelsResponse.getFutureTravel();
+    private void setFutureView(Travels futureTravel) {
+        binding.homeCardOther.setVisibility(View.VISIBLE);
+        binding.homeLayoutOther.setVisibility(View.VISIBLE);
 
-        binding.homeFutureTitle.setText(futureTravel.getTitle());
-        binding.homeFutureStartDate.setText(
-                new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+        CardView travel_card = binding.homeTravelItem.getRoot();
+        ImageView travel_image = travel_card.findViewById(R.id.travel_image);
+        TextView travel_title = travel_card.findViewById(R.id.travel_title);
+        TextView travel_date = travel_card.findViewById(R.id.travel_date);
+        TextView travel_destinations = travel_card.findViewById(R.id.travel_destinations);
+
+        travel_title.setText(futureTravel.getTitle());
+        travel_date.setText(
+                new SimpleDateFormat("dd/MM", requireActivity().getResources().getConfiguration().getLocales().get(0))
                         .format(futureTravel.getStartDate())
         );
-        binding.homeFutureEndDate.setText(
-                new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                        .format(futureTravel.getEndDate())
-        );
-    }
+        travel_destinations.setText(futureTravel.getDestinations().size() + " luoghi");
 
+    }
+    private void setPastView(Travels pastTravel) {
+        binding.homeCardOther.setVisibility(View.VISIBLE);
+        binding.homeLayoutOther.setVisibility(View.VISIBLE);
+
+        CardView travel_card = binding.homeTravelItem.getRoot();
+        ImageView travel_image = travel_card.findViewById(R.id.travel_image);
+        TextView travel_title = travel_card.findViewById(R.id.travel_title);
+        TextView travel_date = travel_card.findViewById(R.id.travel_date);
+        TextView travel_destinations = travel_card.findViewById(R.id.travel_destinations);
+
+        travel_title.setText(pastTravel.getTitle());
+        travel_date.setText(
+                new SimpleDateFormat("dd/MM", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                        .format(pastTravel.getEndDate())
+        );
+        travel_destinations.setText(pastTravel.getDestinations().size() + " luoghi");
+
+    }
     private TravelsResponse getTravelsResponseWithGSon() {
         JSONParserUtil jsonParserUtil = new JSONParserUtil(requireActivity().getApplication());
         try {
