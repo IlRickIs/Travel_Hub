@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -238,15 +239,14 @@ public class EditTravelFragment extends Fragment {
             if(checkNullValues()){
                 return;
             }
-            observeUserRegistration();
             checkUsers();
-
+            observeUserRegistration();
         });
 
     }
 
     private void observeUserRegistration() {
-        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> { // TODO: TOFIX: bug when coming back and forth wiwth fragments
+        /*userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()){
                 List<User> users = ((Result.UsersResponseSuccess) result).getData();
                 Log.d(TAG, "user exists: " + users.toString());
@@ -260,16 +260,41 @@ public class EditTravelFragment extends Fragment {
                 //travelsViewModel.addTravel(travels);
                 //attachTravelObserver();
                 userViewModel.getIsUserRegistered().removeObservers(getViewLifecycleOwner());
-                Log.d(TAG, "DETACHING OBSERVER");
                 goToNewFragment(travel);
                 //detach observer
             } else {
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                         ((Result.Error) result).getMessage(),
                         Snackbar.LENGTH_SHORT).show();
-                Log.d(TAG, "user does not exist: " + ((Result.Error) result).getMessage());
             }
-        });
+        });*/
+
+        Observer<Result> myObserver = new Observer<Result>() {
+            public void onChanged(Result result) {
+                if(result.isSuccess()){
+                    List<User> users = ((Result.UsersResponseSuccess) result).getData();
+                    Log.d(TAG, "user exists: " + users.toString());
+                    for(User u : users){
+                        TravelMember member = new TravelMember(u.getUsername(),
+                                u.getIdToken(),
+                                TravelMember.Role.MEMBER);
+                        memberList.add(member);
+                    }
+                    Travels travel = buildTravel();
+                    //travelsViewModel.addTravel(travels);
+                    //attachTravelObserver();
+                    userViewModel.getIsUserRegistered().removeObservers(getViewLifecycleOwner());
+                    goToNewFragment(travel);
+                    //detach observer
+                } else {
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                            ((Result.Error) result).getMessage(),
+                            Snackbar.LENGTH_SHORT).show();
+                }
+                userViewModel.getIsUserRegistered().removeObserver(this);
+            }
+        };
+        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), myObserver);
     }
 
     private void goToNewFragment(Travels travel){
@@ -296,12 +321,10 @@ public class EditTravelFragment extends Fragment {
         }
         for(String s : friendTextList){
             if(s != null && !s.isEmpty()) {
-                Log.d(TAG, "userToChek: '" + s + "'\t loggedUser: '" + getLoggedUsername()+"'");
                 if( !s.equals(getLoggedUsername()))
                     userToCheck.add(s);
             }
         }
-        Log.d(TAG, "users: " + userToCheck.toString());
         if(userToCheck.isEmpty()){
 //            Travels upload = buildTravel();
 //            travelsViewModel.addTravel(upload);
@@ -309,6 +332,7 @@ public class EditTravelFragment extends Fragment {
             //here we dont need to do anything just build the travel
             goToNewFragment(buildTravel());
         }else {
+            Log.d(TAG, "checkUsers: " + userToCheck);
             userViewModel.checkUsernames(userToCheck);
         }
     }
@@ -460,6 +484,7 @@ public class EditTravelFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        userViewModel.getIsUserRegistered().removeObservers(getViewLifecycleOwner());
     }
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
