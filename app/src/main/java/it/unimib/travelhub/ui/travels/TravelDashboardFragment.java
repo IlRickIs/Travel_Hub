@@ -34,7 +34,6 @@ public class TravelDashboardFragment extends Fragment {
 
     private static final String TRAVEL = "travel";
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected RecyclerView.LayoutManager travelLayoutManager;
     private FragmentTravelDashboardBinding binding;
     private Travels travel;
 
@@ -112,13 +111,6 @@ public class TravelDashboardFragment extends Fragment {
         binding.travelDuration.setText(String.valueOf(diff / (1000 * 60 * 60 * 24)));
         binding.travelStart.setText(travel.getDestinations().get(0).getLocation());
         binding.progressBar.setProgress(progress);
-
-        RecyclerView travelSegmentsRecyclerView = binding.segmentsRecyclerView;
-        travelLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
-        TravelSegmentRecyclerAdapter travelSegmentRecyclerAdapter = new TravelSegmentRecyclerAdapter(travel.getDestinations());
-        travelSegmentsRecyclerView.setLayoutManager(travelLayoutManager);
-        travelSegmentsRecyclerView.setAdapter(travelSegmentRecyclerAdapter);
-
 
         RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);

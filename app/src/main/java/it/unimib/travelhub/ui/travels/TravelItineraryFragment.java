@@ -3,12 +3,16 @@ package it.unimib.travelhub.ui.travels;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.adapter.TravelSegmentRecyclerAdapter;
+import it.unimib.travelhub.databinding.FragmentTravelItineraryBinding;
 import it.unimib.travelhub.model.Travels;
 
 /**
@@ -18,11 +22,10 @@ import it.unimib.travelhub.model.Travels;
  */
 public class TravelItineraryFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
+    private FragmentTravelItineraryBinding binding;
+    protected RecyclerView.LayoutManager travelLayoutManager;
+    private static final String TRAVEL = "travel";
     private Travels travel;
 
     public TravelItineraryFragment(Travels travel) {
@@ -33,6 +36,7 @@ public class TravelItineraryFragment extends Fragment {
     public static TravelItineraryFragment newInstance(Travels travel) {
         TravelItineraryFragment fragment = new TravelItineraryFragment(travel);
         Bundle args = new Bundle();
+        args.putSerializable(TRAVEL, travel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,6 +44,9 @@ public class TravelItineraryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            travel = (Travels) getArguments().getSerializable(TRAVEL);
+        }
 
     }
 
@@ -47,6 +54,19 @@ public class TravelItineraryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_travel_itinerary, container, false);
+        binding = FragmentTravelItineraryBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        RecyclerView travelSegmentsRecyclerView = binding.segmentsRecyclerView;
+        travelLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        TravelSegmentRecyclerAdapter travelSegmentRecyclerAdapter = new TravelSegmentRecyclerAdapter(travel.getDestinations());
+        travelSegmentsRecyclerView.setLayoutManager(travelLayoutManager);
+        travelSegmentsRecyclerView.setAdapter(travelSegmentRecyclerAdapter);
+
     }
 }
