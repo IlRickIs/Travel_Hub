@@ -164,14 +164,17 @@ public class HomeFragment extends Fragment {
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
+                        Log.d(TAG, "TravelsResponse Acciughe: " + ((Result.TravelsResponseSuccess) result).getData());
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 
                         onGoingTravel = travelsResponse.getOnGoingTravel();
+
+
                         futureTravel = travelsResponse.getFutureTravel();
                         doneTravel = travelsResponse.getDoneTravel();
 
                         if (onGoingTravel != null) {
+                            Log.d(TAG, "onGoingTravel: " + onGoingTravel);
                             setOngoingView(onGoingTravel);
 
                             if (futureTravel != null) {
@@ -206,7 +209,7 @@ public class HomeFragment extends Fragment {
                         binding.homeButtonCreateTravel.setOnClickListener(v -> {
                             Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
                             startActivity(AddTravelintent);
-                            requireActivity().finish();
+                            //requireActivity().finish();
                         });
 
                         binding.seeAll.setOnClickListener(v -> {
@@ -221,14 +224,17 @@ public class HomeFragment extends Fragment {
                             navController.navigate(val);
                         });
 
-                        binding.homeCardOther.setOnClickListener(v -> {
-                            NavController navController = Navigation.findNavController(view);
-                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(futureTravel);
-                            navController.navigate(val);
-                        });
-
                     } else {
+
+                        Log.d(TAG, "TravelsResponse Error: " + ((Result.Error) result).getMessage());
+                        binding.homeTextNoFutureTravels.setText("Sembra tu non abbia viaggi in programma. Creane uno nuovo!");
                         binding.homeCardNoTravel.setVisibility(View.VISIBLE);
+
+                        binding.homeButtonCreateTravel.setOnClickListener(v -> {
+                            Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
+                            startActivity(AddTravelintent);
+                            //requireActivity().finish();
+                        });
                     }
                 });
 
@@ -278,6 +284,12 @@ public class HomeFragment extends Fragment {
         binding.homeCardOther.setVisibility(View.VISIBLE);
         binding.homeLayoutOther.setVisibility(View.VISIBLE);
 
+        binding.homeCardOther.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(requireView());
+            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(futureTravel);
+            navController.navigate(val);
+        });
+
         CardView travel_card = binding.homeTravelItem.getRoot();
         ImageView travel_image = travel_card.findViewById(R.id.travel_image);
         TextView travel_title = travel_card.findViewById(R.id.travel_title);
@@ -295,6 +307,11 @@ public class HomeFragment extends Fragment {
     private void setPastView(Travels pastTravel) {
         binding.homeCardOther.setVisibility(View.VISIBLE);
         binding.homeLayoutOther.setVisibility(View.VISIBLE);
+        binding.homeCardOther.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(requireView());
+            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(pastTravel);
+            navController.navigate(val);
+        });
 
         CardView travel_card = binding.homeTravelItem.getRoot();
         ImageView travel_image = travel_card.findViewById(R.id.travel_image);

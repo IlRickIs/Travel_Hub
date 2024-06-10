@@ -82,15 +82,16 @@ public class CommunityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_community, container, false);
         // Inflate the layout for this fragment
         travel = new Travels();
-        //makeMockTravel(); //TODO: THIS WILL MAKE A TRAVEL FOR TESTING AND SAVE IT IN travel VARIABLE
+        //TODO: THIS WILL MAKE A TRAVEL FOR TESTING AND SAVE IT IN travel VARIABLE
 
         Button button = view.findViewById(R.id.button3);
         button.setOnClickListener(v -> {
-            //deleteMockTravel(travel); //TODO: THIS WILL DELETE THE TRAVEL CREATED BY makeMockTravel()
+            deleteMockTravel(travel); //TODO: THIS WILL DELETE THE TRAVEL CREATED BY makeMockTravel()
         });
 
         Button button2 = view.findViewById(R.id.button2);
         button2.setOnClickListener(v -> {
+            makeMockTravel();
             //mockUpdateTravel(travel); //TODO: THIS WILL UPDATE THE TRAVEL CREATED BY makeMockTravel()
         });
 
@@ -173,7 +174,7 @@ public class CommunityFragment extends Fragment {
         travel.setTitle("PROVAAAA");
 
         ArrayList<TravelMember> members = new ArrayList<>();
-        members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
+        members.add(new TravelMember("PaoloCisly", "d1VZw72r1aSyrXM7ntFTFhxQcJo2", TravelMember.Role.CREATOR));
         members.add(new TravelMember("ciao", "oH8EFtZMyhOE7dwmH0XJxzZC1Ar2", TravelMember.Role.MEMBER));
 
         travel.setMembers(members);

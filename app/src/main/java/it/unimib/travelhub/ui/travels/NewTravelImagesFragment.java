@@ -4,7 +4,6 @@ import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -16,13 +15,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,11 +29,9 @@ import android.widget.ImageView;
 
 import java.io.File;
 
-import it.unimib.travelhub.R;
-import it.unimib.travelhub.databinding.ActivityAddTravelBinding;
 import it.unimib.travelhub.databinding.FragmentEditTravelImagesBinding;
 
-public class EditTravelImagesFragment extends Fragment {
+public class NewTravelImagesFragment extends Fragment {
     public boolean isCameraPermissionGranted = false;
     public static int count = 0;
 
@@ -80,15 +75,15 @@ public class EditTravelImagesFragment extends Fragment {
         }
     });
     private final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PICS_FOLDER;
-    private static final String TAG = EditTravelImagesFragment.class.getSimpleName();
+    private static final String TAG = NewTravelImagesFragment.class.getSimpleName();
     private FragmentEditTravelImagesBinding binding;
 
-    public EditTravelImagesFragment() {
+    public NewTravelImagesFragment() {
         // Required empty public constructor
     }
 
-    public static EditTravelImagesFragment newInstance() {
-        EditTravelImagesFragment fragment = new EditTravelImagesFragment();
+    public static NewTravelImagesFragment newInstance() {
+        NewTravelImagesFragment fragment = new NewTravelImagesFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

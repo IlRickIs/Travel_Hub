@@ -133,7 +133,6 @@ public class PersonalInfoFragment extends Fragment {
 
 
         binding.buttonLogout.setOnClickListener(v -> {
-            Log.d(TAG, "Logout button clicked");
 
             AlertDialog.Builder builder1 = new AlertDialog.Builder(requireActivity());
             builder1.setMessage(R.string.logout_message);
