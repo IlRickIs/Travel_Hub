@@ -25,6 +25,8 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     private final SharedPreferencesUtil sharedPreferencesUtil;
     private final MutableLiveData<Result> travelsMutableLiveData;
 
+    private MutableLiveData<Result> updateTravelsMutableLiveData; //TODO: remove this if not needed
+
     public TravelsRepository(BaseTravelsLocalDataSource travelsLocalDataSource,
                              BaseTravelsRemoteDataSource travelsRemoteDataSource,
                              SharedPreferencesUtil sharedPreferencesUtil) {
@@ -60,9 +62,10 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     }
 
     @Override
-    public MutableLiveData<Result> updateTravel(Travels travel) {
-        travelsRemoteDataSource.updateTravel(travel);
-        return travelsMutableLiveData;
+    public MutableLiveData<Result> updateTravel(Travels newTravel, Travels oldTravel) {
+        updateTravelsMutableLiveData = new MutableLiveData<>();
+        travelsRemoteDataSource.updateTravel(newTravel, oldTravel);
+        return updateTravelsMutableLiveData;
     }
 
     @Override
@@ -138,7 +141,7 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         List<Travels> travelList = new ArrayList<>();
         travelList.add(travel);
         TravelsResponse travelsResponse = new TravelsResponse(travelList);
-        travelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(travelsResponse));
+        updateTravelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(travelsResponse));
     }
 
     @Override

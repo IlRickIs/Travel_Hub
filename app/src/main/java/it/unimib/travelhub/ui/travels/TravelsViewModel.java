@@ -57,7 +57,7 @@ public class TravelsViewModel extends ViewModel {
         return travelsRepository.deleteTravel(travel);
     }
 
-    public MutableLiveData<Result> updateTravel(Travels travel) {
-        return travelsRepository.updateTravel(travel);
+    public MutableLiveData<Result> updateTravel(Travels newTravel, Travels oldTravel){
+        return travelsRepository.updateTravel(newTravel, oldTravel);
     }
 }
