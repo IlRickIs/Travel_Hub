@@ -67,7 +67,6 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    @Exclude
     public String getIdToken() {
         return idToken;
     }
