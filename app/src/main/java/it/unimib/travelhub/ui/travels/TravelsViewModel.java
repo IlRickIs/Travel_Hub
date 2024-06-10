@@ -19,6 +19,7 @@ public class TravelsViewModel extends ViewModel {
 
         private final ITravelsRepository travelsRepository;
         private MutableLiveData<Result> travelsListLiveData;
+        private MutableLiveData<Result> updateTravelsMutableLiveData;
 
         public TravelsViewModel(ITravelsRepository iTravelsRepository) {
             this.travelsRepository = iTravelsRepository;
@@ -35,6 +36,13 @@ public class TravelsViewModel extends ViewModel {
             }
             Log.d(TAG, "Travels list: " + travelsListLiveData.getValue());
             return travelsListLiveData;
+        }
+
+        public MutableLiveData<Result> getUpdateTravelsMutableLiveData() {
+            if (updateTravelsMutableLiveData == null) {
+                updateTravelsMutableLiveData = new MutableLiveData<>();
+            }
+            return updateTravelsMutableLiveData;
         }
         /**
         * Fetches the travels list from the repository.
@@ -57,7 +65,7 @@ public class TravelsViewModel extends ViewModel {
         return travelsRepository.deleteTravel(travel);
     }
 
-    public MutableLiveData<Result> updateTravel(Travels newTravel, Travels oldTravel){
-        return travelsRepository.updateTravel(newTravel, oldTravel);
+    public void updateTravel(Travels newTravel, Travels oldTravel){
+        updateTravelsMutableLiveData = travelsRepository.updateTravel(newTravel, oldTravel);
     }
 }
