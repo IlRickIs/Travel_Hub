@@ -34,6 +34,7 @@ public class Constants {
     public static final String DESTINATION = "first_destination";
     public static final String FRIEND = "first_friend";
     public static final String TRAVEL_ADDED = "TRAVEL_ADDED";
+    public static final String TRAVEL_DELETED = "TRAVEL_DELETED";
 
     public static final int TRAVELS_DATABASE_VERSION = 2;
     public static final String TRAVELS_DATABASE_NAME = "travels_database";

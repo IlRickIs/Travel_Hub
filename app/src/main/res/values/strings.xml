@@ -155,14 +155,14 @@
     <string name="departure">Departure*</string>
     <string name="date_over_limit" translatable="false">This date exceeds the travel end date</string>
     <string name="date_under_limit" translatable="false">This date is before the travel start date</string>
-    <string name="title_activity_edit_travel">EditTravelActivity</string>
+    <string name="title_activity_edit_travel" translatable="false">EditTravelActivity</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+    <string name="next" translatable="false">Next</string>
+    <string name="previous" translatable="false">Previous</string>
 
-    <string name="lorem_ipsum">
+    <string name="lorem_ipsum" translatable="false">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
         dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
@@ -198,5 +198,9 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+    <string name="travel_added_success" translatable="false">TRAVEL ADDED SUCCESSFULLY</string>
+    <string name="travel_updated_success" translatable="false">TRAVEL UPDATED SUCCESSFULLY</string>
+    <string name="travel_deleted_success" translatable="false">TRAVEL DELETED SUCCESSFULLY</string>
 
 </resources>

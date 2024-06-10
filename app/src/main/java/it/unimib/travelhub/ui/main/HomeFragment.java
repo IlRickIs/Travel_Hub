@@ -4,6 +4,7 @@ import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
 import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
 import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
+import static it.unimib.travelhub.util.Constants.TRAVEL_DELETED;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -142,10 +143,18 @@ public class HomeFragment extends Fragment {
 
         if (intent.getBooleanExtra(TRAVEL_ADDED, false)) {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                    "TRAVEL ADDED SUCCESSFULLY",
+                    getString(R.string.travel_added_success),
                     Snackbar.LENGTH_SHORT).show();
             intent.removeExtra(TRAVEL_ADDED);
         }
+
+        if (intent.getBooleanExtra(TRAVEL_DELETED, false)) {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.travel_deleted_success),
+                    Snackbar.LENGTH_SHORT).show();
+            intent.removeExtra(TRAVEL_DELETED);
+        }
+
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
