@@ -51,8 +51,8 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
                         user.setName(snapshot.child("name").getValue().toString());
                     if (snapshot.child("surname").getValue() != null)
                         user.setSurname(snapshot.child("surname").getValue().toString());
-                    if (snapshot.child("birthDate").child("time").getValue() != null)
-                        user.setBirthDate((Long) snapshot.child("birthDate").child("time").getValue());
+                    if (snapshot.child("birthDate").getValue() != null)
+                        user.setBirthDate((Long) snapshot.child("birthDate").getValue());
                     userResponseCallback.onSuccessFromRemoteDatabase(user);
                 } else {
                     Log.d(TAG, "User not present in Firebase Realtime Database" + user);
@@ -124,12 +124,12 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
 
     @Override
     public void updateUserData(String oldUsername, User user, final UserCallback userCallback) {
-        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).setValue(user) //TODO: check if this is correct
-                .addOnSuccessListener(aVoid -> {
-                    databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(oldUsername).setValue(user.getIdToken())
-                            .addOnSuccessListener(aVoid1 -> userCallback.onUserResponse(new Result.UserResponseSuccess(user)))
-                            .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage())));
-                })
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).setValue(user)
+                .addOnSuccessListener(aVoid -> databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(oldUsername).removeValue()
+                        .addOnSuccessListener(aVoid1 -> databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(user.getUsername()).setValue(user.getIdToken())
+                                .addOnSuccessListener(aVoid2 -> userCallback.onUserResponse(new Result.UserResponseSuccess(user)))
+                                .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage()))))
+                        .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage()))))
                 .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage())));
     }
 
