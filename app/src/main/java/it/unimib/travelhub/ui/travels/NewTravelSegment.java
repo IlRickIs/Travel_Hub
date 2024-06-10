@@ -184,8 +184,8 @@ public class NewTravelSegment extends Fragment {
             travel.getDestinations().add(buildTravelSegment());
             Log.d(TAG, "TRAVEL TO CREATE: " + travel);
             //add the travel
-            travelsViewModel.addTravel(travel);
-            attachTravelObserver();
+            //travelsViewModel.addTravel(travel);
+            //attachTravelObserver();
 
         });
     }

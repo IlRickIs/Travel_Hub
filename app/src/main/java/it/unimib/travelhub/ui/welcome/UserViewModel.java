@@ -159,6 +159,7 @@ public class UserViewModel extends ViewModel {
                         count.set(count.get()-1);
                         if(count.get() == 0){
                             isUserRegistered.postValue(new Result.UsersResponseSuccess(registered));
+                            isUserRegistered = null;
                         }
 
                     }

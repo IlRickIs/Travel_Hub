@@ -233,28 +233,17 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
         AtomicInteger count = new AtomicInteger(0);
         for(TravelMember member : travel.getMembers()){
             try {
-
-                Log.d(TAG, "member" + member);
-
-                databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child("travels").get().addOnCompleteListener(task -> {
-
+                databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child(FIREBASE_TRAVELS_COLLECTION).get().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
-
                         Log.d(TAG, "Error getting data", task.getException());
                         travelsCallback.onFailureFromRemote(task.getException());
-
                     } else {
-
-                        Log.d(TAG, "Successful read: " + task.getResult().getValue());
                         List<Long> travelsIdList = new ArrayList<>();
-
                         for (DataSnapshot ds : task.getResult().getChildren()) {
                             Long id = ds.getValue(Long.class);
                             travelsIdList.add(id);
                         }
                         travelsIdList.remove((long) travel.getId());
-
-                        Log.d(TAG, "travelsIdList" + travelsIdList);
 
                         databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child("travels").setValue(travelsIdList)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -280,6 +269,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                                 });
                     }
                 });
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
