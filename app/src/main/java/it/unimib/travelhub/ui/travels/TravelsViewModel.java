@@ -52,4 +52,12 @@ public class TravelsViewModel extends ViewModel {
             }
             return travelsListLiveData;
         }
+
+    public MutableLiveData<Result> deleteTravel(Travels travel) {
+        return travelsRepository.deleteTravel(travel);
+    }
+
+    public MutableLiveData<Result> updateTravel(Travels travel) {
+        return travelsRepository.updateTravel(travel);
+    }
 }

@@ -12,10 +12,15 @@ public class Constants {
     public static final String EMAIL_ADDRESS = "email_address";
     public static final String PASSWORD = "password";
     public static final String USERNAME = "username";
+
+    //FIREBASE
     public static final String FIREBASE_REALTIME_DATABASE = "https://travelhub-9bc21-default-rtdb.europe-west1.firebasedatabase.app/";
     public static final String ID_TOKEN = "google_token";
     public static final String FIREBASE_USERS_COLLECTION = "users";
     public static final String FIREBASE_USERNAMES_COLLECTION = "usernames";
+
+    public static final String FIREBASE_TRAVELS_COLLECTION = "travels";
+
     public static final String UNEXPECTED_ERROR = "unexpected_error";
     public static final String INVALID_USER_ERROR = "invalidUserError";
     public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
@@ -35,6 +40,9 @@ public class Constants {
     public static final String TRAVELS_DATABASE_NAME = "travels_database";
     public static final String LAST_UPDATE = "last_update";
 
-    public static final long FRESH_TIMEOUT = 0;
+    public static final long FRESH_TIMEOUT = 60*60*200; // 2 hours in milliseconds
+
+    //TRAVELSEGMENT
+    public static final String DESTINATION_TITLE = "DESTINATION";
 
 }

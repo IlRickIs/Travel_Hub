@@ -1,5 +1,8 @@
 package it.unimib.travelhub.ui.main;
 
+import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
+import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -14,6 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Objects;
 
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -71,5 +75,13 @@ public class MainActivity extends AppCompatActivity {
          */
 
         }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(getApplication());
+        sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE, "0");
+        Log.d("MainActivity", "Last update deleted: " + sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE));
     }
+}
 

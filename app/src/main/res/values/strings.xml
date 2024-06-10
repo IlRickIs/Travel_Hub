@@ -117,20 +117,21 @@
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="return_to_the_previous_screen">return to the previous screen</string>
-    <string name="from_fragment_edit">from</string>
-    <string name="title" translatable="false">title*</string>
-    <string name="to" translatable="false">to*</string>
+    <string name="return_to_the_previous_screen">Return to the previous screen</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="title">Title*</string>
+    <string name="to_need">To*</string>
     <string name="save">Save</string>
-    <string name="from" translatable="false">from*</string>
-    <string name="description">description</string>
+    <string name="from_need">From*</string>
+    <string name="description">Description</string>
     <string name="title_activity_add_travel" translatable="false">AddTravel</string>
     <string name="title_home" translatable="false">Home</string>
     <string name="title_dashboard" translatable="false">Dashboard</string>
     <string name="title_notifications" translatable="false">Notifications</string>
-    <string name="travel_images">travel images</string>
-    <string name="edit">edit</string>
-    <string name="map_preview">map preview</string>
+    <string name="travel_images">Travel images</string>
+    <string name="edit">Edit</string>
+    <string name="map_preview">Map preview</string>
 
     <string name="ongoing_travel">Ongoing Travel</string>
     <string name="other_travels">Other Travels</string>
@@ -141,17 +142,21 @@
        </string>
 
 
+
     <string name="dash">-</string>
-    <string name="destination" translatable="false">destination*</string>
-    <string name="add_friends_username" translatable="false">add friends username</string>
+    <string name="destination">Destination</string>
+    <string name="add_destination">Add destination</string>
+    <string name="add_friends_username">Add friends usernames</string>
     <string name="update_from_gallery">Update from gallery</string>
     <string name="open_camera" translatable="false">open camera</string>
     <string name="title_empty_error" translatable="false">Empty title</string>
     <string name="date_empty_error" translatable="false">Date is missing</string>
     <string name="departure_empty_error" translatable="false">Empty departure location</string>
     <string name="destination_error" translatable="false">Empty destination location</string>
-    <string name="departure" translatable="false">departure*</string>
     <string name="personal_info_description">In this section you can view your personal information, such as name, email address and telephone number. If you wish to update or change this information, you can do so easily by clicking on the different text fields. Keep your data always up to date for a better and personalized experience.</string>
+    <string name="departure">Departure*</string>
+    <string name="date_over_limit" translatable="false">This date exceeds the travel end date</string>
+    <string name="date_under_limit" translatable="false">This date is before the travel start date</string>
 
 
     <!--Personal Information-->
