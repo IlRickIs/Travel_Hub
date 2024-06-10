@@ -36,7 +36,7 @@ public class TravelsResponse implements Serializable {
     }
 
     public Travels getOnGoingTravel() {
-        return getOnGoingTravelList().isEmpty() ? getFutureTravel() : getOnGoingTravelList().get(0);
+        return getOnGoingTravelList().isEmpty() ? null : getOnGoingTravelList().get(0);
     }
 
     public List<Travels> getOnGoingTravelList() {

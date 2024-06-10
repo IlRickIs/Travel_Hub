@@ -1,6 +1,5 @@
 package it.unimib.travelhub.ui.travels;
 
-import static it.unimib.travelhub.util.Constants.DESTINATION;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
@@ -8,14 +7,10 @@ import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
-import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
-import static it.unimib.travelhub.util.Constants.TRAVEL_DESCRIPTION;
-import static it.unimib.travelhub.util.Constants.TRAVEL_TITLE;
 import static it.unimib.travelhub.util.Constants.USERNAME;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -43,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.travelhub.R;
@@ -57,18 +51,17 @@ import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.User;
-import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
 
-public class EditTravelFragment extends Fragment {
+public class NewTravelFragment extends Fragment {
     private FragmentEditTravelBinding binding;
 
     private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
 
     private TextBoxesRecyclerAdapter friendTextBoxesRecyclerAdapter;
-    private static final String TAG = EditTravelFragment.class.getSimpleName();
+    private static final String TAG = NewTravelFragment.class.getSimpleName();
     final Calendar myCalendar= Calendar.getInstance();
     private List<String> friendTextList;
     private List<String> destinationsText;
@@ -81,11 +74,11 @@ public class EditTravelFragment extends Fragment {
     private List<TravelMember> memberList;
     private UserViewModel userViewModel;
     AtomicBoolean exists = new AtomicBoolean(false);
-    public EditTravelFragment() {
+    public NewTravelFragment() {
     }
 
-    public static EditTravelFragment newInstance(String param1, String param2) {
-        EditTravelFragment fragment = new EditTravelFragment();
+    public static NewTravelFragment newInstance(String param1, String param2) {
+        NewTravelFragment fragment = new NewTravelFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -301,13 +294,13 @@ public class EditTravelFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable("travel", travel);
 
-        EditTravelSegment editTravelSegment = new EditTravelSegment();
-        editTravelSegment.setArguments(bundle);
+        NewTravelSegment newTravelSegment = new NewTravelSegment();
+        newTravelSegment.setArguments(bundle);
 
         // navigate to EditTravelSegment
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.activityAddFragmentContainerView, editTravelSegment);
+        fragmentTransaction.replace(R.id.activityAddFragmentContainerView, newTravelSegment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

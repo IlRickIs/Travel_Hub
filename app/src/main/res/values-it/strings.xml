@@ -51,6 +51,10 @@
     <string name="user_birth">Data di nascita</string>
     <string name="user_city">Città</string>
 
+    <!-- Travel -->
+
+    <string name="travel_no_description"></string>
+
     <string name="subscription">Subscription</string>
 
     <string name="settings">Settings</string>
