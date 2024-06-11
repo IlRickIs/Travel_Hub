@@ -11,8 +11,9 @@ public interface ITravelsRepository {
     MutableLiveData<Result> fetchTravels(long lastUpdate);
 
     MutableLiveData<Result> deleteTravel(Travels travel);
-    MutableLiveData<Result> updateTravel(Travels travel);
     MutableLiveData<Result> addTravel(Travels travel);
+
+    MutableLiveData<Result> updateTravel(Travels newTravel, Travels oldTravel);
 
     void addTravels(List<Travels> travelsList);
     void deleteAll();

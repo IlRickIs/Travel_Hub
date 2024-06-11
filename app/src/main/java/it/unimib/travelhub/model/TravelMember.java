@@ -25,7 +25,6 @@ public class TravelMember extends User implements Serializable {
         super(username, id);
         this.role = role;
     }
-
     public Role getRole() {
         return role;
     }

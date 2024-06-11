@@ -42,6 +42,14 @@ public class User implements Serializable {
         this.photoUrl = null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof User){
+            User user = (User) o;
+            return this.idToken.equals(user.idToken);
+        }
+        return false;
+    }
 
     public User(String username, String name, String surname, Long birthDate, String photoUrl, String email, String idToken) {
         this.username = username;
