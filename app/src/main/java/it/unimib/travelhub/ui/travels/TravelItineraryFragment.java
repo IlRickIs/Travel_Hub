@@ -6,13 +6,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TravelSegmentRecyclerAdapter;
+import it.unimib.travelhub.adapter.TravelSegmentTimeRecyclerAdapter;
 import it.unimib.travelhub.databinding.FragmentTravelItineraryBinding;
+import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 
 /**
@@ -68,5 +72,11 @@ public class TravelItineraryFragment extends Fragment {
         travelSegmentsRecyclerView.setLayoutManager(travelLayoutManager);
         travelSegmentsRecyclerView.setAdapter(travelSegmentRecyclerAdapter);
 
+    }
+
+
+    public static void delete_travel_segment(TravelSegment travelSegment) {
+        //TODO implement delete_travel_segment
+        Log.d("TravelItineraryFragment", "delete_travel_segment: " + travelSegment.toString());
     }
 }

@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.main.profile;
+package it.unimib.travelhub.ui.profile;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
@@ -27,7 +27,6 @@ import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.databinding.FragmentPersonalInfoBinding;
-import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;

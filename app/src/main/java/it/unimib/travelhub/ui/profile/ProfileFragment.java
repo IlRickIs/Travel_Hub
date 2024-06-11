@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.main.profile;
+package it.unimib.travelhub.ui.profile;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 
@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +20,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.databinding.FragmentProfileBinding;
+import it.unimib.travelhub.ui.travels.TravelFragmentAdapter;
 
 
 /**
@@ -35,6 +38,8 @@ public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
     private DataEncryptionUtil dataEncryptionUtil;
     private final String TAG = "ProfileFragment";
+
+    private ProfileFragmentAdapter myFragmentAdapter;
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -68,7 +73,9 @@ public class ProfileFragment extends Fragment {
         }
         binding.textViewUsername.setText(username);
         View headerView = binding.profileDrawerNavigation.getHeaderView(0);
-        ((TextView) headerView.findViewById(R.id.textViewUsername)).setText(username);
+        binding.textViewUsername.setText(username);
+        binding.textViewName.setText(name);
+        binding.textViewSurname.setText(surname);
         ((TextView) headerView.findViewById(R.id.textViewEmail)).setText(email);
         return binding.getRoot();
     }
@@ -109,21 +116,23 @@ public class ProfileFragment extends Fragment {
         });
 
 
-        FragmentManager fragmentManager = getChildFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.nav_profile_fragment, OngoingTravelsFragment.class, null)
-                .setReorderingAllowed(true)
-                .commit();
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                binding.viewPagerProfile.setCurrentItem(tab.getPosition());
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
 
-        binding.ongoingActivityFragment.setOnClickListener(v -> fragmentManager.beginTransaction()
-                .replace(R.id.nav_profile_fragment, OngoingTravelsFragment.class, null)
-                .setReorderingAllowed(true)
-                .commit());
+        FragmentManager fragmentManager = getParentFragmentManager();
+        myFragmentAdapter = new ProfileFragmentAdapter(fragmentManager, getLifecycle());
+        binding.viewPagerProfile.setAdapter(myFragmentAdapter);
 
-        binding.terminatedActivityFragment.setOnClickListener(v -> fragmentManager.beginTransaction()
-                .replace(R.id.nav_profile_fragment, TerminatedTravelsFragment.class, null)
-                .setReorderingAllowed(true)
-                .commit());
     }
     public void onDestroy() {
         super.onDestroy();

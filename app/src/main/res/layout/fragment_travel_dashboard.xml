@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -214,7 +214,7 @@
                     android:id="@+id/menu_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/baseline_keyboard_arrow_down_24"
+                    android:drawableRight="@drawable/baseline_keyboard_arrow_up_24"
                     android:text="Descrizione"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -229,55 +229,7 @@
                     android:background="@null"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout_itinerary"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="#FFFFFF"
-                android:orientation="vertical"
-                android:padding="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout_description">
 
-                <TextView
-                    android:id="@+id/menu_itinerary"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawableRight="@drawable/baseline_keyboard_arrow_down_24"
-                    android:text="Itinerario"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:nestedScrollingEnabled="false"
-                    android:id="@+id/segments_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="#FFFFFF"
-                android:orientation="vertical"
-                android:padding="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout_itinerary">
-
-                <TextView
-                    android:id="@+id/menu_notes"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawableRight="@drawable/baseline_keyboard_arrow_down_24"
-                    android:text="Note"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+</LinearLayout>

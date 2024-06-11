@@ -8,7 +8,6 @@ import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,24 +31,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import it.unimib.travelhub.R;
-import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
-import it.unimib.travelhub.adapter.TravelSegmentRecyclerAdapter;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
-import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
-import it.unimib.travelhub.ui.main.profile.ProfileFragmentDirections;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;

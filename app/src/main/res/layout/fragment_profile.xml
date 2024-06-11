@@ -14,28 +14,31 @@
         android:layout_height="match_parent"
         android:layoutDirection="ltr">
 
-        <LinearLayout
-            android:id="@+id/profileToolbar"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="0dp"
-            android:background="#FFFBFE"
-            android:padding="8dp"
+            android:nestedScrollingEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <TextView
-                android:id="@+id/textViewUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:textSize="22sp"
-                android:text="@string/username" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="12dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageViewUsername"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/original_logo"
+                tools:src="@drawable/baseline_person_24" />
+
             <Button
                 android:id="@+id/buttonMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="0dp"
+
                 android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
                 android:drawablePadding="0dp"
@@ -45,159 +48,174 @@
                 app:icon="@drawable/baseline_menu_24"
                 app:iconGravity="textEnd"
                 app:iconSize="24dp"
-                app:iconTint="#000000" />
+                app:iconTint="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
 
-        </LinearLayout>
-
-        <ScrollView
-            android:id="@+id/scrollView2"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:padding="16dp"
-            android:scrollbars="none"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileToolbar"
-            android:nestedScrollingEnabled="false">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:nestedScrollingEnabled="false">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imageViewUsername"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/original_logo"
-                    tools:src="@drawable/baseline_person_24" />
-
-                <TableLayout
-                    android:id="@+id/tableLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:shrinkColumns="*"
-                    android:stretchColumns="*"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageViewUsername"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/imageViewUsername"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TableRow
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/textViewAdventureNumber"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textAlignment="center"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textViewFollowerNumber"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textAlignment="center"
-                            android:textSize="20sp" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/textViewAdventure"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Adventures"
-                            android:textAlignment="center" />
-
-                        <TextView
-                            android:id="@+id/textViewFollower"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Followers"
-                            android:textAlignment="center" />
-                    </TableRow>
-                </TableLayout>
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewUsername">
 
                 <TextView
-                    android:id="@+id/textViewUser_Name"
+                    android:id="@+id/textViewName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="TextView"
-
+                    android:text="Name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewUsername" />
 
                 <TextView
-                    android:id="@+id/textViewDescription"
-                    android:layout_width="0dp"
+                    android:id="@+id/textViewSurname"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac placerat libero. Proin quis semper nunc. Maecenas aliquet ac risus eu bibendum. Mauris ac lorem libero. Fusce euismod viverra metus. Vivamus non rutrum nisi."
-
+                    android:layout_marginLeft="8dp"
+                    android:text="Surname"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewUser_Name" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewUsername" />
+            </LinearLayout>
 
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
-                    android:background="?android:attr/listDivider"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
 
-                <LinearLayout
-                    android:id="@+id/navigationView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider"
-                    android:layout_marginTop="16dp">
-                    <Button
-                        android:id="@+id/ongoingActivityFragment"
-                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            <TextView
+                android:id="@+id/textViewUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:shrinkColumns="*"
+                android:stretchColumns="*"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewUsername">
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewAdventureNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Ongoing" />
-                    <Button
-                        android:id="@+id/terminatedActivityFragment"
-                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/textViewFollowerNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Terminated" />
-                </LinearLayout>
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="20sp" />
+                </TableRow>
 
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/nav_profile_fragment"
-                    android:name="androidx.navigation.fragment.NavHostFragment"
+                <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewAdventure"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Adventures"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/textViewFollower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Followers"
+                        android:textAlignment="center" />
+                </TableRow>
+            </TableLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:tabContentStart="0dp"
+            app:tabGravity="start"
+            app:tabMode="scrollable">
+
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Panoramica"
+                android:textColor="@color/primaryColor"
+                android:textStyle="bold" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Itinerario" />
+
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPagerProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/navigationView"
-                    android:nestedScrollingEnabled="false"
-                    android:isScrollContainer="false"/>
+                    app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
         </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

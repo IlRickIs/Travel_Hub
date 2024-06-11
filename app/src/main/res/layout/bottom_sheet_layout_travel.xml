@@ -8,17 +8,7 @@
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Modifica Viaggio"
-        android:textSize="16sp"
-        app:backgroundTint="@color/grey_separator"
-        app:cornerRadius="10dp"
-        app:icon="@drawable/baseline_edit_24" />
+        android:layout_height="wrap_content" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_delete"

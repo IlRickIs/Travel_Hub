@@ -8,18 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import it.unimib.travelhub.R;
-import it.unimib.travelhub.adapter.TravelSegmentRecyclerAdapter;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
 import it.unimib.travelhub.databinding.FragmentTravelDashboardBinding;
 import it.unimib.travelhub.model.TravelMember;
@@ -81,8 +78,6 @@ public class TravelDashboardFragment extends Fragment {
 
         editTravel();
 
-        binding.travelDescription.setVisibility(View.GONE);
-        binding.segmentsRecyclerView.setVisibility(View.GONE);
         binding.menuDescription.setOnClickListener(v -> {
             if (binding.travelDescription.getVisibility() == View.GONE) {
                 binding.travelDescription.setVisibility(View.VISIBLE);
@@ -90,15 +85,6 @@ public class TravelDashboardFragment extends Fragment {
             } else {
                 binding.travelDescription.setVisibility(View.GONE);
                 binding.menuDescription.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_down_24, 0);
-            }
-        });
-        binding.menuItinerary.setOnClickListener(v -> {
-            if (binding.segmentsRecyclerView.getVisibility() == View.GONE) {
-                binding.segmentsRecyclerView.setVisibility(View.VISIBLE);
-                binding.menuItinerary.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_up_24, 0);
-            } else {
-                binding.segmentsRecyclerView.setVisibility(View.GONE);
-                binding.menuItinerary.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_down_24, 0);
             }
         });
 

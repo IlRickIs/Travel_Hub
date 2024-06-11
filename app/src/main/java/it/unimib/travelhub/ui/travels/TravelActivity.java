@@ -1,17 +1,10 @@
 package it.unimib.travelhub.ui.travels;
 
-import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
-import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
-import static it.unimib.travelhub.util.Constants.PASSWORD;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
@@ -24,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -33,23 +25,16 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import it.unimib.travelhub.adapter.TravelSegmentRecyclerAdapter;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.ActivityTravelBinding;
 import it.unimib.travelhub.R;
-import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
 import it.unimib.travelhub.model.Result;
-import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
-import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.util.ServiceLocator;
 
 public class TravelActivity extends AppCompatActivity {
@@ -87,7 +72,7 @@ public class TravelActivity extends AppCompatActivity {
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                binding.viewPager.setCurrentItem(tab.getPosition());
+                binding.viewPagerTravel.setCurrentItem(tab.getPosition());
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
@@ -97,21 +82,19 @@ public class TravelActivity extends AppCompatActivity {
             }
         });
 
-        binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        binding.viewPagerTravel.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(position));
             }
         });
 
-
         TravelActivityArgs args = TravelActivityArgs.fromBundle(getIntent().getExtras());
         travel = args.getTravel();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         myFragmentAdapter = new TravelFragmentAdapter(fragmentManager, getLifecycle(), travel);
-        binding.viewPager.setAdapter(myFragmentAdapter);
-
+        binding.viewPagerTravel.setAdapter(myFragmentAdapter);
 
         binding.travelTitle.setText(travel.getTitle());
         binding.buttonBack.setOnClickListener(v -> finish());
@@ -122,10 +105,8 @@ public class TravelActivity extends AppCompatActivity {
         binding.travelStartDate.setText(startDate);
         binding.travelEndDate.setText(endDate);
 
-
         FrameLayout standardBottomSheet = findViewById(R.id.standard_bottom_sheet);
         BottomSheetBehavior<View> standardBottomSheetBehavior = BottomSheetBehavior.from(standardBottomSheet);
-
         binding.buttonMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,20 +143,8 @@ public class TravelActivity extends AppCompatActivity {
 
                     }
                 });
-
-                @SuppressLint({"MissingInflatedId", "LocalSuppress"}) MaterialButton buttonEdit = view1.findViewById(R.id.button_edit);
-                buttonEdit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
-
             }
         });
-
-
-
         editTravel();
     }
 
@@ -261,12 +230,13 @@ public class TravelActivity extends AppCompatActivity {
         travelsViewModel.deleteTravel(travel).observe(this, resultObserver);
 
     }
-
     public void showEditButton(){
         binding.buttonEdit.setVisibility(View.VISIBLE);
-        //TODO make update travel
+        binding.buttonEdit.setOnClickListener(v -> {
+            updateTravel(travel); //TODO manage edit button
+        });
     }
-    public Date parseStringToDate(String date){
+    private Date parseStringToDate(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", getResources().getConfiguration().getLocales().get(0));
         Date parsedDate = null;
         try {
@@ -282,5 +252,10 @@ public class TravelActivity extends AppCompatActivity {
         String s = sdf.format(myCalendar.getTime());
         editText.setText(s);
         return s;
+    }
+
+    private boolean updateTravel(Travels travel) {
+        //TODO update travel
+        return false;
     }
 }
