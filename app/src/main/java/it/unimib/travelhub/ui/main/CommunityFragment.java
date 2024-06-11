@@ -17,11 +17,14 @@ import android.widget.Button;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.database.TravelsDao;
@@ -93,7 +96,8 @@ public class CommunityFragment extends Fragment {
 
         Button button2 = view.findViewById(R.id.create_button);
         button2.setOnClickListener(v -> {
-            makeMockTravel();
+            //makeMockTravel();
+            makeFirestoreTravel();
             //mockUpdateTravel(travel); //TODO: THIS WILL UPDATE THE TRAVEL CREATED BY makeMockTravel()
         });
 
@@ -104,6 +108,26 @@ public class CommunityFragment extends Fragment {
 
         return view;
 
+    }
+
+    private void makeFirestoreTravel() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if(db == null) {
+            Log.d(TAG, "db is null");
+            return;
+        }else{
+            Log.d(TAG, "db is not null " + db.toString());
+
+        }
+        HashMap<String, Object> test = new HashMap<>();
+        test.put("pizza", "cacca");
+        db.collection("users").add(test).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "DocumentSnapshot added with ID: " + task.getResult().getId());
+            } else {
+                Log.d(TAG, "Error adding document", task.getException());
+            }
+        });
     }
 
     private void mockUpdateTravel(Travels travel) {
