@@ -21,6 +21,8 @@ public class Constants {
 
     public static final String FIREBASE_TRAVELS_COLLECTION = "travels";
 
+    public static final String FIREBASE_TRAVELS_MEMBERS_COLLECTION = "travels_members";
+
     public static final String UNEXPECTED_ERROR = "unexpected_error";
     public static final String INVALID_USER_ERROR = "invalidUserError";
     public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";

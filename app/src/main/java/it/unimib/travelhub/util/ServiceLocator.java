@@ -17,6 +17,7 @@ import it.unimib.travelhub.data.source.BaseTravelsRemoteDataSource;
 import it.unimib.travelhub.data.source.TravelsLocalDataSource;
 import it.unimib.travelhub.data.source.TravelsMockRemoteDataSource;
 import it.unimib.travelhub.data.source.TravelsRemoteDataSource;
+import it.unimib.travelhub.data.source.TravelsRemoteFirestoreDataSource;
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
@@ -69,7 +70,7 @@ public class ServiceLocator {
 
         JSONParserUtil jsonParserUtil = new JSONParserUtil(application);
 //        travelsRemoteDataSource = new TravelsMockRemoteDataSource(jsonParserUtil);
-        travelsRemoteDataSource = new TravelsRemoteDataSource(dataEncryptionUtil);
+        travelsRemoteDataSource = new TravelsRemoteFirestoreDataSource(dataEncryptionUtil);
 
         travelsLocalDataSource = new TravelsLocalDataSource(getTravelsDao(application));
 
