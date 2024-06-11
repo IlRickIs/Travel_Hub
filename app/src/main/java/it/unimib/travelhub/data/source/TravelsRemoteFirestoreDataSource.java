@@ -134,12 +134,81 @@ public class TravelsRemoteFirestoreDataSource extends BaseTravelsRemoteDataSourc
 
     @Override
     public void updateTravel(Travels newTravel, Travels oldTravel) {
+        WriteBatch batch = db.batch();
+        DocumentReference travelRef = db.collection(FIREBASE_TRAVELS_COLLECTION)
+                .document(String.valueOf(oldTravel.getId()));
 
+        Map<String, Object> travelMap = newTravel.toMap();
+        batch.update(travelRef, travelMap);
+
+        List<TravelMember> toAddMembers = new ArrayList<>(newTravel.getMembers());
+        toAddMembers.removeAll(oldTravel.getMembers());
+
+        List<TravelMember> toRemoveMembers = new ArrayList<>(oldTravel.getMembers());
+        toRemoveMembers.removeAll(newTravel.getMembers());
+
+        Log.d(TAG, "toAddMembers: " + toAddMembers);
+        Log.d(TAG, "toRemoveMembers: " + toRemoveMembers);
+
+        for(TravelMember member : toRemoveMembers) {
+            String userId = member.getIdToken();
+            DocumentReference userTravelRef = db.collection(FIREBASE_USERS_COLLECTION)
+                    .document(userId);
+
+            Map<String, Object> userTravelMap = new HashMap<>();
+            userTravelMap.put("travels", FieldValue.arrayRemove(oldTravel.getId()));
+            batch.update(userTravelRef, userTravelMap);
+        }
+
+        for(TravelMember member : toAddMembers) {
+            String userId = member.getIdToken();
+            DocumentReference userTravelRef = db.collection(FIREBASE_USERS_COLLECTION)
+                    .document(userId);
+
+            Map<String, Object> userTravelMap = new HashMap<>();
+            userTravelMap.put("travels", FieldValue.arrayUnion(newTravel.getId()));
+            batch.update(userTravelRef, userTravelMap);
+        }
+
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Travel updated successfully");
+                    travelsCallback.onUpdateSuccess(newTravel);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error updating travel", e);
+                    travelsCallback.onFailureFromRemote(e);
+                });
     }
 
     @Override
     public void deleteTravel(Travels travels) {
+        WriteBatch batch = db.batch();
+        DocumentReference travelRef = db.collection(FIREBASE_TRAVELS_COLLECTION)
+                .document(String.valueOf(travels.getId()));
 
+        batch.delete(travelRef);
+
+        List<TravelMember> members = travels.getMembers();
+        for(TravelMember member : members) {
+            String userId = member.getIdToken();
+            DocumentReference userTravelRef = db.collection(FIREBASE_USERS_COLLECTION)
+                    .document(userId);
+
+            Map<String, Object> userTravelMap = new HashMap<>();
+            userTravelMap.put("travels", FieldValue.arrayRemove(travels.getId()));
+            batch.update(userTravelRef, userTravelMap);
+        }
+
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Travel deleted successfully");
+                    travelsCallback.onSuccessDeletionFromRemote(travels);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error deleting travel", e);
+                    travelsCallback.onFailureFromRemote(e);
+                });
     }
 
     @Override

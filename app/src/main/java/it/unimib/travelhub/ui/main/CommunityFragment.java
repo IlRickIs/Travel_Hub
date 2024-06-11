@@ -97,9 +97,7 @@ public class CommunityFragment extends Fragment {
 
         Button button2 = view.findViewById(R.id.create_button);
         button2.setOnClickListener(v -> {
-            makeMockTravel();
-            //makeFirestoreTravel();
-            //mockUpdateTravel(travel); //TODO: THIS WILL UPDATE THE TRAVEL CREATED BY makeMockTravel()
+            makeMockTravel(); //TODO: THIS WILL CREATE THE TRAVEL CREATED BY makeMockTravel()
         });
 
         Button button3 = view.findViewById(R.id.update_button);
@@ -109,36 +107,6 @@ public class CommunityFragment extends Fragment {
 
         return view;
 
-    }
-
-    private void makeFirestoreTravel() {
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        if(db == null) {
-            Log.d(TAG, "db is null");
-            return;
-        }else{
-            Log.d(TAG, "db is not null " + db.toString());
-
-        }
-        HashMap<String, Object> test = new HashMap<>();
-        test.put("pizza", "ca");
-        db.collection("test").document("record").set(test, SetOptions.merge()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d(TAG, "DocumentSnapshot added with ID: " + task.getResult());
-            } else {
-                Log.d(TAG, "Error adding document", task.getException());
-            }
-        });
-
-        db.collection("test").document("record").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d(TAG, "get: " + task.getResult().getData().keySet().toArray()[0]);
-            } else {
-                Log.d(TAG, "Error adding document", task.getException());
-            }
-        });
     }
 
     private void mockUpdateTravel(Travels travel) {
@@ -166,8 +134,10 @@ public class CommunityFragment extends Fragment {
         updatedTravel.setEndDate(endDate);
 
         ArrayList<TravelMember> members = new ArrayList<>();
-        members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
-        members.add(new TravelMember("cavds", "frtAgtA8FLZegyXcYO79zM84got1", TravelMember.Role.MEMBER));
+        //members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
+        //members.add(new TravelMember("cavds", "frtAgtA8FLZegyXcYO79zM84got1", TravelMember.Role.MEMBER));
+        members.add(new TravelMember("Roberto", "kO2tepwx7Lea92hyRVwITcfL2ak2", TravelMember.Role.CREATOR));
+        members.add(new TravelMember("pippo", "q6bEVoUp4Se4KFt0t66zdWhmRbq1", TravelMember.Role.MEMBER));
 
         updatedTravel.setMembers(members);
 
@@ -219,7 +189,8 @@ public class CommunityFragment extends Fragment {
         travel.setTitle("PROVAAAA");
 
         ArrayList<TravelMember> members = new ArrayList<>();
-        members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
+        //members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
+        members.add(new TravelMember("Roberto", "kO2tepwx7Lea92hyRVwITcfL2ak2", TravelMember.Role.CREATOR));
         members.add(new TravelMember("ciao", "oH8EFtZMyhOE7dwmH0XJxzZC1Ar2", TravelMember.Role.MEMBER));
 
 
