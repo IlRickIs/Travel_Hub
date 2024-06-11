@@ -145,23 +145,23 @@ public class NewTravelFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(requireActivity());
-                builder1.setMessage("Are you sure you want to come back? Your new travel will be lost.");
-                builder1.setCancelable(true);
+                AlertDialog.Builder AlertBuilder = new AlertDialog.Builder(requireActivity());
+                AlertBuilder.setMessage("Are you sure you want to come back? Your new travel will be lost.");
+                AlertBuilder.setCancelable(true);
 
-                builder1.setPositiveButton(
+                AlertBuilder.setPositiveButton(
                         "Yes",
                         (dialog, id) -> {
                             dialog.cancel();
                             requireActivity().finish();
                         });
 
-                builder1.setNegativeButton(
+                AlertBuilder.setNegativeButton(
                         "No",
                         (dialog, id) -> dialog.cancel());
 
-                AlertDialog alert11 = builder1.create();
-                alert11.show();
+                AlertDialog alert = AlertBuilder.create();
+                alert.show();
             }
         });
 
