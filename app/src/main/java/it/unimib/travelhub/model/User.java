@@ -1,17 +1,18 @@
 package it.unimib.travelhub.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Serializable {
     private String username;
     private String name;
     private String surname;
-    private int age;
+    private Long birthDate;
     private String photoUrl;
     private String email;
     private String idToken;
@@ -25,7 +26,7 @@ public class User implements Serializable {
         this.username = null;
         this.name = null;
         this.surname = null;
-        this.age = 0;
+        this.birthDate = null;
         this.photoUrl = null;
         this.email = null;
         this.idToken=null;
@@ -38,6 +39,10 @@ public class User implements Serializable {
         this.username = name;
         this.email = email;
         this.idToken = idToken;
+        this.name = null;
+        this.surname = null;
+        this.birthDate = null;
+        this.photoUrl = null;
     }
 
     @Override
@@ -49,11 +54,11 @@ public class User implements Serializable {
         return false;
     }
 
-
-    public User(String name, String surname, int age, String photoUrl, String email, String idToken) {
+    public User(String username, String name, String surname, Long birthDate, String photoUrl, String email, String idToken) {
+        this.username = username;
         this.name = name;
         this.surname = surname;
-        this.age = age;
+        this.birthDate = birthDate;
         this.photoUrl = photoUrl;
         this.email = email;
         this.idToken = idToken;
@@ -83,6 +88,20 @@ public class User implements Serializable {
         this.idToken = idToken;
     }
 
+    @Exclude
+    public Map<String, Object> toMap(ArrayList<Long> travels) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("username", username);
+        result.put("name", name);
+        result.put("surname", surname);
+        result.put("birthDate", birthDate);
+        result.put("photoUrl", photoUrl);
+        result.put("email", email);
+        result.put("idToken", idToken);
+        result.put("travels", travels);
+        return result;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -99,11 +118,14 @@ public class User implements Serializable {
         return surname;
     }
 
-    public int getAge() {
-        return age;
+    public Long getBirthDate() {
+        return birthDate;
     }
 
     public String getPhotoUrl() {
         return photoUrl;
     }
+    public void setName(String name) { this.name = name; }
+    public void setSurname(String surname) { this.surname = surname; }
+    public void setBirthDate(Long birthDate) { this.birthDate = birthDate; }
 }

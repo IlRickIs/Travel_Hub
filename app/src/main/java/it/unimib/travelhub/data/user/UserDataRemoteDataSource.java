@@ -1,6 +1,7 @@
 package it.unimib.travelhub.data.user;
 
 import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static it.unimib.travelhub.util.Constants.FIREBASE_TRAVELS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERNAMES_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.USERNAME;
@@ -16,6 +17,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
@@ -45,6 +53,12 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
                             .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
                             .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));*/
                     user.setUsername(snapshot.child(USERNAME).getValue().toString());
+                    if (snapshot.child("name").getValue() != null)
+                        user.setName(snapshot.child("name").getValue().toString());
+                    if (snapshot.child("surname").getValue() != null)
+                        user.setSurname(snapshot.child("surname").getValue().toString());
+                    if (snapshot.child("birthDate").getValue() != null)
+                        user.setBirthDate((Long) snapshot.child("birthDate").getValue());
                     userResponseCallback.onSuccessFromRemoteDatabase(user);
                 } else {
                     Log.d(TAG, "User not present in Firebase Realtime Database" + user);
@@ -110,6 +124,28 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
             }});
     }
 
+    public interface UserCallback {
+        void onUserResponse(Result result);
+    }
+
+    @Override
+    public void updateUserData(User user, final UserCallback userCallback) {
+        ArrayList<Long> travels = new ArrayList<>();
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).child(FIREBASE_TRAVELS_COLLECTION).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (DataSnapshot snapshot : task.getResult().getChildren()) {
+                    travels.add((Long) snapshot.getValue());
+                }
+                Map<String, Object> userMap = user.toMap(travels);
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put(FIREBASE_USERS_COLLECTION + "/" + user.getIdToken(), userMap);
+
+                databaseReference.updateChildren(childUpdates)
+                        .addOnSuccessListener(aVoid -> userCallback.onUserResponse(new Result.UserResponseSuccess(user)))
+                        .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage())));
+            }
+        });
+    }
 
     private void mapUsernameToId(User user) {
         Log.d(TAG, "Mapping username to id");

@@ -45,11 +45,11 @@
 
     <string name="viewProfile">View Profile</string>
     <string name="personal_informations">Personal Informations</string>
-    <string name="username">Username</string>
+    <string name="username" translatable="false">Username</string>
     <string name="user_name">Name</string>
     <string name="user_surname">Surname</string>
     <string name="user_birth">Birth</string>
-    <string name="user_city">City</string>
+    <string name="user_email" translatable="false">Email*</string>
 
 
     <!-- Travel -->
@@ -152,6 +152,7 @@
     <string name="date_empty_error" translatable="false">Date is missing</string>
     <string name="departure_empty_error" translatable="false">Empty departure location</string>
     <string name="destination_error" translatable="false">Empty destination location</string>
+    <string name="personal_info_description">In this section you can view your personal information, such as name, email address and telephone number. If you wish to update or change this information, you can do so easily by clicking on the different text fields. Keep your data always up to date for a better and personalized experience.</string>
     <string name="departure">Departure*</string>
     <string name="date_over_limit" translatable="false">This date exceeds the travel end date</string>
     <string name="date_under_limit" translatable="false">This date is before the travel start date</string>
@@ -202,5 +203,8 @@
     <string name="travel_added_success" translatable="false">TRAVEL ADDED SUCCESSFULLY</string>
     <string name="travel_updated_success" translatable="false">TRAVEL UPDATED SUCCESSFULLY</string>
     <string name="travel_deleted_success" translatable="false">TRAVEL DELETED SUCCESSFULLY</string>
+
+    <!--Personal Information-->
+    <string name="personal_info_saved">Personal information saved correctly</string>
 
 </resources>

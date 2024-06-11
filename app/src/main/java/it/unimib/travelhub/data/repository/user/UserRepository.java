@@ -109,6 +109,11 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         userDataRemoteDataSource.isUserRegistered(username, userDataCallback);
         return userMutableLiveData;
     }
+    @Override
+    public MutableLiveData<Result> updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback) {
+        userDataRemoteDataSource.updateUserData(user, userCallback);
+        return userMutableLiveData;
+    }
 
 
     @Override

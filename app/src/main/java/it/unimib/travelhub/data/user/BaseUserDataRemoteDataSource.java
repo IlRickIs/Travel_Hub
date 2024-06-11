@@ -23,4 +23,5 @@ public abstract class BaseUserDataRemoteDataSource {
     public abstract void isUsernameTaken(String username, String email, String password);
 
     public abstract void isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
+    public abstract void updateUserData(User user, final UserDataRemoteDataSource.UserCallback userCallback);
 }
