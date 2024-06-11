@@ -2,16 +2,10 @@ package it.unimib.travelhub.data.user;
 
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERNAMES_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
-import static it.unimib.travelhub.util.Constants.USERNAME;
 import static it.unimib.travelhub.util.Constants.USERNAME_NOT_AVAILABLE;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -26,17 +20,17 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
 
     private final SharedPreferencesUtil sharedPreferencesUtil;
 
-    private final FirebaseFirestore firebaseDatabase;
+    private final FirebaseFirestore db;
 
     private static final String TAG = UserRemoteFirestoreDataSource.class.getSimpleName();
 
     public UserRemoteFirestoreDataSource(SharedPreferencesUtil sharedPreferencesUtil) {
         this.sharedPreferencesUtil = sharedPreferencesUtil;
-        this.firebaseDatabase = FirebaseFirestore.getInstance();
+        this.db = FirebaseFirestore.getInstance();
     }
     @Override
     public void saveUserData(User user) {
-        firebaseDatabase.collection(FIREBASE_USERS_COLLECTION).document(user.getIdToken()).get()
+        db.collection(FIREBASE_USERS_COLLECTION).document(user.getIdToken()).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
@@ -46,7 +40,7 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
                             userResponseCallback.onSuccessFromRemoteDatabase(newUser);
                         } else {
                             Log.d(TAG, "User not present in Firebase Realtime Database" + user);
-                            firebaseDatabase.collection(FIREBASE_USERS_COLLECTION).document(user.getIdToken()).set(user, SetOptions.merge())
+                            db.collection(FIREBASE_USERS_COLLECTION).document(user.getIdToken()).set(user, SetOptions.merge())
                                     .addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {
                                             Log.d(TAG, "DocumentSnapshot added with ID: " + task1.getResult());
@@ -68,7 +62,7 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
     private void mapUsernameToId(User user) {
         HashMap<String, Object> username = new HashMap<>();
         username.put("id", user.getIdToken());
-        firebaseDatabase.collection(FIREBASE_USERNAMES_COLLECTION).document(user.getUsername()).set(username)
+        db.collection(FIREBASE_USERNAMES_COLLECTION).document(user.getUsername()).set(username)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + task.getResult());
@@ -101,7 +95,7 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
 
     @Override
     public void isUsernameTaken(String username, String email, String password) {
-        firebaseDatabase.collection(FIREBASE_USERS_COLLECTION).document(username).get()
+        db.collection(FIREBASE_USERS_COLLECTION).document(username).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
@@ -125,7 +119,7 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
     }
     @Override
     public void isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback) {
-        firebaseDatabase.collection(FIREBASE_USERNAMES_COLLECTION).document(username).get()
+        db.collection(FIREBASE_USERNAMES_COLLECTION).document(username).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if(task.getResult().getData() != null) {
@@ -142,5 +136,12 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
                         callback.onUsernameResponse(new Result.Error(task.getException().toString()));
                     }
                 });
+    }
+
+    @Override
+    public void updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback) {
+        db.collection(FIREBASE_USERS_COLLECTION).document(user.getIdToken()).update(user.toMap())
+                .addOnSuccessListener(aVoid -> userCallback.onUserResponse(new Result.UserResponseSuccess(user)))
+                .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage())));
     }
 }

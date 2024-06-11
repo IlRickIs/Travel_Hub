@@ -102,6 +102,19 @@ public class User implements Serializable {
         return result;
     }
 
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("username", username);
+        result.put("name", name);
+        result.put("surname", surname);
+        result.put("birthDate", birthDate);
+        result.put("photoUrl", photoUrl);
+        result.put("email", email);
+        result.put("idToken", idToken);
+        return result;
+    }
+
     @Override
     public String toString() {
         return "User{" +
