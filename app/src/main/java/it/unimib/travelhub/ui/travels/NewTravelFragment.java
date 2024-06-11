@@ -13,8 +13,10 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -139,6 +141,29 @@ public class NewTravelFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentEditTravelBinding.inflate(inflater, container, false);
         mainActivity = (Activity) requireActivity();
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(requireActivity());
+                builder1.setMessage("Are you sure you want to come back? Your new travel will be lost.");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "Yes",
+                        (dialog, id) -> {
+                            dialog.cancel();
+                            requireActivity().finish();
+                        });
+
+                builder1.setNegativeButton(
+                        "No",
+                        (dialog, id) -> dialog.cancel());
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+            }
+        });
 
         return binding.getRoot();
     }
