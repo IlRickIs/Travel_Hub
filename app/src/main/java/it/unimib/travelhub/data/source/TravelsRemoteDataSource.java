@@ -81,7 +81,6 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
     public void addTravel(Travels travel) { //TODO add callback onfailure
         try {
             Log.d(TAG, "Adding travel: " + travel);
-            String idToken = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
             databaseReference.child("travels").child(Long.toString(travel.getId())).setValue(travel)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
