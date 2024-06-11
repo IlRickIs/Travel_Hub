@@ -17,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
@@ -45,6 +47,12 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
                             .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
                             .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));*/
                     user.setUsername(snapshot.child(USERNAME).getValue().toString());
+                    if (snapshot.child("name").getValue() != null)
+                        user.setName(snapshot.child("name").getValue().toString());
+                    if (snapshot.child("surname").getValue() != null)
+                        user.setSurname(snapshot.child("surname").getValue().toString());
+                    if (snapshot.child("birthDate").getValue() != null)
+                        user.setBirthDate((Long) snapshot.child("birthDate").getValue());
                     userResponseCallback.onSuccessFromRemoteDatabase(user);
                 } else {
                     Log.d(TAG, "User not present in Firebase Realtime Database" + user);
@@ -110,6 +118,20 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
             }});
     }
 
+    public interface UserCallback {
+        void onUserResponse(Result result);
+    }
+
+    @Override
+    public void updateUserData(String oldUsername, User user, final UserCallback userCallback) {
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).setValue(user)
+                .addOnSuccessListener(aVoid -> databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(oldUsername).removeValue()
+                        .addOnSuccessListener(aVoid1 -> databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(user.getUsername()).setValue(user.getIdToken())
+                                .addOnSuccessListener(aVoid2 -> userCallback.onUserResponse(new Result.UserResponseSuccess(user)))
+                                .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage()))))
+                        .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage()))))
+                .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage())));
+    }
 
     private void mapUsernameToId(User user) {
         Log.d(TAG, "Mapping username to id");

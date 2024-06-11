@@ -197,7 +197,6 @@ public class CommunityFragment extends Fragment {
                     Result.Error error = (Result.Error) result;
                     Log.d("CommunityFragment", "Travel not deleted, Error: " + error.getMessage());
                 }
-
                 travelsViewModel.deleteTravel(travel).removeObserver(this);
             }
         };

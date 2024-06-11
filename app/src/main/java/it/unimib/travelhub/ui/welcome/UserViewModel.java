@@ -5,7 +5,6 @@ import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FI
 import android.app.Application;
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -14,8 +13,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
-import it.unimib.travelhub.data.database.TravelsDao;
-import it.unimib.travelhub.data.database.TravelsRoomDatabase;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
@@ -29,6 +26,7 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<Result> userMutableLiveData;
 
     private MutableLiveData<Result> isUserRegistered;
+    private MutableLiveData<Result> isUsernameAlraedyTaken;
     private MutableLiveData<Result> userPreferencesMutableLiveData;
     private boolean authenticationError;
 
@@ -53,6 +51,13 @@ public class UserViewModel extends ViewModel {
            getUserData(username,email,password, isUserRegistered);
         }
 
+        return userMutableLiveData;
+    }
+
+    public MutableLiveData<Result> getUserMutableLiveData(){
+        if (userMutableLiveData == null) {
+            userMutableLiveData = new MutableLiveData<Result>();
+        }
         return userMutableLiveData;
     }
 
@@ -115,11 +120,24 @@ public class UserViewModel extends ViewModel {
         return userMutableLiveData;
     }
 
-    public void isUserRegistered(String username) {
+    public void updateUserData(String oldUsername, User user) {
+        userRepository.updateUserData(oldUsername, user, new UserDataRemoteDataSource.UserCallback() {
+            @Override
+            public void onUserResponse(Result result) {
+                userMutableLiveData.postValue(result);
+            }
+        });
+    }
+
+    public void isUsernameAlreadyTaken(String username) {
         userRepository.isUserRegistered(username, new UserDataRemoteDataSource.UsernameCheckCallback() {
             @Override
             public void onUsernameResponse(Result result) {
-                isUserRegistered.postValue(result);
+                if (result instanceof Result.Error) {
+                    isUsernameAlraedyTaken.postValue(new Result.Error("Username: " + username + " not already taken"));
+                } else {
+                    isUsernameAlraedyTaken.postValue(new Result.UserResponseSuccess(((Result.UserResponseSuccess) result).getData()));
+                }
             }
         });
     }
@@ -154,5 +172,12 @@ public class UserViewModel extends ViewModel {
             isUserRegistered = new MutableLiveData<Result>();
         }
         return isUserRegistered;
+    }
+
+    public MutableLiveData<Result> getIsUsernameAlreadyTaken() {
+        if (isUsernameAlraedyTaken == null) {
+            isUsernameAlraedyTaken = new MutableLiveData<Result>();
+        }
+        return isUsernameAlraedyTaken;
     }
 }

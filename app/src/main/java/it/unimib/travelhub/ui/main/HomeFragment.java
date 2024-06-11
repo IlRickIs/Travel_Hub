@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -156,17 +157,14 @@ public class HomeFragment extends Fragment {
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        Log.d(TAG, "TravelsResponse Acciughe: " + ((Result.TravelsResponseSuccess) result).getData());
+                        Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 
                         onGoingTravel = travelsResponse.getOnGoingTravel();
-
-
                         futureTravel = travelsResponse.getFutureTravel();
                         doneTravel = travelsResponse.getDoneTravel();
 
                         if (onGoingTravel != null) {
-                            Log.d(TAG, "onGoingTravel: " + onGoingTravel);
                             setOngoingView(onGoingTravel);
 
                             if (futureTravel != null) {
@@ -174,7 +172,7 @@ public class HomeFragment extends Fragment {
                             } else if (doneTravel != null) {
                                 setPastView(doneTravel);
                             }else{
-                                binding.homeCardNoTravel.setCardBackgroundColor(getResources().getColor(R.color.primaryVariantColor));
+                                binding.homeCardNoTravel.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primaryVariantColor));
                                 binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
                                 binding.homeNewTravelImage.setVisibility(View.GONE);
                                 binding.homeCardNoTravel.setVisibility(View.VISIBLE);

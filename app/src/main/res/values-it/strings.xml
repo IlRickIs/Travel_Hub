@@ -45,11 +45,9 @@
 
     <string name="viewProfile">View Profile</string>
     <string name="personal_informations">Personal Informations</string>
-    <string name="username">Username</string>
     <string name="user_name">Nome</string>
     <string name="user_surname">Cognome</string>
     <string name="user_birth">Data di nascita</string>
-    <string name="user_city">Città</string>
 
     <!-- Travel -->
 
@@ -103,5 +101,11 @@
     <string name="edit">Modifica</string>
     <string name="map_preview">map preview</string>
     <string name="update_from_gallery">Update from gallery</string>
+    <string name="personal_info_description">In questa sezione puoi visualizzare le tue informazioni personali, come nome, indirizzo email e numero di telefono. Se desideri aggiornare o modificare queste informazioni, puoi farlo facilmente cliccando sui diversi campi di testo. Mantieni i tuoi dati sempre aggiornati per un\'esperienza migliore e personalizzata.</string>
+
+    <!--Personal info-->
+    <string name="username_field_empty">Il campo username non può errere vuoto</string>
+    <string name="username_already_taken">Lo username è già preso</string>
+    <string name="personal_info_saved">Informazioni personali salvate correttamente</string>
 
 </resources>
