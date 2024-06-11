@@ -15,7 +15,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +72,6 @@ public class TravelsRemoteFirestoreDataSource extends BaseTravelsRemoteDataSourc
                                         if (travelTask.isSuccessful()) {
                                             DocumentSnapshot document = travelTask.getResult();
                                             if (document.exists()) {
-                                                //TODO: create a method to convert map to travel
                                                 Travels travel = document.toObject(Travels.class);
                                                 travelsResponse.addTravel(travel);
                                             } else {

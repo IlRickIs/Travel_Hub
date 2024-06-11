@@ -102,24 +102,12 @@ public class Travels implements Serializable, Comparable<Travels> {
     @Exclude
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", String.valueOf(id));
+        map.put("id", id);
         map.put("title", title);
         map.put("description", description);
         map.put("startDate", startDate);
         map.put("endDate", endDate);
-        Map<String, Object> destinations = new HashMap<>();
-        for (TravelSegment destination : this.destinations) {
-            String id = destination.toString();
-            id = (id + System.currentTimeMillis()).hashCode() + "";
-            destinations.put(id, destination.toMap());
-            destination.setId(id);
-        }
         map.put("destinations", destinations);
-
-        Map<String, Object> members = new HashMap<>();
-        for (TravelMember member : this.members) {
-            members.put(member.getIdToken(), member.toMap());
-        }
         map.put("members", members);
         return map;
     }

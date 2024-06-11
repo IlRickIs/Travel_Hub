@@ -33,6 +33,8 @@ public class TravelMember extends User implements Serializable {
     @Exclude
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
+        map.put("username", getUsername());
+        map.put("id", getIdToken());
         map.put("role", role);
         return map;
     }

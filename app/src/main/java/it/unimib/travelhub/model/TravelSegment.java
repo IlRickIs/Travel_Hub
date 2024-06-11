@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class TravelSegment implements Serializable {
 
-    private String id;
     private String location;
     private Date dateFrom;
     private Date dateTo;
@@ -27,11 +26,6 @@ public class TravelSegment implements Serializable {
         this.dateFrom = null;
         this.dateTo = null;
         this.description = null;
-    }
-
-    public TravelSegment(String id, String location){
-        this(location);
-        this.id = id;
     }
 
     public TravelSegment(String location, Date dateFrom, Date dateTo, String description) {
@@ -73,15 +67,6 @@ public class TravelSegment implements Serializable {
         this.description = description;
     }
 
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
     public String toString() {
         return "TravelSegment{" +
@@ -94,10 +79,9 @@ public class TravelSegment implements Serializable {
     @Exclude
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
         map.put("location", location);
-        map.put("dateFrom", dateFrom == null ? null : dateFrom.getTime());
-        map.put("dateTo", dateTo == null ? null : dateTo.getTime());
+        map.put("dateFrom", dateFrom);
+        map.put("dateTo", dateTo);
         map.put("description", description);
         return map;
 
