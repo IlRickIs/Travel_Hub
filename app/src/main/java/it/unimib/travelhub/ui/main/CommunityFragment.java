@@ -131,7 +131,7 @@ public class CommunityFragment extends Fragment {
         updatedTravel.setEndDate(endDate);
 
         ArrayList<TravelMember> members = new ArrayList<>();
-        members.add(new TravelMember("Roberto", "kO2tepwx7Lea92hyRVwITcfL2ak2", TravelMember.Role.CREATOR));
+        members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
         members.add(new TravelMember("cavds", "frtAgtA8FLZegyXcYO79zM84got1", TravelMember.Role.MEMBER));
 
         updatedTravel.setMembers(members);
@@ -184,7 +184,7 @@ public class CommunityFragment extends Fragment {
         travel.setTitle("PROVAAAA");
 
         ArrayList<TravelMember> members = new ArrayList<>();
-        members.add(new TravelMember("Roberto", "kO2tepwx7Lea92hyRVwITcfL2ak2", TravelMember.Role.CREATOR));
+        members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
         members.add(new TravelMember("ciao", "oH8EFtZMyhOE7dwmH0XJxzZC1Ar2", TravelMember.Role.MEMBER));
 
 

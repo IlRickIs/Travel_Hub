@@ -25,6 +25,7 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     private final SharedPreferencesUtil sharedPreferencesUtil;
     private final MutableLiveData<Result> travelsMutableLiveData;
 
+    private static final String TAG = TravelsRepository.class.getSimpleName();
     private MutableLiveData<Result> updateTravelsMutableLiveData; //TODO: remove this if not needed
 
     public TravelsRepository(BaseTravelsLocalDataSource travelsLocalDataSource,
@@ -41,15 +42,15 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     public MutableLiveData<Result> fetchTravels(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        Log.d("TravelsRepository", "Current time: " + currentTime);
-        Log.d("TravelsRepository", "Last update: " + lastUpdate);
+        Log.d(TAG, "Current time: " + currentTime);
+        Log.d(TAG, "Last update: " + lastUpdate);
 
         if (currentTime - lastUpdate > FRESH_TIMEOUT) {
             travelsRemoteDataSource.getAllUserTravel();
-            Log.d("TravelsRepository", "Remote data source");
+            Log.d(TAG, "Remote data source");
         } else {
             travelsLocalDataSource.getTravels();
-            Log.d("TravelsRepository", "Local data source");
+            Log.d(TAG, "Local data source");
         }
         //travelsRemoteDataSource.getAllUserTravel();
         return travelsMutableLiveData;
@@ -63,9 +64,8 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
 
     @Override
     public MutableLiveData<Result> updateTravel(Travels newTravel, Travels oldTravel) {
-        updateTravelsMutableLiveData = new MutableLiveData<>();
         travelsRemoteDataSource.updateTravel(newTravel, oldTravel);
-        return updateTravelsMutableLiveData;
+        return travelsMutableLiveData;
     }
 
     @Override
@@ -141,12 +141,12 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         List<Travels> travelList = new ArrayList<>();
         travelList.add(travel);
         TravelsResponse travelsResponse = new TravelsResponse(travelList);
-        updateTravelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(travelsResponse));
+        travelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(travelsResponse));
     }
 
     @Override
     public void onSuccessDeletion() {
-        Log.d("TravelsRepository", "Travels deleted");
+        Log.d(TAG, "Travels deleted");
     }
 
     public void onSuccessDeletionAfterSync(List<Travels> travelsList) {
