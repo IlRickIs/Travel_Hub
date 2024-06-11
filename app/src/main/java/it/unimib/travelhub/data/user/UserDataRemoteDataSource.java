@@ -125,8 +125,6 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
 
     }
 
-
-
     @Override
     public void getUserFavorite(String idToken) {
 

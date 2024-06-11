@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -96,8 +97,8 @@ public class CommunityFragment extends Fragment {
 
         Button button2 = view.findViewById(R.id.create_button);
         button2.setOnClickListener(v -> {
-            //makeMockTravel();
-            makeFirestoreTravel();
+            makeMockTravel();
+            //makeFirestoreTravel();
             //mockUpdateTravel(travel); //TODO: THIS WILL UPDATE THE TRAVEL CREATED BY makeMockTravel()
         });
 
@@ -111,7 +112,9 @@ public class CommunityFragment extends Fragment {
     }
 
     private void makeFirestoreTravel() {
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         if(db == null) {
             Log.d(TAG, "db is null");
             return;
@@ -120,10 +123,18 @@ public class CommunityFragment extends Fragment {
 
         }
         HashMap<String, Object> test = new HashMap<>();
-        test.put("pizza", "cacca");
-        db.collection("users").add(test).addOnCompleteListener(task -> {
+        test.put("pizza", "ca");
+        db.collection("test").document("record").set(test, SetOptions.merge()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d(TAG, "DocumentSnapshot added with ID: " + task.getResult().getId());
+                Log.d(TAG, "DocumentSnapshot added with ID: " + task.getResult());
+            } else {
+                Log.d(TAG, "Error adding document", task.getException());
+            }
+        });
+
+        db.collection("test").document("record").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "get: " + task.getResult().getData().keySet().toArray()[0]);
             } else {
                 Log.d(TAG, "Error adding document", task.getException());
             }

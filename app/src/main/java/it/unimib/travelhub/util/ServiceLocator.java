@@ -21,6 +21,7 @@ import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
+import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.model.IValidator;
 
 public class ServiceLocator {
@@ -53,7 +54,7 @@ public class ServiceLocator {
                 new UserAuthenticationRemoteDataSource();
 
         BaseUserDataRemoteDataSource userDataRemoteDataSource =
-                new UserDataRemoteDataSource(sharedPreferencesUtil);
+                new UserRemoteFirestoreDataSource(sharedPreferencesUtil);
 
 
         return new UserRepository(userRemoteAuthenticationDataSource,
