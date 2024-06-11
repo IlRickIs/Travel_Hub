@@ -22,5 +22,5 @@ public interface IUserRepository {
 
     MutableLiveData<Result> isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
 
-    MutableLiveData<Result> updateUserData(String oldUsername, User user, UserDataRemoteDataSource.UserCallback userCallback);
+    MutableLiveData<Result> updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback);
 }

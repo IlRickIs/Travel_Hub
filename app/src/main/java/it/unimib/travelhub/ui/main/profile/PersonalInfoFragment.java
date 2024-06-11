@@ -4,7 +4,6 @@ import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
-import static it.unimib.travelhub.util.Constants.USERNAME;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -98,19 +97,20 @@ public class PersonalInfoFragment extends Fragment {
             if (getContext() != null)
                 new DatePickerDialog(getContext(),
                         date1,
-                        myCalendar.get(Calendar.YEAR),
-                        myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().isEmpty() ?
+                                myCalendar.get(Calendar.YEAR) :
+                                Integer.parseInt(binding.textFieldBirth.getEditText().getText().toString().split("/")[2]),
+                        Objects.requireNonNull(binding.textFieldBirth.getEditText()).toString().isEmpty() ?
+                                myCalendar.get(Calendar.MONTH) :
+                                Integer.parseInt(binding.textFieldBirth.getEditText().getText().toString().split("/")[1]) - 1,
+                        Objects.requireNonNull(binding.textFieldBirth.getEditText()).toString().isEmpty() ?
+                                myCalendar.get(Calendar.DAY_OF_MONTH) :
+                                Integer.parseInt(binding.textFieldBirth.getEditText().getText().toString().split("/")[0])).show();
             else
                 Log.e(TAG, "Unexpected error: Context is null");
         });
 
         try {
-
-            String username = dataEncryptionUtil.
-                    readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USERNAME);
-            Objects.requireNonNull(binding.textFieldUsername.getEditText()).setHint(username);
-            binding.textFieldUsername.getEditText().setText(username);
 
             String name = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name");
@@ -180,11 +180,7 @@ public class PersonalInfoFragment extends Fragment {
 
         binding.buttonSaveSettings.setOnClickListener(v -> {
             if (somethingIsChanged()) {
-                if (usernameIsChanged()) {
-                    checkIfUsernameIsAlreadyTaken();
-                } else {
-                    saveUserDataRemote();
-                }
+                saveUserDataRemote();
             } else {
                 Log.d(TAG, "Nothing is changed");
                 Snackbar.make(requireView(),
@@ -198,7 +194,6 @@ public class PersonalInfoFragment extends Fragment {
     }
 
     private Boolean somethingIsChanged() {
-        String username = Objects.requireNonNull(binding.textFieldUsername.getEditText()).getText().toString();
         String name = Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString().isEmpty() ?
                 null : Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString();
         String surname = Objects.requireNonNull(binding.textFieldSurname.getEditText()).getText().toString().isEmpty() ?
@@ -207,7 +202,6 @@ public class PersonalInfoFragment extends Fragment {
                 null : Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString();
 
         try {
-            String saved_username = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
             String saved_name = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name");
             String saved_surname = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname");
             String saved_birthDate = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate");
@@ -216,63 +210,14 @@ public class PersonalInfoFragment extends Fragment {
             boolean surnameCheck = surname == null ? saved_surname != null : !surname.equals(saved_surname == null ? "" : saved_surname);
             boolean birthDateCheck = birthDate == null ? saved_birthDate != null : !birthDate.equals(saved_birthDate == null ? "" : saved_birthDate);
 
-            return !username.equals(saved_username) ||
-                    nameCheck || surnameCheck || birthDateCheck;
+            return nameCheck || surnameCheck || birthDateCheck;
         } catch (Exception e) {
             Log.d(TAG, "Error while reading data from encrypted shared preferences - somethingIsChanged - ", e);
             return false;
         }
     }
 
-    private void checkIfUsernameIsAlreadyTaken() {
-        String username = Objects.requireNonNull(binding.textFieldUsername.getEditText()).getText().toString();
-
-        if (username.isEmpty()) {
-            binding.textFieldUsername.setError(getString(R.string.username_field_empty));
-        } else {
-            binding.textFieldUsername.setError(null);
-            binding.textFieldUsername.setErrorEnabled(false);
-            try {
-                String saved_username = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
-
-                if (!username.equals(saved_username)) {
-                    userViewModel.isUsernameAlreadyTaken(username);
-
-                    Observer<Result> observer = new Observer<Result>() {
-                        @Override
-                        public void onChanged(Result result) {
-                            if (result.isSuccess()) {
-                                if (((Result.UserResponseSuccess) result).getData() != null) {
-                                    binding.textFieldUsername.setError(getString(R.string.username_already_taken));
-                                }else {
-                                    Snackbar.make(requireView(),
-                                            requireActivity().getString(R.string.unexpected_error),
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                binding.textFieldUsername.setError(null);
-                                binding.textFieldUsername.setErrorEnabled(false);
-                                if (somethingIsChanged())
-                                    saveUserDataRemote();
-                            }
-
-                            userViewModel.getIsUsernameAlreadyTaken().removeObserver(this);
-                        }
-                    };
-
-                    userViewModel.getIsUsernameAlreadyTaken().observe(getViewLifecycleOwner(), observer);
-                } else {
-                    saveUserDataRemote();
-                }
-            } catch (Exception e) {
-                Log.d(TAG, "Error while reading data from encrypted shared preferences - checkIfUsernameIsAlreadyTaken - ", e);
-            }
-
-        }
-    }
-
     private void saveUserDataRemote() {
-        String username = Objects.requireNonNull(binding.textFieldUsername.getEditText()).getText().toString();
         String name = Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString().isEmpty() ?
                 null : Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString();
         String surname = Objects.requireNonNull(binding.textFieldSurname.getEditText()).getText().toString().isEmpty() ?
@@ -282,11 +227,11 @@ public class PersonalInfoFragment extends Fragment {
 
         try {
             String idToken = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
-            String oldUsername = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
+            String username = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
             String email = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS);
             User user = new User(username, name, surname, birthDate, null, email, idToken);
 
-            userViewModel.updateUserData(oldUsername, user);
+            userViewModel.updateUserData(user);
 
             Observer<Result> observer = new Observer<Result>() {
                 @Override
@@ -295,7 +240,6 @@ public class PersonalInfoFragment extends Fragment {
                         try {
                             Log.d(TAG, "User data saved successfully");
 
-                            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username", username);
                             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name", name);
                             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname", surname);
                             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate",
@@ -341,17 +285,6 @@ public class PersonalInfoFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
             return 0L;
-        }
-    }
-
-    private boolean usernameIsChanged() {
-        String username = Objects.requireNonNull(binding.textFieldUsername.getEditText()).getText().toString();
-        try {
-            String saved_username = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
-            return !username.equals(saved_username);
-        } catch (Exception e) {
-            Log.d(TAG, "Error while reading data from encrypted shared preferences - usernameIsChanged - ", e);
-            return false;
         }
     }
 

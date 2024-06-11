@@ -3,7 +3,10 @@ package it.unimib.travelhub.model;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Serializable {
     private String username;
@@ -83,6 +86,20 @@ public class User implements Serializable {
 
     public void setIdToken(String idToken) {
         this.idToken = idToken;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap(ArrayList<Long> travels) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("username", username);
+        result.put("name", name);
+        result.put("surname", surname);
+        result.put("birthDate", birthDate);
+        result.put("photoUrl", photoUrl);
+        result.put("email", email);
+        result.put("idToken", idToken);
+        result.put("travels", travels);
+        return result;
     }
 
     @Override

@@ -205,9 +205,6 @@
     <string name="travel_deleted_success" translatable="false">TRAVEL DELETED SUCCESSFULLY</string>
 
     <!--Personal Information-->
-    <string name="username_needed" translatable="false">Username*</string>
-    <string name="username_field_empty">Username field cannot be empty</string>
-    <string name="username_already_taken">Username is already taken</string>
     <string name="personal_info_saved">Personal information saved correctly</string>
 
 </resources>

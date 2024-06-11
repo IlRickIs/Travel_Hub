@@ -120,8 +120,8 @@ public class UserViewModel extends ViewModel {
         return userMutableLiveData;
     }
 
-    public void updateUserData(String oldUsername, User user) {
-        userRepository.updateUserData(oldUsername, user, new UserDataRemoteDataSource.UserCallback() {
+    public void updateUserData(User user) {
+        userRepository.updateUserData(user, new UserDataRemoteDataSource.UserCallback() {
             @Override
             public void onUserResponse(Result result) {
                 userMutableLiveData.postValue(result);

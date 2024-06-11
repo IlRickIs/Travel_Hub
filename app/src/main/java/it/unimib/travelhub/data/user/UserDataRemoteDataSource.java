@@ -1,6 +1,7 @@
 package it.unimib.travelhub.data.user;
 
 import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static it.unimib.travelhub.util.Constants.FIREBASE_TRAVELS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERNAMES_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.USERNAME;
@@ -17,7 +18,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
@@ -123,14 +129,22 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
     }
 
     @Override
-    public void updateUserData(String oldUsername, User user, final UserCallback userCallback) {
-        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).setValue(user)
-                .addOnSuccessListener(aVoid -> databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(oldUsername).removeValue()
-                        .addOnSuccessListener(aVoid1 -> databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(user.getUsername()).setValue(user.getIdToken())
-                                .addOnSuccessListener(aVoid2 -> userCallback.onUserResponse(new Result.UserResponseSuccess(user)))
-                                .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage()))))
-                        .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage()))))
-                .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage())));
+    public void updateUserData(User user, final UserCallback userCallback) {
+        ArrayList<Long> travels = new ArrayList<>();
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).child(FIREBASE_TRAVELS_COLLECTION).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (DataSnapshot snapshot : task.getResult().getChildren()) {
+                    travels.add((Long) snapshot.getValue());
+                }
+                Map<String, Object> userMap = user.toMap(travels);
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put(FIREBASE_USERS_COLLECTION + "/" + user.getIdToken(), userMap);
+
+                databaseReference.updateChildren(childUpdates)
+                        .addOnSuccessListener(aVoid -> userCallback.onUserResponse(new Result.UserResponseSuccess(user)))
+                        .addOnFailureListener(e -> userCallback.onUserResponse(new Result.Error(e.getLocalizedMessage())));
+            }
+        });
     }
 
     private void mapUsernameToId(User user) {
