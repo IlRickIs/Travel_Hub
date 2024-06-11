@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.travelhub.R;
@@ -166,12 +167,40 @@ public class NewTravelFragment extends Fragment {
         };
         binding.editTxtFromForm.setOnClickListener(v ->
         {
-            new DatePickerDialog(getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            if (getContext() != null)
+                new DatePickerDialog(
+                        getContext(), date1,
+                        Objects.requireNonNull(binding.editTxtFromForm.getText()).toString().isEmpty() ?
+                                myCalendar.get(Calendar.YEAR) :
+                                Integer.parseInt(binding.editTxtFromForm.getText().toString().split("/")[2]),
+                        Objects.requireNonNull(binding.editTxtFromForm.getText()).toString().isEmpty() ?
+                                myCalendar.get(Calendar.MONTH) :
+                                Integer.parseInt(binding.editTxtFromForm.getText().toString().split("/")[1]) - 1,
+                        Objects.requireNonNull(binding.editTxtFromForm.getText()).toString().isEmpty() ?
+                                myCalendar.get(Calendar.DAY_OF_MONTH) :
+                                Integer.parseInt(binding.editTxtFromForm.getText().toString().split("/")[0])).show();
         });
 
         binding.editTxtToForm.setOnClickListener(v ->
         {
-            new DatePickerDialog(getContext(),date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            if (getContext() != null)
+                new DatePickerDialog(
+                        getContext(), date2,
+                        Objects.requireNonNull(binding.editTxtToForm.getText()).toString().isEmpty() ?
+                                (Objects.requireNonNull(binding.editTxtFromForm.getText()).toString().isEmpty() ?
+                                        myCalendar.get(Calendar.YEAR) :
+                                        Integer.parseInt(binding.editTxtFromForm.getText().toString().split("/")[2])) :
+                                Integer.parseInt(binding.editTxtToForm.getText().toString().split("/")[2]),
+                        Objects.requireNonNull(binding.editTxtToForm.getText()).toString().isEmpty() ?
+                                (Objects.requireNonNull(binding.editTxtFromForm.getText()).toString().isEmpty() ?
+                                        myCalendar.get(Calendar.MONTH) :
+                                        Integer.parseInt(binding.editTxtFromForm.getText().toString().split("/")[1]) - 1) :
+                                Integer.parseInt(binding.editTxtToForm.getText().toString().split("/")[1]) - 1,
+                        Objects.requireNonNull(binding.editTxtToForm.getText()).toString().isEmpty() ?
+                                (Objects.requireNonNull(binding.editTxtFromForm.getText()).toString().isEmpty() ?
+                                        myCalendar.get(Calendar.DAY_OF_MONTH) :
+                                        Integer.parseInt(binding.editTxtFromForm.getText().toString().split("/")[0])) :
+                                Integer.parseInt(binding.editTxtToForm.getText().toString().split("/")[0])).show();
         });
 
         textBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(hintsList, destinationsText,new TextBoxesRecyclerAdapter.OnItemClickListener() {
