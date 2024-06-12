@@ -11,7 +11,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.ui.profile.OngoingTravelsFragment;
+import it.unimib.travelhub.ui.profile.PersonalInfoFragment;
+import it.unimib.travelhub.ui.profile.PrivacyAndSecurityFragment;
 import it.unimib.travelhub.ui.profile.ProfileFragment;
+import it.unimib.travelhub.ui.profile.SettingsFragment;
+import it.unimib.travelhub.ui.profile.SubscriptionFragment;
 import it.unimib.travelhub.ui.profile.TerminatedTravelsFragment;
 
 public class MainFragmentAdapter extends FragmentStateAdapter{
@@ -24,14 +28,14 @@ public class MainFragmentAdapter extends FragmentStateAdapter{
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if (position == 0) {
-            return new HomeFragment();
-        }else if (position == 1) {
+        if (position == 1) {
             return new CommunityFragment();
         } else if (position == 2) {
             return new MapFragment();
-        } else {
+        } else if (position == 3) {
             return new ProfileFragment();
+        } else {
+            return new HomeFragment();
         }
     }
 

@@ -75,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
         binding.viewPagerMain.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                binding.bottomNavigation.getMenu().getItem(position).setChecked(true);
+                if (position < 4 && position >= 0) {
+                    bottom_menu.getMenu().getItem(position).setChecked(true);
+                }
             }
         });
 

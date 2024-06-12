@@ -21,6 +21,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
+import it.unimib.travelhub.ui.travels.TravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.JSONParserUtil;
@@ -203,15 +205,14 @@ public class HomeFragment extends Fragment {
                         });
 
                         binding.seeAll.setOnClickListener(v -> {
-                            NavController navController = Navigation.findNavController(view);
-                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
-                            navController.navigate(val);
+                            ViewPager2 viewPager = requireActivity().findViewById(R.id.viewPagerMain);
+                            viewPager.setCurrentItem(3);
                         });
 
                         binding.homeOngoingButton.setOnClickListener(v -> {
-                            NavController navController = Navigation.findNavController(view);
-                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(onGoingTravel);
-                            navController.navigate(val);
+                            Intent intentOngoing = new Intent(getActivity(), TravelActivity.class);
+                            intentOngoing.putExtra("travel", onGoingTravel);
+                            startActivity(intentOngoing);
                         });
 
                     } else {
@@ -227,9 +228,6 @@ public class HomeFragment extends Fragment {
                         });
                     }
                 });
-
-        //travelsResponse = getTravelsResponseWithGSon(); //TODO: Cambiare e mettere il get dal repository
-
     }
 
     private void setOngoingView(Travels onGoingTravel) {
@@ -275,9 +273,9 @@ public class HomeFragment extends Fragment {
         binding.homeLayoutOther.setVisibility(View.VISIBLE);
 
         binding.homeCardOther.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(requireView());
-            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(futureTravel);
-            navController.navigate(val);
+            Intent intentOtherTravel = new Intent(getActivity(), AddTravelActivity.class);
+            intentOtherTravel.putExtra("travel", futureTravel);
+            startActivity(intentOtherTravel);
         });
 
         CardView travel_card = binding.homeTravelItem.getRoot();

@@ -4,6 +4,7 @@ import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
 import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +34,7 @@ import it.unimib.travelhub.databinding.FragmentTerminatedTravelsBinding;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
+import it.unimib.travelhub.ui.travels.TravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.JSONParserUtil;
@@ -50,8 +52,15 @@ public class TerminatedTravelsFragment extends Fragment {
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
     private TravelsViewModel travelsViewModel;
+
+    private List<Travels> travels;
     public TerminatedTravelsFragment() {
         // Required empty public constructor
+    }
+
+    public TerminatedTravelsFragment(List<Travels> travels){
+        super();
+        this.travels = travels;
     }
     public static TerminatedTravelsFragment newInstance() {
         TerminatedTravelsFragment fragment = new TerminatedTravelsFragment();
@@ -59,27 +68,7 @@ public class TerminatedTravelsFragment extends Fragment {
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        ITravelsRepository travelsRepository =
-                ServiceLocator.getInstance().getTravelsRepository(
-                        requireActivity().getApplication()
-                );
-
-        if (travelsRepository != null) {
-            // This is the way to create a ViewModel with custom parameters
-            // (see NewsViewModelFactory class for the implementation details)
-            travelsViewModel = new ViewModelProvider(
-                    requireActivity(),
-                    new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
-        } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
-        }
-
-        if (sharedPreferencesUtil == null) {
-            sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
-        }
     }
 
     @Override
@@ -110,38 +99,24 @@ public class TerminatedTravelsFragment extends Fragment {
 
         //List<Travels> runningTravelsList = getDoneTravelsListWithGSon();
 
-        List<Travels> doneTravelList = new ArrayList<Travels>();
+        RecyclerView.LayoutManager layoutManagerRunning =
+                new LinearLayoutManager(requireContext(),
+                        LinearLayoutManager.VERTICAL, false);
 
-        String lastUpdate = "0";
-        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
-            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
-        }
-         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
-                result -> {
-                    if (result.isSuccess()) {
-                        travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
-                        doneTravelList.addAll(travelsResponse.getDoneTravelsList());
-                        RecyclerView.LayoutManager layoutManagerRunning =
-                                new LinearLayoutManager(requireContext(),
-                                        LinearLayoutManager.VERTICAL, false);
-
-                        TravelRecyclerAdapter travelRecyclerAdapterRunning = new TravelRecyclerAdapter(doneTravelList,
-                                new TravelRecyclerAdapter.OnItemClickListener() {
-                                    @Override
-                                    public void onTravelsItemClick(Travels travels) {
-                                        Navigation.findNavController(requireView())
-                                                .navigate(ProfileFragmentDirections.actionProfileFragmentToTravelActivity(travels));
-                                    }
-                                });
-
-                        travelRecyclerViewRunning.setLayoutManager(layoutManagerRunning);
-                        travelRecyclerViewRunning.setAdapter(travelRecyclerAdapterRunning);
-
-                    } else {
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        TravelRecyclerAdapter travelRecyclerAdapterRunning = new TravelRecyclerAdapter(travels,
+                new TravelRecyclerAdapter.OnItemClickListener() {
+                    @Override
+                    public void onTravelsItemClick(Travels travel) {
+                        Intent intent = new Intent(requireActivity(), TravelActivity.class);
+                        intent.putExtra("travel", travel);
+                        startActivity(intent);
                     }
                 });
+
+        travelRecyclerViewRunning.setLayoutManager(layoutManagerRunning);
+        travelRecyclerViewRunning.setAdapter(travelRecyclerAdapterRunning);
+
+
 
 
     }

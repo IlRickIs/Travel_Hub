@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.main.profile;
+package it.unimib.travelhub.ui.profile;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
