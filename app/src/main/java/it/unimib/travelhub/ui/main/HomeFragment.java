@@ -245,7 +245,7 @@ public class HomeFragment extends Fragment {
                         LinearLayoutManager.HORIZONTAL, false);
 
         binding.homeCardOngoing.setVisibility(View.VISIBLE);
-        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, "#FFFFFF");
+        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, "#FFFFFF", null);
         friendsRecyclerView.setLayoutManager(layoutManagerRunning);
         friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
 
@@ -305,9 +305,9 @@ public class HomeFragment extends Fragment {
         binding.homeCardOther.setVisibility(View.VISIBLE);
         binding.homeLayoutOther.setVisibility(View.VISIBLE);
         binding.homeCardOther.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(requireView());
-            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(pastTravel);
-            navController.navigate(val);
+            Intent intentOtherTravel = new Intent(getActivity(), TravelActivity.class);
+            intentOtherTravel.putExtra("travel", pastTravel);
+            startActivity(intentOtherTravel);
         });
 
         CardView travel_card = binding.homeTravelItem.getRoot();

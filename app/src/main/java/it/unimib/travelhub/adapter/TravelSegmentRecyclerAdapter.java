@@ -2,7 +2,6 @@ package it.unimib.travelhub.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -12,14 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -32,19 +29,29 @@ import java.util.List;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.model.TravelSegment;
+import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.ui.travels.TravelActivity;
 import it.unimib.travelhub.ui.travels.TravelItineraryFragment;
 
 public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSegmentRecyclerAdapter.ViewHolder> {
 
+
+    public interface OnMoreButtonClickListener {
+        void onButtonMoreItemClick(TravelSegment travelSegment, TextView seg_more_button);
+    }
+    private static OnMoreButtonClickListener onMoreButtonClickListener = null;
+
     List<TravelSegment> data;
+    Travels travel;
     private static final int VIEW_TYPE_TOP = 0;
     private static final int VIEW_TYPE_MIDDLE = 1;
     private static final int VIEW_TYPE_BOTTOM = 2;
 
 
-    public TravelSegmentRecyclerAdapter(List<TravelSegment> data) {
+    public TravelSegmentRecyclerAdapter(OnMoreButtonClickListener onItemClickListener, List<TravelSegment> data, Travels travel) {
+        this.onMoreButtonClickListener = onItemClickListener;
         this.data = data;
+        this.travel = travel;
     }
     @NonNull
     @Override
@@ -68,14 +75,12 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
                 params.setMargins(0, 0, 0, 0);
                 break;
             case VIEW_TYPE_MIDDLE:
-                params.setMargins(0, 12, 0, 0);
-                break;
             case VIEW_TYPE_BOTTOM:
                 params.setMargins(0, 12, 0, 0);
                 break;
         }
         segment_card.setLayoutParams(params);
-        holder.bind(item);
+        holder.bind(item, travel);
     }
 
     public int getItemViewType(int position) {
@@ -96,13 +101,14 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
+        CardView segment_card;
         TextInputEditText seg_location;
         TextInputEditText seg_date_from;
         TextInputEditText seg_date_to;
         TextInputEditText seg_description;
         TextView seg_expand;
         View seg_icon;
+        TextView seg_more_button;
 
         final Calendar myCalendar= Calendar.getInstance();
 
@@ -110,15 +116,17 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            segment_card = itemView.findViewById(R.id.item_segment_card);
             seg_location = itemView.findViewById(R.id.item_segment_location);
             seg_date_from = itemView.findViewById(R.id.item_segment_start_date);
             seg_date_to = itemView.findViewById(R.id.item_segment_end_date);
             seg_description = itemView.findViewById(R.id.item_segment_description);
             seg_icon = itemView.findViewById(R.id.item_segment_icon);
             seg_expand = itemView.findViewById(R.id.item_segment_expand);
+            seg_more_button = itemView.findViewById(R.id.item_segment_more);
         }
 
-        public void bind(TravelSegment travelSegment) {
+        public void bind(TravelSegment travelSegment, Travels travel) {
 
             seg_location.setText(travelSegment.getLocation());
 
@@ -153,7 +161,7 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
 
             ConstraintLayout seg_details = itemView.findViewById(R.id.item_segment_details);
 
-            seg_expand.setOnClickListener(v -> {
+            segment_card.setOnClickListener(v -> {
                 Log.d("TravelSegmentRecyclerAdapter", "onClick: " + seg_description.getVisibility());
                 if (seg_details.getVisibility() == View.GONE) {
                     seg_details.setVisibility(View.VISIBLE);
@@ -164,32 +172,36 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
                 }
             });
 
-            TextView seg_more = itemView.findViewById(R.id.item_segment_more);
-            seg_more.setOnClickListener(v -> {
-                Log.d("TravelSegmentRecyclerAdapter", "onClick: " + seg_description.getVisibility());
-                PopupMenu popupMenu = new PopupMenu(itemView.getContext(), seg_more);
-
-                // Inflating popup menu from popup_menu.xml file
-                popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        // Toast message on menu item clicked
-                        if (menuItem.getItemId() == R.id.delete_segment) {
-                            TravelItineraryFragment.delete_travel_segment(travelSegment);
-                        }
-                        return true;
-                    }
-                });
-                popupMenu.show();
+            seg_more_button.setOnClickListener(v -> {
+                onMoreButtonClickListener.onButtonMoreItemClick(travelSegment, seg_more_button);
             });
 
-            edit_travel_segment(travelSegment, itemView);
+
+//            seg_more.setOnClickListener(v -> {
+//                Log.d("TravelSegmentRecyclerAdapter", "onClick: " + seg_description.getVisibility());
+//                PopupMenu popupMenu = new PopupMenu(itemView.getContext(), seg_more);
+//
+//                // Inflating popup menu from popup_menu.xml file
+//                popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
+//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem menuItem) {
+//                        // Toast message on menu item clicked
+//                        if (menuItem.getItemId() == R.id.delete_segment) {
+//                            TravelItineraryFragment.onButtonMoreItemClick(travelSegment, travel);
+//                        }
+//                        return true;
+//                    }
+//                });
+//                popupMenu.show();
+//            });
+
+            edit_travel_segment(travelSegment, itemView, travel);
 
 
         }
 
-        private void edit_travel_segment(TravelSegment travelSegment, View itemView) {
+        private void edit_travel_segment(TravelSegment travelSegment, View itemView, Travels travel) {
             TravelActivity travelActivity = (TravelActivity) itemView.getContext();
 
             seg_location.setOnClickListener(v -> {
@@ -242,32 +254,61 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
                 }
             });
 
-            DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
+
+
+            DatePickerDialog datePickerDialogFromDate = new DatePickerDialog(itemView.getContext());
+            datePickerDialogFromDate.getDatePicker().setMinDate(travel.getStartDate().getTime());
+            datePickerDialogFromDate.getDatePicker().setMaxDate(travel.getEndDate().getTime());
+
+            datePickerDialogFromDate.setOnDateSetListener((view, year, month, dayOfMonth) -> {
                 myCalendar.set(Calendar.YEAR,year);
                 myCalendar.set(Calendar.MONTH,month);
                 myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
                 String date = updateLabel(seg_date_from);
                 travelSegment.setDateFrom(parseStringToDate(date + " 00:00:00"));
-            };
+            });
 
-            DatePickerDialog.OnDateSetListener date2 = (v, year, month, dayOfMonth) -> {
+            DatePickerDialog datePickerDialogToDate = new DatePickerDialog(itemView.getContext());
+            datePickerDialogToDate.getDatePicker().setMinDate(travel.getStartDate().getTime());
+            datePickerDialogToDate.getDatePicker().setMaxDate(travel.getEndDate().getTime());
+
+            datePickerDialogToDate.setOnDateSetListener((view, year, month, dayOfMonth) -> {
                 myCalendar.set(Calendar.YEAR,year);
                 myCalendar.set(Calendar.MONTH,month);
                 myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-
                 String date = updateLabel(seg_date_to);
                 travelSegment.setDateTo(parseStringToDate(date + " 23:59:59"));
-            };
+            });
+
+//            DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
+//                myCalendar.set(Calendar.YEAR,year);
+//                myCalendar.set(Calendar.MONTH,month);
+//                myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+//                String date = updateLabel(seg_date_from);
+//                travelSegment.setDateFrom(parseStringToDate(date + " 00:00:00"));
+//            };
+//
+//            DatePickerDialog.OnDateSetListener date2 = (v, year, month, dayOfMonth) -> {
+//                myCalendar.set(Calendar.YEAR,year);
+//                myCalendar.set(Calendar.MONTH,month);
+//                myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+//
+//                String date = updateLabel(seg_date_to);
+//                travelSegment.setDateTo(parseStringToDate(date + " 23:59:59"));
+//            };
+
 
             seg_date_from.setOnClickListener(v ->
             {
-                new DatePickerDialog(itemView.getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                datePickerDialogFromDate.show();
+                //new DatePickerDialog(itemView.getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
                 travelActivity.showEditButton();
             });
 
             seg_date_to.setOnClickListener(v ->
             {
-                new DatePickerDialog(itemView.getContext(), date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                datePickerDialogToDate.show();
+                //new DatePickerDialog(itemView.getContext(), date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
                 travelActivity.showEditButton();
             });
         }

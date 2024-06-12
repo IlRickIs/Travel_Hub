@@ -14,6 +14,7 @@ import java.util.List;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.model.TravelMember;
+import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.User;
 
 public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdapter.ViewHolder> {
@@ -21,7 +22,13 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
     int type;
     String textcolor;
 
-    public UsersRecyclerAdapter(List<TravelMember> data, int type, String textcolor) {
+    public interface OnLongButtonClickListener {
+        void onLongButtonItemClick(TravelMember travelMember, ImageView seg_long_button);
+    }
+    private static OnLongButtonClickListener onLongButtonClickListener = null;
+
+    public UsersRecyclerAdapter(List<TravelMember> data, int type, String textcolor, OnLongButtonClickListener onLongButtonClickListener) {
+        this.onLongButtonClickListener = onLongButtonClickListener;
         this.data = data;
         this.type = type;
         this.textcolor = textcolor;
@@ -62,6 +69,12 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         public void bind(TravelMember travelMember, String textcolor) {
             friend_name.setText(travelMember.getUsername());
             friend_name.setTextColor(Color.parseColor(textcolor));
+
+            friend_image.setOnLongClickListener(v -> {
+                onLongButtonClickListener.onLongButtonItemClick(travelMember, friend_image);
+                   return true;
+            });
+
         }
     }
 

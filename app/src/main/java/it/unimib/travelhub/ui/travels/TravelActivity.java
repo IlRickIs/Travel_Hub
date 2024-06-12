@@ -1,11 +1,9 @@
 package it.unimib.travelhub.ui.travels;
 
-import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
-import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
-import static it.unimib.travelhub.util.Constants.PASSWORD;
-import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DELETED;
+import static it.unimib.travelhub.util.Constants.TRAVEL_UPDATED;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -23,9 +21,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -42,26 +37,32 @@ import it.unimib.travelhub.databinding.ActivityTravelBinding;
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
-import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.util.ServiceLocator;
 
 public class TravelActivity extends AppCompatActivity {
 
+    private static final String TAG = TravelActivity.class.getSimpleName();
+
+    private boolean isTravelUpdated;
+
     private TravelsViewModel travelsViewModel;
     private ActivityTravelBinding binding;
 
     private Travels travel;
-    final Calendar myCalendar= Calendar.getInstance();
 
-    private TravelFragmentAdapter myFragmentAdapter;
+    public static Travels oldTravel;
+    final Calendar myCalendar= Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         binding = ActivityTravelBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
+        isTravelUpdated = false;
 
         ITravelsRepository travelsRepository =
                 ServiceLocator.getInstance().getTravelsRepository(
@@ -90,7 +91,6 @@ public class TravelActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-
         binding.viewPagerTravel.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -99,68 +99,90 @@ public class TravelActivity extends AppCompatActivity {
         });
 
         TravelActivityArgs args = TravelActivityArgs.fromBundle(getIntent().getExtras());
+
+        if (getIntent().getBooleanExtra(TRAVEL_UPDATED, false)) {
+            Snackbar.make(TravelActivity.this.findViewById(android.R.id.content),
+                    "Viaggio aggiornato correttamente", Snackbar.LENGTH_SHORT).show();
+        }
+
         travel = args.getTravel();
+        oldTravel = new Travels(travel.getId(), travel.getTitle(), travel.getDescription(), travel.getStartDate(), travel.getEndDate(), travel.getMembers(), travel.getDestinations());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        myFragmentAdapter = new TravelFragmentAdapter(fragmentManager, getLifecycle(), travel);
+        TravelFragmentAdapter myFragmentAdapter = new TravelFragmentAdapter(fragmentManager, getLifecycle(), travel);
         binding.viewPagerTravel.setAdapter(myFragmentAdapter);
-
         binding.travelTitle.setText(travel.getTitle());
-        binding.buttonBack.setOnClickListener(v -> finish());
+
+
+        binding.buttonBack.setOnClickListener(v -> {
+                    if(isTravelUpdated){
+                        handle_back();
+                    } else {
+                        Intent intent = new Intent(TravelActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+        });
         String startDate = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0))
                 .format(travel.getStartDate());
         String endDate = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0))
                 .format(travel.getEndDate());
+        this.getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if(isTravelUpdated){
+                    handle_back();
+                } else {
+                    Intent intent = new Intent(TravelActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+
         binding.travelStartDate.setText(startDate);
         binding.travelEndDate.setText(endDate);
 
-        FrameLayout standardBottomSheet = findViewById(R.id.standard_bottom_sheet);
-        BottomSheetBehavior<View> standardBottomSheetBehavior = BottomSheetBehavior.from(standardBottomSheet);
-        binding.buttonMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("TravelActivity", "Button more clicked"+ travel);
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(TravelActivity.this);
-                View view1 = LayoutInflater.from(TravelActivity.this).inflate(R.layout.bottom_sheet_layout_travel, null);
-                bottomSheetDialog.setContentView(view1);
-                bottomSheetDialog.show();
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(TravelActivity.this);
+        binding.buttonMore.setOnClickListener(view12 -> {
+            Log.d("TravelActivity", "Button more clicked"+ travel);
+            @SuppressLint("InflateParams") View view1 = LayoutInflater.from(TravelActivity.this).inflate(R.layout.bottom_sheet_layout_travel, null);
+            bottomSheetDialog.setContentView(view1);
+            bottomSheetDialog.show();
 
-                @SuppressLint({"MissingInflatedId", "LocalSuppress"}) MaterialButton buttonDelete = view1.findViewById(R.id.button_delete);
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) MaterialButton buttonDelete = view1.findViewById(R.id.button_delete);
 
-                buttonDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            buttonDelete.setOnClickListener(view2 -> {
 
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(TravelActivity.this);
-                        builder1.setMessage("Sei sicuro di voler cancellare il viaggio?");
-                        builder1.setCancelable(true);
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(TravelActivity.this);
+                builder1.setMessage("Sei sicuro di voler cancellare il viaggio?");
+                builder1.setCancelable(true);
 
-                        builder1.setPositiveButton(
-                                "Yes",
-                                (dialog, id) -> {
-                                    deleteTravel(travel);
-                                    Intent intent = new Intent(TravelActivity.this, MainActivity.class);
-                                    intent.putExtra(TRAVEL_DELETED, true);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                });
+                builder1.setPositiveButton(
+                        "Yes",
+                        (dialog, id) -> {
+                            deleteTravel(travel);
+                            Intent intent = new Intent(TravelActivity.this, MainActivity.class);
+                            intent.putExtra(TRAVEL_DELETED, true);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        });
 
-                        builder1.setNegativeButton(
-                                "No",
-                                (dialog, id) -> dialog.cancel());
+                builder1.setNegativeButton(
+                        "No",
+                        (dialog, id) -> dialog.cancel());
 
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
 
 
-                    }
-                });
-            }
+            });
         });
         editTravel();
     }
-
 
     private void editTravel() {
 
@@ -222,7 +244,6 @@ public class TravelActivity extends AppCompatActivity {
         });
 
     }
-
     private void deleteTravel(Travels travel) {
 
         Observer<Result> resultObserver = new Observer<Result>() {
@@ -244,10 +265,9 @@ public class TravelActivity extends AppCompatActivity {
 
     }
     public void showEditButton(){
+        isTravelUpdated = true;
         binding.buttonEdit.setVisibility(View.VISIBLE);
-        binding.buttonEdit.setOnClickListener(v -> {
-            updateTravel(travel); //TODO manage edit button
-        });
+        binding.buttonEdit.setOnClickListener(v -> updateTravel(travel));
     }
     private Date parseStringToDate(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", getResources().getConfiguration().getLocales().get(0));
@@ -266,9 +286,45 @@ public class TravelActivity extends AppCompatActivity {
         editText.setText(s);
         return s;
     }
+    public void updateTravel(Travels travel) {
+        travelsViewModel.updateTravel(travel, oldTravel);
 
-    private boolean updateTravel(Travels travel) {
-        //TODO update travel
-        return false;
+        travelsViewModel.getUpdateTravelsMutableLiveData().observe(this, result -> {
+            if (result != null && result.isSuccess()) {
+                Result.TravelsResponseSuccess travelResponse = (Result.TravelsResponseSuccess) result;
+                Travels travelUpdated = travelResponse.getData().getTravelsList().get(0);
+                Log.d("CommunityFragment", "Travel updated: " + travelUpdated);
+                Intent intent = new Intent(TravelActivity.this, TravelActivity.class);
+                intent.putExtra("travel", travelUpdated);
+                intent.putExtra(TRAVEL_UPDATED, true);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                Result.Error error = (Result.Error) result;
+                Log.d("CommunityFragment", "Travel not updated, Error: " + error.getMessage());
+            }
+        });
+
+    }
+    public void handle_back() {
+        AlertDialog.Builder AlertBuilder = new AlertDialog.Builder(this);
+        AlertBuilder.setMessage("Are you sure you want to come back? Your updates will be lost.");
+        AlertBuilder.setCancelable(true);
+
+        AlertBuilder.setPositiveButton(
+                "Yes",
+                (dialog, id) -> {
+                    dialog.cancel();
+                    Intent intent = new Intent(TravelActivity.this, MainActivity.class);
+                    startActivity(intent);
+                });
+
+        AlertBuilder.setNegativeButton(
+                "No",
+                (dialog, id) -> dialog.cancel());
+
+        AlertDialog alert = AlertBuilder.create();
+        alert.show();
     }
 }

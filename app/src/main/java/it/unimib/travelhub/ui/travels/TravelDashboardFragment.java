@@ -1,26 +1,44 @@
 package it.unimib.travelhub.ui.travels;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.PopupMenu;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
+import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.databinding.FragmentTravelDashboardBinding;
+import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
+import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.ui.welcome.UserViewModel;
+import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
+import it.unimib.travelhub.util.ServiceLocator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +51,9 @@ public class TravelDashboardFragment extends Fragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     private FragmentTravelDashboardBinding binding;
     private Travels travel;
+    private UserViewModel userViewModel;
+
+    private static final String TAG = TravelDashboardFragment.class.getSimpleName();
 
     private boolean isEditing = false;
 
@@ -53,6 +74,21 @@ public class TravelDashboardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        IUserRepository userRepository =
+                ServiceLocator.getInstance().getUserRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (userRepository != null) {
+            userViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
         if (getArguments() != null) {
             travel = (Travels) getArguments().getSerializable(TRAVEL);
         }
@@ -75,6 +111,66 @@ public class TravelDashboardFragment extends Fragment {
         } else {
             binding.travelDescription.setText(travel.getDescription());
         }
+
+        FrameLayout standardBottomSheet = binding.addPartecipantBottomSheet;
+        BottomSheetBehavior<View> standardBottomSheetBehavior = BottomSheetBehavior.from(standardBottomSheet);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        binding.buttonAddPartecipant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("TravelActivity", "Button more clicked"+ travel);
+                View view1 = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout_add_participant, null);
+                bottomSheetDialog.setContentView(view1);
+                bottomSheetDialog.show();
+
+                @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button add_participant = view1.findViewById(R.id.button_add_partecipant);
+                @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextInputLayout username = view1.findViewById(R.id.username_text_field);
+
+                add_participant.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if (username.getEditText().getText() == null || username.getEditText().getText().toString().isEmpty()) {
+                            username.setError(getString(R.string.error_empty_username));
+                            return;
+                        }else{
+                            username.setError(null);
+                            userViewModel.isUsernameAlreadyTaken(username.getEditText().getText().toString());
+
+                            Observer<Result> observer = new Observer<Result>(){
+                                @Override
+                                public void onChanged(Result result) {
+                                    if (result instanceof Result.Error) {
+                                        Log.d(TAG, ((Result.Error) result).getMessage());
+                                        username.setError(((Result.Error) result).getMessage());
+                                    } else {
+                                        User user = ((Result.UserResponseSuccess) result).getData();
+                                        Log.d(TAG, "User found: " + user);
+                                        if (user != null) {
+                                            travel.getMembers().add(new TravelMember(user.getUsername(), user.getIdToken(), TravelMember.Role.MEMBER));
+                                            TravelActivity travelActivity = (TravelActivity) requireActivity();
+                                            travelActivity.showEditButton();
+                                            bottomSheetDialog.dismiss();
+                                        } else {
+                                            username.setError(getString(R.string.error_empty_username));
+                                        }
+                                    }
+                                    userViewModel.getIsUsernameAlreadyTaken().removeObserver(this);
+                                }
+                            };
+
+                            userViewModel.getIsUsernameAlreadyTaken().observe(getViewLifecycleOwner(), observer);
+
+                            }
+                        }
+
+                    });
+
+
+            }
+
+
+        });
 
         editTravel();
 
@@ -101,7 +197,19 @@ public class TravelDashboardFragment extends Fragment {
         RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
-        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, "#000000");
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, "#000000",
+                (travelMember, seg_long_button) -> {
+                    PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
+                    popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(item -> {
+                        // Toast message on menu item clicked
+                        if (item.getItemId() == R.id.delete_segment) {
+                            remove_participant(travelMember);
+                        }
+                        return true;
+                    });
+                    popupMenu.show();
+            });
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(usersRecyclerAdapter);
     }
@@ -136,4 +244,12 @@ public class TravelDashboardFragment extends Fragment {
         });
 
     }
+
+    private void remove_participant(TravelMember travelMember) {
+        travel.getMembers().remove(travelMember);
+        TravelActivity travelActivity = (TravelActivity) requireActivity();
+        travelActivity.updateTravel(travel);
+    }
+
+
 }

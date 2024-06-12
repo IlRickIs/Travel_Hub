@@ -40,7 +40,6 @@ public class Travels implements Serializable, Comparable<Travels> {
         this.destinations = destinations;
         this.members = members;
     }
-
     public List<TravelSegment> getDestinations() {
         return destinations;
     }
