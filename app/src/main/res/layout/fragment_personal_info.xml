@@ -40,41 +40,6 @@
                 android:text="@string/personal_info_description" />
 
             <TextView
-                android:id="@+id/textViewUsername"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/username_needed" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textFieldUsername"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!--<TextView
-                android:id="@+id/textViewUserCity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_email" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textFieldUserEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>-->
-
-            <TextView
                 android:id="@+id/textViewName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

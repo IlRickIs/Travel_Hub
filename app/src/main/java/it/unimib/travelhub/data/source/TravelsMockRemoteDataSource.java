@@ -37,9 +37,10 @@ public class TravelsMockRemoteDataSource extends BaseTravelsRemoteDataSource{
     }
 
     @Override
-    public void updateTravel(Travels travels) {
+    public void updateTravel(Travels newTravel, Travels oldTravel) {
 
     }
+
 
     @Override
     public void deleteTravel(Travels travels) {

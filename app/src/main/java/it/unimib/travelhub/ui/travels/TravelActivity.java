@@ -1,5 +1,11 @@
 package it.unimib.travelhub.ui.travels;
 
+import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
+import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.PASSWORD;
+import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
+import static it.unimib.travelhub.util.Constants.TRAVEL_DELETED;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -9,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,6 +42,8 @@ import it.unimib.travelhub.databinding.ActivityTravelBinding;
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
+import it.unimib.travelhub.model.User;
+import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.util.ServiceLocator;
 
 public class TravelActivity extends AppCompatActivity {
@@ -130,6 +139,10 @@ public class TravelActivity extends AppCompatActivity {
                                 "Yes",
                                 (dialog, id) -> {
                                     deleteTravel(travel);
+                                    Intent intent = new Intent(TravelActivity.this, MainActivity.class);
+                                    intent.putExtra(TRAVEL_DELETED, true);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
                                     finish();
                                 });
 

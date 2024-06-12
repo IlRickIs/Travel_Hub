@@ -28,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
@@ -168,12 +169,40 @@ public class NewTravelSegment extends Fragment {
         };
         binding.fromEditText.setOnClickListener(v ->
         {
-            new DatePickerDialog(getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            if (getContext() != null)
+                new DatePickerDialog(
+                        getContext(), date1,
+                        Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty() ?
+                                myCalendar.get(Calendar.YEAR) :
+                                Integer.parseInt(binding.fromEditText.getText().toString().split("/")[2]),
+                        Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty() ?
+                                myCalendar.get(Calendar.MONTH) :
+                                Integer.parseInt(binding.fromEditText.getText().toString().split("/")[1]) - 1,
+                        Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty() ?
+                                myCalendar.get(Calendar.DAY_OF_MONTH) :
+                                Integer.parseInt(binding.fromEditText.getText().toString().split("/")[0])).show();
         });
 
         binding.toEditText.setOnClickListener(v ->
         {
-            new DatePickerDialog(getContext(),date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            if (getContext() != null)
+                new DatePickerDialog(
+                        getContext(), date2,
+                        Objects.requireNonNull(binding.toEditText.getText()).toString().isEmpty() ?
+                                (Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty() ?
+                                        myCalendar.get(Calendar.YEAR) :
+                                        Integer.parseInt(binding.fromEditText.getText().toString().split("/")[2])) :
+                                Integer.parseInt(binding.toEditText.getText().toString().split("/")[2]),
+                        Objects.requireNonNull(binding.toEditText.getText()).toString().isEmpty() ?
+                                (Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty() ?
+                                        myCalendar.get(Calendar.MONTH) :
+                                        Integer.parseInt(binding.fromEditText.getText().toString().split("/")[1]) - 1) :
+                                Integer.parseInt(binding.toEditText.getText().toString().split("/")[1]) - 1,
+                        Objects.requireNonNull(binding.toEditText.getText()).toString().isEmpty() ?
+                                (Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty() ?
+                                        myCalendar.get(Calendar.DAY_OF_MONTH) :
+                                        Integer.parseInt(binding.fromEditText.getText().toString().split("/")[0])) :
+                                Integer.parseInt(binding.toEditText.getText().toString().split("/")[0])).show();
         });
 
         saveTravelBtn.setOnClickListener(v -> {

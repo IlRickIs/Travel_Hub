@@ -1,8 +1,14 @@
 package it.unimib.travelhub.model;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class TravelSegment implements Serializable {
+
     private String location;
     private Date dateFrom;
     private Date dateTo;
@@ -14,6 +20,7 @@ public class TravelSegment implements Serializable {
         this.dateTo = null;
         this.description = null;
     }
+
     public TravelSegment(String location){
         this.location = location;
         this.dateFrom = null;
@@ -67,5 +74,16 @@ public class TravelSegment implements Serializable {
                 ", dateFrom=" + dateFrom +
                 ", dateTo=" + dateTo +
                 '}';
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("location", location);
+        map.put("dateFrom", dateFrom);
+        map.put("dateTo", dateTo);
+        map.put("description", description);
+        return map;
+
     }
 }

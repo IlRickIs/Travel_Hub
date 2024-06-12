@@ -21,6 +21,8 @@ public class Constants {
 
     public static final String FIREBASE_TRAVELS_COLLECTION = "travels";
 
+    public static final String FIREBASE_TRAVELS_MEMBERS_COLLECTION = "travels_members";
+
     public static final String UNEXPECTED_ERROR = "unexpected_error";
     public static final String INVALID_USER_ERROR = "invalidUserError";
     public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
@@ -33,16 +35,11 @@ public class Constants {
 
     public static final String DESTINATION = "first_destination";
     public static final String FRIEND = "first_friend";
-
     public static final String TRAVEL_ADDED = "TRAVEL_ADDED";
+    public static final String TRAVEL_DELETED = "TRAVEL_DELETED";
 
     public static final int TRAVELS_DATABASE_VERSION = 2;
     public static final String TRAVELS_DATABASE_NAME = "travels_database";
     public static final String LAST_UPDATE = "last_update";
-
-    public static final long FRESH_TIMEOUT = 60*60*200; // 2 hours in milliseconds
-
-    //TRAVELSEGMENT
-    public static final String DESTINATION_TITLE = "DESTINATION";
-
+    public static final long FRESH_TIMEOUT = 0;
 }

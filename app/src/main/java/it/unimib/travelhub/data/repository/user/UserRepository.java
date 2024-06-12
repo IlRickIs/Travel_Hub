@@ -110,8 +110,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         return userMutableLiveData;
     }
     @Override
-    public MutableLiveData<Result> updateUserData(String oldUsername, User user, UserDataRemoteDataSource.UserCallback userCallback) {
-        userDataRemoteDataSource.updateUserData(oldUsername, user, userCallback);
+    public MutableLiveData<Result> updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback) {
+        userDataRemoteDataSource.updateUserData(user, userCallback);
         return userMutableLiveData;
     }
 

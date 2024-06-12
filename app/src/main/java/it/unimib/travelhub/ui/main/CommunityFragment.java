@@ -17,11 +17,15 @@ import android.widget.Button;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.database.TravelsDao;
@@ -43,6 +47,8 @@ import it.unimib.travelhub.util.ServiceLocator;
 public class CommunityFragment extends Fragment {
     private TravelsViewModel travelsViewModel;
     Travels travel;
+
+    private static final String TAG = CommunityFragment.class.getSimpleName();
 
     public CommunityFragment() {
         // Required empty public constructor
@@ -84,15 +90,19 @@ public class CommunityFragment extends Fragment {
         travel = new Travels();
         //TODO: THIS WILL MAKE A TRAVEL FOR TESTING AND SAVE IT IN travel VARIABLE
 
-        Button button = view.findViewById(R.id.button3);
+        Button button = view.findViewById(R.id.canc_button);
         button.setOnClickListener(v -> {
             deleteMockTravel(travel); //TODO: THIS WILL DELETE THE TRAVEL CREATED BY makeMockTravel()
         });
 
-        Button button2 = view.findViewById(R.id.button2);
+        Button button2 = view.findViewById(R.id.create_button);
         button2.setOnClickListener(v -> {
-            makeMockTravel();
-            //mockUpdateTravel(travel); //TODO: THIS WILL UPDATE THE TRAVEL CREATED BY makeMockTravel()
+            makeMockTravel(); //TODO: THIS WILL CREATE THE TRAVEL CREATED BY makeMockTravel()
+        });
+
+        Button button3 = view.findViewById(R.id.update_button);
+        button3.setOnClickListener(v -> {
+            mockUpdateTravel(travel); //TODO: THIS WILL UPDATE THE TRAVEL CREATED BY makeMockTravel()
         });
 
         return view;
@@ -124,8 +134,10 @@ public class CommunityFragment extends Fragment {
         updatedTravel.setEndDate(endDate);
 
         ArrayList<TravelMember> members = new ArrayList<>();
-        members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
-        members.add(new TravelMember("cavds", "frtAgtA8FLZegyXcYO79zM84got1", TravelMember.Role.MEMBER));
+        //members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
+        //members.add(new TravelMember("cavds", "frtAgtA8FLZegyXcYO79zM84got1", TravelMember.Role.MEMBER));
+        members.add(new TravelMember("Roberto", "kO2tepwx7Lea92hyRVwITcfL2ak2", TravelMember.Role.CREATOR));
+        members.add(new TravelMember("pippo", "q6bEVoUp4Se4KFt0t66zdWhmRbq1", TravelMember.Role.MEMBER));
 
         updatedTravel.setMembers(members);
 
@@ -142,11 +154,14 @@ public class CommunityFragment extends Fragment {
                     Log.d("CommunityFragment", "Travel not updated, Error: " + error.getMessage());
                 }
 
-                travelsViewModel.updateTravel(updatedTravel).removeObserver(this);
+                travelsViewModel.getUpdateTravelsMutableLiveData().removeObserver(this);
             }
         };
 
-        travelsViewModel.updateTravel(updatedTravel).observe(getViewLifecycleOwner(), resultObserve);
+        Log.d(TAG, "NEWTRAVEL: " + updatedTravel);
+        Log.d(TAG, "OLDTRAVEL: " + travel);
+        travelsViewModel.updateTravel(updatedTravel, travel);
+        travelsViewModel.getUpdateTravelsMutableLiveData().observe(getViewLifecycleOwner(), resultObserve);
     }
 
     private void makeMockTravel() { //TODO for testing, remove
@@ -174,8 +189,10 @@ public class CommunityFragment extends Fragment {
         travel.setTitle("PROVAAAA");
 
         ArrayList<TravelMember> members = new ArrayList<>();
-        members.add(new TravelMember("PaoloCisly", "d1VZw72r1aSyrXM7ntFTFhxQcJo2", TravelMember.Role.CREATOR));
+        //members.add(new TravelMember("riccardo", "kYrYzNmj5uZuT6Z9vT9TZfxCG5g1", TravelMember.Role.CREATOR));
+        members.add(new TravelMember("Roberto", "kO2tepwx7Lea92hyRVwITcfL2ak2", TravelMember.Role.CREATOR));
         members.add(new TravelMember("ciao", "oH8EFtZMyhOE7dwmH0XJxzZC1Ar2", TravelMember.Role.MEMBER));
+
 
         travel.setMembers(members);
 

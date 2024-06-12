@@ -17,10 +17,12 @@ import it.unimib.travelhub.data.source.BaseTravelsRemoteDataSource;
 import it.unimib.travelhub.data.source.TravelsLocalDataSource;
 import it.unimib.travelhub.data.source.TravelsMockRemoteDataSource;
 import it.unimib.travelhub.data.source.TravelsRemoteDataSource;
+import it.unimib.travelhub.data.source.TravelsRemoteFirestoreDataSource;
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
+import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.model.IValidator;
 
 public class ServiceLocator {
@@ -53,7 +55,7 @@ public class ServiceLocator {
                 new UserAuthenticationRemoteDataSource();
 
         BaseUserDataRemoteDataSource userDataRemoteDataSource =
-                new UserDataRemoteDataSource(sharedPreferencesUtil);
+                new UserRemoteFirestoreDataSource(sharedPreferencesUtil);
 
 
         return new UserRepository(userRemoteAuthenticationDataSource,
@@ -68,7 +70,7 @@ public class ServiceLocator {
 
         JSONParserUtil jsonParserUtil = new JSONParserUtil(application);
 //        travelsRemoteDataSource = new TravelsMockRemoteDataSource(jsonParserUtil);
-        travelsRemoteDataSource = new TravelsRemoteDataSource(dataEncryptionUtil);
+        travelsRemoteDataSource = new TravelsRemoteFirestoreDataSource(dataEncryptionUtil);
 
         travelsLocalDataSource = new TravelsLocalDataSource(getTravelsDao(application));
 

@@ -4,9 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.PropertyName;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -92,6 +97,19 @@ public class Travels implements Serializable, Comparable<Travels> {
     @Override
     public int hashCode() {
         return Objects.hash(id, title, description, startDate, endDate);
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("title", title);
+        map.put("description", description);
+        map.put("startDate", startDate);
+        map.put("endDate", endDate);
+        map.put("destinations", destinations);
+        map.put("members", members);
+        return map;
     }
 
     @NonNull
