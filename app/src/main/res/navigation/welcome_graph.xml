@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_loginFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_loginFragment_to_usernameChoiceFragment"
+            app:destination="@id/usernameChoiceFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -31,4 +34,9 @@
         android:name="it.unimib.travelhub.ui.main.MainActivity"
         android:label="MainActivity"
         tools:layout="@layout/activity_main"/>
+    <fragment
+        android:id="@+id/usernameChoiceFragment"
+        android:name="it.unimib.travelhub.ui.welcome.UsernameChoiceFragment"
+        android:label="fragment_username_choice"
+        tools:layout="@layout/fragment_username_choice" />
 </navigation>

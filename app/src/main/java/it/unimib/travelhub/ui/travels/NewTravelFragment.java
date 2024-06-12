@@ -344,7 +344,8 @@ public class NewTravelFragment extends Fragment {
         userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), myObserver);
     }
 
-    private void goToNewFragment(Travels travel){
+    private void
+    goToNewFragment(Travels travel){
         Bundle bundle = new Bundle();
         bundle.putSerializable("travel", travel);
 

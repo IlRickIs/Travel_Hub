@@ -1,15 +1,12 @@
 package it.unimib.travelhub.data.repository.user;
 
-import static it.unimib.travelhub.util.Constants.USERNAME_NOT_AVAILABLE;
-
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
+import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
@@ -58,8 +55,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
     }
 
     @Override
-    public MutableLiveData<Result> getGoogleUser(String idToken) {
-        signInWithGoogle(idToken);
+    public MutableLiveData<Result> getGoogleUser(User user) {
+        signInWithGoogle(user);
         return userMutableLiveData;
     }
 
@@ -100,8 +97,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
     }
 
     @Override
-    public void signInWithGoogle(String token) {
-        userRemoteDataSource.signInWithGoogle(token);
+    public void signInWithGoogle(User user) {
+        userRemoteDataSource.signInWithGoogle(user);
     }
 
     @Override
@@ -151,6 +148,11 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
     public void onSuccessLogout() {
         Result.UserResponseSuccess result = new Result.UserResponseSuccess(null);
         userMutableLiveData.postValue(result);
+    }
+
+    @Override
+    public void isGoogleUserAlreadyRegistered(User user, UserAuthenticationRemoteDataSource.GoogleUserCallback callback) {
+        userRemoteDataSource.isGoogleUserRegistered(user, callback);
     }
 
 
