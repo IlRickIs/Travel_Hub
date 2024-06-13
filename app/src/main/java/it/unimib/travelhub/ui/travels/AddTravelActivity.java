@@ -1,24 +1,18 @@
 package it.unimib.travelhub.ui.travels;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import it.unimib.travelhub.R;
-import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.ActivityAddTravelBinding;
 import it.unimib.travelhub.model.Travels;
-import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.util.ServiceLocator;
 
 public class AddTravelActivity extends AppCompatActivity {

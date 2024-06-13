@@ -61,8 +61,9 @@ public class TravelRecyclerAdapter extends RecyclerView.Adapter<TravelRecyclerAd
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final TextView textViewTitle;
         private final TextView textViewStartDate;
-
         private final TextView textViewDestinations;
+
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TravelSegment implements Serializable {
+public class TravelSegment implements Serializable, Comparable<TravelSegment> {
 
     private String location;
     private Date dateFrom;
@@ -65,6 +65,13 @@ public class TravelSegment implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int compareTo(TravelSegment travels) {
+        if (this.dateFrom.compareTo(travels.dateFrom) == 0)
+            return this.dateTo.compareTo(travels.dateTo);
+        else
+            return this.dateFrom.compareTo(travels.dateFrom);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.main.profile;
+package it.unimib.travelhub.ui.profile;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
@@ -133,6 +133,7 @@ public class PersonalInfoFragment extends Fragment {
 
 
         binding.buttonLogout.setOnClickListener(v -> {
+            Log.d(TAG, "Logout button clicked");
 
             AlertDialog.Builder builder1 = new AlertDialog.Builder(requireActivity());
             builder1.setMessage(R.string.logout_message);

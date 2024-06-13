@@ -9,7 +9,6 @@ import static it.unimib.travelhub.util.Constants.TRAVEL_DELETED;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +22,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,25 +34,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import it.unimib.travelhub.R;
-import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
-import it.unimib.travelhub.adapter.TravelSegmentRecyclerAdapter;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
-import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
-import it.unimib.travelhub.ui.main.profile.ProfileFragmentDirections;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
+import it.unimib.travelhub.ui.travels.TravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.JSONParserUtil;
@@ -156,7 +151,6 @@ public class HomeFragment extends Fragment {
             intent.removeExtra(TRAVEL_DELETED);
         }
 
-
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
             lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
@@ -171,84 +165,74 @@ public class HomeFragment extends Fragment {
         binding.homeCardOngoing.setVisibility(View.GONE);
 
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
-                result -> {
-                    if (result.isSuccess()) {
-                        Log.d(TAG, "TravelsResponse Acciughe: " + ((Result.TravelsResponseSuccess) result).getData());
-                        travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
+            result -> {
+                if (result.isSuccess()) {
+                    Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
+                    travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 
-                        onGoingTravel = travelsResponse.getOnGoingTravel();
+                    onGoingTravel = travelsResponse.getOnGoingTravel();
+                    futureTravel = travelsResponse.getFutureTravel();
+                    doneTravel = travelsResponse.getDoneTravel();
 
+                    if (onGoingTravel != null) {
+                        setOngoingView(onGoingTravel);
 
-                        futureTravel = travelsResponse.getFutureTravel();
-                        doneTravel = travelsResponse.getDoneTravel();
-
-                        if (onGoingTravel != null) {
-                            Log.d(TAG, "onGoingTravel: " + onGoingTravel);
-                            setOngoingView(onGoingTravel);
-
-                            if (futureTravel != null) {
-                                setFutureView(futureTravel);
-                            } else if (doneTravel != null) {
-                                setPastView(doneTravel);
-                            }else{
-                                binding.homeCardNoTravel.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primaryVariantColor));
-                                binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
-                                binding.homeNewTravelImage.setVisibility(View.GONE);
-                                binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-                            }
-
-                        } else if (futureTravel != null) {
-                            setOngoingView(futureTravel);
-
-                            if (doneTravel != null) {
-                                setPastView(doneTravel);
-                            }else {
-                                binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
-                                binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-                            }
-
-
-                        } else {
+                        if (futureTravel != null) {
+                            setFutureView(futureTravel);
+                        } else if (doneTravel != null) {
+                            setPastView(doneTravel);
+                        }else{
+                            binding.homeCardNoTravel.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primaryVariantColor));
+                            binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
+                            binding.homeNewTravelImage.setVisibility(View.GONE);
                             binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-                            if (doneTravel != null) {
-                                setPastView(doneTravel);
-                            }
                         }
 
-                        binding.homeButtonCreateTravel.setOnClickListener(v -> {
-                            Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
-                            startActivity(AddTravelintent);
-                            //requireActivity().finish();
-                        });
+                    } else if (futureTravel != null) {
+                        setOngoingView(futureTravel);
 
-                        binding.seeAll.setOnClickListener(v -> {
-                            NavController navController = Navigation.findNavController(view);
-                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToProfileFragment();
-                            navController.navigate(val);
-                        });
+                        if (doneTravel != null) {
+                            setPastView(doneTravel);
+                        }else {
+                            binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
+                            binding.homeCardNoTravel.setVisibility(View.VISIBLE);
+                        }
 
-                        binding.homeOngoingButton.setOnClickListener(v -> {
-                            NavController navController = Navigation.findNavController(view);
-                            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(onGoingTravel);
-                            navController.navigate(val);
-                        });
 
                     } else {
-
-                        Log.d(TAG, "TravelsResponse Error: " + ((Result.Error) result).getMessage());
-                        binding.homeTextNoFutureTravels.setText("Sembra tu non abbia viaggi in programma. Creane uno nuovo!");
                         binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-
-                        binding.homeButtonCreateTravel.setOnClickListener(v -> {
-                            Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
-                            startActivity(AddTravelintent);
-                            //requireActivity().finish();
-                        });
+                        if (doneTravel != null) {
+                            setPastView(doneTravel);
+                        }
                     }
-                });
 
-        //travelsResponse = getTravelsResponseWithGSon(); //TODO: Cambiare e mettere il get dal repository
+                    binding.homeButtonCreateTravel.setOnClickListener(v -> {
+                        Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
+                        startActivity(AddTravelintent);
+                        //requireActivity().finish();
+                    });
 
+                    binding.seeAll.setOnClickListener(v -> {
+                        ViewPager2 viewPager = requireActivity().findViewById(R.id.viewPagerMain);
+                        viewPager.setCurrentItem(3);
+                    });
+
+                    binding.homeOngoingButton.setOnClickListener(v -> {
+                        Intent intentOngoing = new Intent(getActivity(), TravelActivity.class);
+                        intentOngoing.putExtra("travel", onGoingTravel);
+                        startActivity(intentOngoing);
+                    });
+                } else {
+                    Log.d(TAG, "TravelsResponse Error: " + ((Result.Error) result).getMessage());
+                    binding.homeCardNoTravel.setVisibility(View.VISIBLE);
+                    binding.homeTextNoFutureTravels.setText("Sembra tu non abbia viaggi in programma. Creane uno nuovo!");
+                    binding.homeButtonCreateTravel.setOnClickListener(v -> {
+                        Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
+                        startActivity(AddTravelintent);
+                        //requireActivity().finish();
+                    });
+                }
+            });
     }
 
     private void setOngoingView(Travels onGoingTravel) {
@@ -257,7 +241,7 @@ public class HomeFragment extends Fragment {
                         LinearLayoutManager.HORIZONTAL, false);
 
         binding.homeCardOngoing.setVisibility(View.VISIBLE);
-        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, "#FFFFFF");
+        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, false, "#FFFFFF", null);
         friendsRecyclerView.setLayoutManager(layoutManagerRunning);
         friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
 
@@ -294,9 +278,9 @@ public class HomeFragment extends Fragment {
         binding.homeLayoutOther.setVisibility(View.VISIBLE);
 
         binding.homeCardOther.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(requireView());
-            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(futureTravel);
-            navController.navigate(val);
+            Intent intentOtherTravel = new Intent(getActivity(), AddTravelActivity.class);
+            intentOtherTravel.putExtra("travel", futureTravel);
+            startActivity(intentOtherTravel);
         });
 
         CardView travel_card = binding.homeTravelItem.getRoot();
@@ -317,9 +301,9 @@ public class HomeFragment extends Fragment {
         binding.homeCardOther.setVisibility(View.VISIBLE);
         binding.homeLayoutOther.setVisibility(View.VISIBLE);
         binding.homeCardOther.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(requireView());
-            NavDirections val = HomeFragmentDirections.actionHomeFragmentToTravelActivity(pastTravel);
-            navController.navigate(val);
+            Intent intentOtherTravel = new Intent(getActivity(), TravelActivity.class);
+            intentOtherTravel.putExtra("travel", pastTravel);
+            startActivity(intentOtherTravel);
         });
 
         CardView travel_card = binding.homeTravelItem.getRoot();

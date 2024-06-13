@@ -7,12 +7,12 @@ public class Constants {
     public static final String DESTINATIONS_TEXTS = "destinations_texts";
     public static final String FRIENDS_TEXTS = "friends_texts";
     public static final String SHARED_PREFERENCES_FILE_NAME = "it.unimib.travelhub.preferences";
+
     public static final String ENCRYPTED_SHARED_PREFERENCES_FILE_NAME = "it.unimib.travelhub.encrypted_preferences";
     public static final String ENCRYPTED_DATA_FILE_NAME = "it.unimib.travelhub.encrypted_file.txt";
     public static final String EMAIL_ADDRESS = "email_address";
     public static final String PASSWORD = "password";
     public static final String USERNAME = "username";
-
     //FIREBASE
     public static final String FIREBASE_REALTIME_DATABASE = "https://travelhub-9bc21-default-rtdb.europe-west1.firebasedatabase.app/";
     public static final String ID_TOKEN = "google_token";
@@ -38,9 +38,10 @@ public class Constants {
     public static final String TRAVEL_ADDED = "TRAVEL_ADDED";
     public static final String TRAVEL_DELETED = "TRAVEL_DELETED";
 
+    public static final String TRAVEL_UPDATED = "TRAVEL_UPDATED";
+
     public static final int TRAVELS_DATABASE_VERSION = 2;
     public static final String TRAVELS_DATABASE_NAME = "travels_database";
     public static final String LAST_UPDATE = "last_update";
     public static final long FRESH_TIMEOUT = 0;
-
 }

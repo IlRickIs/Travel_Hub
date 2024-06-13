@@ -14,11 +14,6 @@
         android:title="@string/community_nav"/>
 
     <item
-        android:id="@+id/addFragment"
-        android:enabled="true"
-        android:icon="@drawable/baseline_add_circle_outline_24"
-        android:title="@string/add_nav"/>
-    <item
         android:id="@+id/mapFragment"
         android:enabled="true"
         android:icon="@drawable/baseline_map_24"
