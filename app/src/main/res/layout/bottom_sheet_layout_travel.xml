@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -11,14 +12,27 @@
         android:layout_height="wrap_content" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/travel_edit"
+        android:textSize="16sp"
+        app:backgroundTint="@color/primaryColor"
+        app:cornerRadius="10dp"
+        app:icon="@drawable/baseline_delete_24"
+        tools:ignore="VisualLintButtonSize" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Cancella Viaggio"
+        android:text="@string/travel_delete"
         android:textSize="16sp"
         app:backgroundTint="@color/errorColor"
         app:cornerRadius="10dp"
-        app:icon="@drawable/baseline_delete_24" />
+        app:icon="@drawable/baseline_delete_24"
+        tools:ignore="VisualLintButtonSize" />
 
 </LinearLayout>

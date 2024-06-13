@@ -51,10 +51,31 @@
 
     <!-- Travel -->
 
-    <string name="travel_no_description"></string>
+    <string name="travel_tab_dashboard">Panoramica</string>
+    <string name="travel_tab_itinerary">Itinerario</string>
+
+    <string name="travel_title">Viaggi</string>
+    <string name="add_travel">Aggiungi viaggio</string>
+    <string name="travel_no_title">Il viaggio non ha un titolo</string>
+    <string name="travel_no_description">Clicca sul pulsante in basso per aggiungere un nuovo viaggio</string>
+    <string name="travel_edit">Modifica viaggio</string>
+    <string name="travel_delete">Cancella viaggio</string>
+    <string name="travel_title_hint">Titolo</string>
+    <string name="travel_description_hint">Descrizione</string>
+    <string name="travel_departure">Partenza</string>
+    <string name="travel_duration">Durata</string>
+    <string name="travel_departure_hint">Partenza</string>
+    <string name="travel_progress">Progresso</string>
+    <string name="travel_participants">Partecipanti</string>
+    <string name="travel_description">Descrizione</string>
+    <string name="travel_segment_number">Destinazioni</string>
+    <string name="travel_segment_no_date">Nessuna data</string>
+
+    <string name="error_delete_participant">Error deleting participant, cannot delete the travel Creator</string>
+
+
 
     <string name="subscription">Subscription</string>
-
     <string name="settings">Settings</string>
     <string name="general">Generali</string>
     <string name="theme">Tema</string>
@@ -83,7 +104,14 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="dash">-</string>
-    <string name="ongoing_travel">Viaggi in corso</string>
+    <string name="ongoing_travels">Viaggi in corso</string>
+    <string name="ongoing_travel">Viaggio in corso</string>
+
+    <string name="terminated_travel">Viaggio passato</string>
+    <string name="terminated_travels">Viaggi passati</string>
+
+
+
     <string name="other_travels">Altri viaggi</string>
     <string name="return_to_the_previous_screen">Return to the previous screen</string>
     <string name="add_friends_username">Aggiungi username amici</string>
@@ -105,5 +133,6 @@
 
     <!--Personal info-->
     <string name="personal_info_saved">Informazioni personali salvate correttamente</string>
+
 
 </resources>

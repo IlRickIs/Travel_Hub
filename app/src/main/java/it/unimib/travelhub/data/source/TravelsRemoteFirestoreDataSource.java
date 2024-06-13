@@ -59,11 +59,12 @@ public class TravelsRemoteFirestoreDataSource extends BaseTravelsRemoteDataSourc
                         Log.d(TAG, "get: " + task.getResult().getData().keySet());
                         List<Long> travelIds = (List<Long>) task.getResult().getData().get("travels");
 
-                        if(travelIds == null) {
+                        if(travelIds == null || travelIds.isEmpty()) {
                             Log.d(TAG, "No travels found");
                             travelsCallback.onFailureFromRemote(new Exception("No travels found"));
                             return;
                         }
+
                         TravelsResponse travelsResponse = new TravelsResponse(travelIds.size(), travelsCallback);
 
                         for(long travelId : travelIds) {

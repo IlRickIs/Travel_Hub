@@ -151,7 +151,6 @@ public class HomeFragment extends Fragment {
             intent.removeExtra(TRAVEL_DELETED);
         }
 
-
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
             lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
@@ -166,77 +165,74 @@ public class HomeFragment extends Fragment {
         binding.homeCardOngoing.setVisibility(View.GONE);
 
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
-                result -> {
-                    if (result.isSuccess()) {
-                        Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
-                        travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
+            result -> {
+                if (result.isSuccess()) {
+                    Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
+                    travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 
-                        onGoingTravel = travelsResponse.getOnGoingTravel();
-                        futureTravel = travelsResponse.getFutureTravel();
-                        doneTravel = travelsResponse.getDoneTravel();
+                    onGoingTravel = travelsResponse.getOnGoingTravel();
+                    futureTravel = travelsResponse.getFutureTravel();
+                    doneTravel = travelsResponse.getDoneTravel();
 
-                        if (onGoingTravel != null) {
-                            setOngoingView(onGoingTravel);
+                    if (onGoingTravel != null) {
+                        setOngoingView(onGoingTravel);
 
-                            if (futureTravel != null) {
-                                setFutureView(futureTravel);
-                            } else if (doneTravel != null) {
-                                setPastView(doneTravel);
-                            }else{
-                                binding.homeCardNoTravel.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primaryVariantColor));
-                                binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
-                                binding.homeNewTravelImage.setVisibility(View.GONE);
-                                binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-                            }
-
-                        } else if (futureTravel != null) {
-                            setOngoingView(futureTravel);
-
-                            if (doneTravel != null) {
-                                setPastView(doneTravel);
-                            }else {
-                                binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
-                                binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-                            }
-
-
-                        } else {
+                        if (futureTravel != null) {
+                            setFutureView(futureTravel);
+                        } else if (doneTravel != null) {
+                            setPastView(doneTravel);
+                        }else{
+                            binding.homeCardNoTravel.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primaryVariantColor));
+                            binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
+                            binding.homeNewTravelImage.setVisibility(View.GONE);
                             binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-                            if (doneTravel != null) {
-                                setPastView(doneTravel);
-                            }
                         }
 
-                        binding.homeButtonCreateTravel.setOnClickListener(v -> {
-                            Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
-                            startActivity(AddTravelintent);
-                            //requireActivity().finish();
-                        });
+                    } else if (futureTravel != null) {
+                        setOngoingView(futureTravel);
 
-                        binding.seeAll.setOnClickListener(v -> {
-                            ViewPager2 viewPager = requireActivity().findViewById(R.id.viewPagerMain);
-                            viewPager.setCurrentItem(3);
-                        });
+                        if (doneTravel != null) {
+                            setPastView(doneTravel);
+                        }else {
+                            binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
+                            binding.homeCardNoTravel.setVisibility(View.VISIBLE);
+                        }
 
-                        binding.homeOngoingButton.setOnClickListener(v -> {
-                            Intent intentOngoing = new Intent(getActivity(), TravelActivity.class);
-                            intentOngoing.putExtra("travel", onGoingTravel);
-                            startActivity(intentOngoing);
-                        });
 
                     } else {
-
-                        Log.d(TAG, "TravelsResponse Error: " + ((Result.Error) result).getMessage());
-                        binding.homeTextNoFutureTravels.setText("Sembra tu non abbia viaggi in programma. Creane uno nuovo!");
                         binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-
-                        binding.homeButtonCreateTravel.setOnClickListener(v -> {
-                            Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
-                            startActivity(AddTravelintent);
-                            //requireActivity().finish();
-                        });
+                        if (doneTravel != null) {
+                            setPastView(doneTravel);
+                        }
                     }
-                });
+
+                    binding.homeButtonCreateTravel.setOnClickListener(v -> {
+                        Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
+                        startActivity(AddTravelintent);
+                        //requireActivity().finish();
+                    });
+
+                    binding.seeAll.setOnClickListener(v -> {
+                        ViewPager2 viewPager = requireActivity().findViewById(R.id.viewPagerMain);
+                        viewPager.setCurrentItem(3);
+                    });
+
+                    binding.homeOngoingButton.setOnClickListener(v -> {
+                        Intent intentOngoing = new Intent(getActivity(), TravelActivity.class);
+                        intentOngoing.putExtra("travel", onGoingTravel);
+                        startActivity(intentOngoing);
+                    });
+                } else {
+                    Log.d(TAG, "TravelsResponse Error: " + ((Result.Error) result).getMessage());
+                    binding.homeCardNoTravel.setVisibility(View.VISIBLE);
+                    binding.homeTextNoFutureTravels.setText("Sembra tu non abbia viaggi in programma. Creane uno nuovo!");
+                    binding.homeButtonCreateTravel.setOnClickListener(v -> {
+                        Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
+                        startActivity(AddTravelintent);
+                        //requireActivity().finish();
+                    });
+                }
+            });
     }
 
     private void setOngoingView(Travels onGoingTravel) {
@@ -245,7 +241,7 @@ public class HomeFragment extends Fragment {
                         LinearLayoutManager.HORIZONTAL, false);
 
         binding.homeCardOngoing.setVisibility(View.VISIBLE);
-        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, "#FFFFFF", null);
+        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, false, "#FFFFFF", null);
         friendsRecyclerView.setLayoutManager(layoutManagerRunning);
         friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
 

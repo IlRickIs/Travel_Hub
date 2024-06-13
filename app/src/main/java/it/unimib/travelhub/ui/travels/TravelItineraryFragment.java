@@ -94,6 +94,10 @@ public class TravelItineraryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentTravelItineraryBinding.inflate(inflater, container, false);
+
+        if(((TravelActivity) requireActivity()).isTravelCreator){
+            binding.buttonAddSegment.setVisibility(View.VISIBLE);
+        }
         return binding.getRoot();
     }
 
@@ -122,9 +126,14 @@ public class TravelItineraryFragment extends Fragment {
                 }, travel.getDestinations(), travel);
         travelSegmentsRecyclerView.setLayoutManager(travelLayoutManager);
         travelSegmentsRecyclerView.setAdapter(travelSegmentRecyclerAdapter);
+        binding.buttonAddSegment.setOnClickListener(viewAdd -> addSegmentHandler());
 
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        binding.buttonAddSegment.setOnClickListener(view12 -> {
+    }
+
+
+
+    private void addSegmentHandler(){
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
             @SuppressLint("InflateParams") View view1 = LayoutInflater.from(getContext()).inflate(R.layout.bottom_sheet_layout_new_segment, null);
             bottomSheetDialog.setContentView(view1);
             bottomSheetDialog.show();
@@ -184,17 +193,13 @@ public class TravelItineraryFragment extends Fragment {
                 updateTravel(travel);
                 bottomSheetDialog.dismiss();
             });
-        });
 
     }
-
-
     public void delete_travel_segment(TravelSegment travelSegment) {
         travel.getDestinations().remove(travelSegment);
         Collections.sort(travel.getDestinations());
         updateTravel(travel);
     }
-
     private Date parseStringToDate(String date){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", requireContext().getResources().getConfiguration().getLocales().get(0));
         Date parsedDate = null;

@@ -6,12 +6,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,7 +28,6 @@ import it.unimib.travelhub.R;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.ui.travels.TravelActivity;
-import it.unimib.travelhub.ui.travels.TravelItineraryFragment;
 
 public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSegmentRecyclerAdapter.ViewHolder> {
 
@@ -49,7 +45,7 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
 
 
     public TravelSegmentRecyclerAdapter(OnMoreButtonClickListener onItemClickListener, List<TravelSegment> data, Travels travel) {
-        this.onMoreButtonClickListener = onItemClickListener;
+        onMoreButtonClickListener = onItemClickListener;
         this.data = data;
         this.travel = travel;
     }
@@ -67,8 +63,9 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
 
         CardView segment_card = holder.itemView.findViewById(R.id.item_segment_card);
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) segment_card.getLayoutParams();
-
-
+        if (((TravelActivity) holder.itemView.getContext()).isTravelCreator) {
+            holder.itemView.findViewById(R.id.item_segment_more).setVisibility(View.VISIBLE);
+        }
 
         switch(holder.getItemViewType()) {
             case VIEW_TYPE_TOP:
@@ -109,10 +106,7 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
         TextView seg_expand;
         View seg_icon;
         TextView seg_more_button;
-
         final Calendar myCalendar= Calendar.getInstance();
-
-        ImageView seg_more;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -147,10 +141,8 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
                     seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.primaryVariantColor));
                 }
             }else{
-                seg_date_from.setText("Modifica");
-                seg_date_to.setText("Modifica");
-//                seg_date_from.setCompoundDrawables(null, null, null, itemView.getResources().getDrawable(R.drawable.baseline_edit_24));
-//                seg_date_to.setCompoundDrawables(null, null, null, itemView.getResources().getDrawable(R.drawable.baseline_edit_24));
+                seg_date_from.setText(R.string.travel_segment_no_date);
+                seg_date_to.setText(R.string.travel_segment_no_date);
             }
 
             if (travelSegment.getDescription() == null || travelSegment.getDescription().isEmpty()) {
@@ -158,9 +150,7 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
             } else {
                 seg_description.setText(travelSegment.getDescription());
             }
-
             ConstraintLayout seg_details = itemView.findViewById(R.id.item_segment_details);
-
             segment_card.setOnClickListener(v -> {
                 Log.d("TravelSegmentRecyclerAdapter", "onClick: " + seg_description.getVisibility());
                 if (seg_details.getVisibility() == View.GONE) {
@@ -171,48 +161,26 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
                     seg_expand.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_keyboard_arrow_down_24, 0);
                 }
             });
-
-            seg_more_button.setOnClickListener(v -> {
-                onMoreButtonClickListener.onButtonMoreItemClick(travelSegment, seg_more_button);
-            });
-
-
-//            seg_more.setOnClickListener(v -> {
-//                Log.d("TravelSegmentRecyclerAdapter", "onClick: " + seg_description.getVisibility());
-//                PopupMenu popupMenu = new PopupMenu(itemView.getContext(), seg_more);
-//
-//                // Inflating popup menu from popup_menu.xml file
-//                popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
-//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    @Override
-//                    public boolean onMenuItemClick(MenuItem menuItem) {
-//                        // Toast message on menu item clicked
-//                        if (menuItem.getItemId() == R.id.delete_segment) {
-//                            TravelItineraryFragment.onButtonMoreItemClick(travelSegment, travel);
-//                        }
-//                        return true;
-//                    }
-//                });
-//                popupMenu.show();
-//            });
-
-            edit_travel_segment(travelSegment, itemView, travel);
+            seg_more_button.setOnClickListener(v -> onMoreButtonClickListener.onButtonMoreItemClick(travelSegment, seg_more_button));
+            edit_travel_segment(travelSegment, travel);
 
 
         }
 
-        private void edit_travel_segment(TravelSegment travelSegment, View itemView, Travels travel) {
+        private void edit_travel_segment(TravelSegment travelSegment, Travels travel) {
             TravelActivity travelActivity = (TravelActivity) itemView.getContext();
-
-            seg_location.setOnClickListener(v -> {
-                seg_location.setFocusableInTouchMode(true);
-                seg_location.setFocusable(true);
-                seg_location.requestFocus();
-                seg_location.setOnFocusChangeListener((v1, hasFocus) -> {
-                    if (!hasFocus) {
-                        seg_location.setFocusable(false);
-                    }
-                });
+            seg_location.setOnLongClickListener(v -> {
+                if (travelActivity.enableEdit) {
+                    seg_location.setFocusableInTouchMode(true);
+                    seg_location.setFocusable(true);
+                    seg_location.requestFocus();
+                    seg_location.setOnFocusChangeListener((v1, hasFocus) -> {
+                        if (!hasFocus) {
+                            seg_location.setFocusable(false);
+                        }
+                    });
+                }
+                return true;
             });
             seg_location.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -229,15 +197,19 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
                 }
             });
 
-            seg_description.setOnClickListener(v -> {
-                seg_description.setFocusableInTouchMode(true);
-                seg_description.setFocusable(true);
-                seg_description.requestFocus();
-                seg_description.setOnFocusChangeListener((v1, hasFocus) -> {
-                    if (!hasFocus) {
-                        seg_description.setFocusable(false);
-                    }
-                });
+            seg_description.setOnLongClickListener(v -> {
+                if (travelActivity.enableEdit){
+                    seg_description.setFocusableInTouchMode(true);
+                    seg_description.setFocusable(true);
+                    seg_description.requestFocus();
+                    seg_description.setOnFocusChangeListener((v1, hasFocus) -> {
+                        if (!hasFocus) {
+                            seg_description.setFocusable(false);
+                        }
+                    });
+                }
+
+                return true;
             });
             seg_description.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -253,8 +225,6 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
                     seg_description.setFocusable(false);
                 }
             });
-
-
 
             DatePickerDialog datePickerDialogFromDate = new DatePickerDialog(itemView.getContext());
             datePickerDialogFromDate.getDatePicker().setMinDate(travel.getStartDate().getTime());
@@ -280,36 +250,24 @@ public class TravelSegmentRecyclerAdapter extends RecyclerView.Adapter<TravelSeg
                 travelSegment.setDateTo(parseStringToDate(date + " 23:59:59"));
             });
 
-//            DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
-//                myCalendar.set(Calendar.YEAR,year);
-//                myCalendar.set(Calendar.MONTH,month);
-//                myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-//                String date = updateLabel(seg_date_from);
-//                travelSegment.setDateFrom(parseStringToDate(date + " 00:00:00"));
-//            };
-//
-//            DatePickerDialog.OnDateSetListener date2 = (v, year, month, dayOfMonth) -> {
-//                myCalendar.set(Calendar.YEAR,year);
-//                myCalendar.set(Calendar.MONTH,month);
-//                myCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-//
-//                String date = updateLabel(seg_date_to);
-//                travelSegment.setDateTo(parseStringToDate(date + " 23:59:59"));
-//            };
-
-
-            seg_date_from.setOnClickListener(v ->
+            seg_date_from.setOnLongClickListener(v ->
             {
-                datePickerDialogFromDate.show();
-                //new DatePickerDialog(itemView.getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                travelActivity.showEditButton();
+                if(travelActivity.enableEdit){
+                    datePickerDialogFromDate.show();
+                    //new DatePickerDialog(itemView.getContext(), date1 ,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                    travelActivity.showEditButton();
+                }
+                return true;
             });
 
-            seg_date_to.setOnClickListener(v ->
+            seg_date_to.setOnLongClickListener(v ->
             {
-                datePickerDialogToDate.show();
-                //new DatePickerDialog(itemView.getContext(), date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                travelActivity.showEditButton();
+                if(travelActivity.enableEdit){
+                    datePickerDialogToDate.show();
+                    //new DatePickerDialog(itemView.getContext(), date2,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                    travelActivity.showEditButton();
+                }
+                return true;
             });
         }
 

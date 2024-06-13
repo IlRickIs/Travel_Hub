@@ -57,7 +57,6 @@ public class ProfileFragment extends Fragment {
     private String name, surname, username, email;
     private FragmentProfileBinding binding;
     private DataEncryptionUtil dataEncryptionUtil;
-
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
     private TravelsViewModel travelsViewModel;

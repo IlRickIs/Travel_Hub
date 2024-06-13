@@ -2,14 +2,6 @@ package it.unimib.travelhub.ui.travels;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -17,16 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
@@ -52,10 +50,7 @@ public class TravelDashboardFragment extends Fragment {
     private FragmentTravelDashboardBinding binding;
     private Travels travel;
     private UserViewModel userViewModel;
-
     private static final String TAG = TravelDashboardFragment.class.getSimpleName();
-
-    private boolean isEditing = false;
 
     public TravelDashboardFragment(Travels travel) {
         // Required empty public constructor
@@ -88,89 +83,83 @@ public class TravelDashboardFragment extends Fragment {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
-
         if (getArguments() != null) {
             travel = (Travels) getArguments().getSerializable(TRAVEL);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         binding = FragmentTravelDashboardBinding.inflate(inflater, container, false);
+        if (((TravelActivity) requireActivity()).isTravelCreator){
+            binding.layoutAddParticipant.setVisibility(View.VISIBLE);
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+            binding.buttonAddParticipant.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    @SuppressLint("InflateParams") View view1 = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout_add_participant, null);
+                    bottomSheetDialog.setContentView(view1);
+                    bottomSheetDialog.show();
+
+                    @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button add_participant = view1.findViewById(R.id.button_add_partecipant);
+                    @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextInputLayout username = view1.findViewById(R.id.username_text_field);
+
+                    add_participant.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            if (Objects.requireNonNull(username.getEditText()).getText() == null || username.getEditText().getText().toString().isEmpty()) {
+                                username.setError(getString(R.string.error_empty_username));
+                            }else{
+                                username.setError(null);
+                                userViewModel.isUsernameAlreadyTaken(username.getEditText().getText().toString());
+
+                                Observer<Result> observer = new Observer<Result>(){
+                                    @Override
+                                    public void onChanged(Result result) {
+                                        if (result instanceof Result.Error) {
+                                            Log.d(TAG, ((Result.Error) result).getMessage());
+                                            username.setError(((Result.Error) result).getMessage());
+                                        } else {
+                                            User user = ((Result.UserResponseSuccess) result).getData();
+                                            Log.d(TAG, "User found: " + user);
+                                            if (user != null) {
+                                                travel.getMembers().add(new TravelMember(user.getUsername(), user.getIdToken(), TravelMember.Role.MEMBER));
+                                                TravelActivity travelActivity = (TravelActivity) requireActivity();
+                                                travelActivity.showEditButton();
+                                                bottomSheetDialog.dismiss();
+                                            } else {
+                                                username.setError(getString(R.string.error_empty_username));
+                                            }
+                                        }
+                                        userViewModel.getIsUsernameAlreadyTaken().removeObserver(this);
+                                    }
+                                };
+
+                                userViewModel.getIsUsernameAlreadyTaken().observe(getViewLifecycleOwner(), observer);
+
+                            }
+                        }
+
+                    });
+                }
+
+
+            });
+
+        }
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (travel.getDescription() == null || travel.getDescription().isEmpty()) {
             binding.menuDescription.setText(R.string.travel_no_description);
         } else {
             binding.travelDescription.setText(travel.getDescription());
         }
-
-        FrameLayout standardBottomSheet = binding.addPartecipantBottomSheet;
-        BottomSheetBehavior<View> standardBottomSheetBehavior = BottomSheetBehavior.from(standardBottomSheet);
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        binding.buttonAddPartecipant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("TravelActivity", "Button more clicked"+ travel);
-                View view1 = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout_add_participant, null);
-                bottomSheetDialog.setContentView(view1);
-                bottomSheetDialog.show();
-
-                @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button add_participant = view1.findViewById(R.id.button_add_partecipant);
-                @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextInputLayout username = view1.findViewById(R.id.username_text_field);
-
-                add_participant.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        if (username.getEditText().getText() == null || username.getEditText().getText().toString().isEmpty()) {
-                            username.setError(getString(R.string.error_empty_username));
-                            return;
-                        }else{
-                            username.setError(null);
-                            userViewModel.isUsernameAlreadyTaken(username.getEditText().getText().toString());
-
-                            Observer<Result> observer = new Observer<Result>(){
-                                @Override
-                                public void onChanged(Result result) {
-                                    if (result instanceof Result.Error) {
-                                        Log.d(TAG, ((Result.Error) result).getMessage());
-                                        username.setError(((Result.Error) result).getMessage());
-                                    } else {
-                                        User user = ((Result.UserResponseSuccess) result).getData();
-                                        Log.d(TAG, "User found: " + user);
-                                        if (user != null) {
-                                            travel.getMembers().add(new TravelMember(user.getUsername(), user.getIdToken(), TravelMember.Role.MEMBER));
-                                            TravelActivity travelActivity = (TravelActivity) requireActivity();
-                                            travelActivity.showEditButton();
-                                            bottomSheetDialog.dismiss();
-                                        } else {
-                                            username.setError(getString(R.string.error_empty_username));
-                                        }
-                                    }
-                                    userViewModel.getIsUsernameAlreadyTaken().removeObserver(this);
-                                }
-                            };
-
-                            userViewModel.getIsUsernameAlreadyTaken().observe(getViewLifecycleOwner(), observer);
-
-                            }
-                        }
-
-                    });
-
-
-            }
-
-
-        });
 
         editTravel();
 
@@ -192,12 +181,14 @@ public class TravelDashboardFragment extends Fragment {
 
         binding.travelDuration.setText(String.valueOf(diff / (1000 * 60 * 60 * 24)));
         binding.travelStart.setText(travel.getDestinations().get(0).getLocation());
+        binding.travelDestinations.setText(String.valueOf(travel.getDestinations().size()));
+        binding.travelParticipants.setText(String.valueOf(travel.getMembers().size()));
         binding.progressBar.setProgress(progress);
 
         RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
-        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, "#000000",
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, true, "#000000",
                 (travelMember, seg_long_button) -> {
                     PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
                     popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
@@ -217,16 +208,18 @@ public class TravelDashboardFragment extends Fragment {
     private void editTravel() {
         TravelActivity travelActivity = (TravelActivity) requireActivity();
         TextInputEditText travelDescription = binding.travelDescription;
-
         travelDescription.setOnClickListener(v -> {
-            travelDescription.setFocusableInTouchMode(true);
-            travelDescription.setFocusable(true);
-            travelDescription.requestFocus();
-            travelDescription.setOnFocusChangeListener((v1, hasFocus) -> {
-                if (!hasFocus) {
-                    travelDescription.setFocusable(false);
-                }
-            });
+            if (travelActivity.enableEdit){
+                travelDescription.setFocusableInTouchMode(true);
+                travelDescription.setFocusable(true);
+                travelDescription.requestFocus();
+                travelDescription.setOnFocusChangeListener((v1, hasFocus) -> {
+                    if (!hasFocus) {
+                        travelDescription.setFocusable(false);
+                    }
+                });
+            }
+
         });
         travelDescription.addTextChangedListener(new TextWatcher() {
             @Override
@@ -242,10 +235,14 @@ public class TravelDashboardFragment extends Fragment {
                 travelDescription.setFocusable(false);
             }
         });
-
     }
 
     private void remove_participant(TravelMember travelMember) {
+        if (travelMember.getRole() == TravelMember.Role.CREATOR) {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.error_delete_participant), Snackbar.LENGTH_SHORT).show();
+            return;
+        }
         travel.getMembers().remove(travelMember);
         TravelActivity travelActivity = (TravelActivity) requireActivity();
         travelActivity.updateTravel(travel);
