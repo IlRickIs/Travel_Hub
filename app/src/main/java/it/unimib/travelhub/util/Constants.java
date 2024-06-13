@@ -1,7 +1,7 @@
 package it.unimib.travelhub.util;
 
 public class Constants {
-    public static final String PICS_FOLDER = "/picFolder/";
+    public static final String PICS_FOLDER = "/.picFolder/";
     public static final String DESTINATIONS_HINTS = "destinations_hints";
     public static final String FRIENDS_HINTS = "friends_hints";
     public static final String DESTINATIONS_TEXTS = "destinations_texts";
@@ -9,9 +9,15 @@ public class Constants {
     public static final String SHARED_PREFERENCES_FILE_NAME = "it.unimib.travelhub.preferences";
     public static final String ENCRYPTED_SHARED_PREFERENCES_FILE_NAME = "it.unimib.travelhub.encrypted_preferences";
     public static final String ENCRYPTED_DATA_FILE_NAME = "it.unimib.travelhub.encrypted_file.txt";
+
+    // User information
     public static final String EMAIL_ADDRESS = "email_address";
     public static final String PASSWORD = "password";
     public static final String USERNAME = "username";
+    public static final String USER_NAME = "user_name";
+    public static final String USER_SURNAME = "user_surname";
+    public static final String USER_BIRTHDATE = "user_birthDate";
+    public static final String PROFILE_IMAGE = "profile_image";
 
     //FIREBASE
     public static final String FIREBASE_REALTIME_DATABASE = "https://travelhub-9bc21-default-rtdb.europe-west1.firebasedatabase.app/";
@@ -42,5 +48,9 @@ public class Constants {
     public static final String TRAVELS_DATABASE_NAME = "travels_database";
     public static final String LAST_UPDATE = "last_update";
     public static final long FRESH_TIMEOUT = 0;
+
+    //Images
+    public static final String PROFILE_PICTURE_FILE_NAME = "profile_picture.png";
+    public static final String PROFILE_IMAGE_REMOTE_PATH = "profile_images/";
 
 }

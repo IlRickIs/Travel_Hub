@@ -138,6 +138,9 @@ public class User implements Serializable {
     public String getPhotoUrl() {
         return photoUrl;
     }
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
     public void setName(String name) { this.name = name; }
     public void setSurname(String surname) { this.surname = surname; }
     public void setBirthDate(Long birthDate) { this.birthDate = birthDate; }

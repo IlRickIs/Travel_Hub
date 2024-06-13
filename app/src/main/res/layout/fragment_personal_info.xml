@@ -33,11 +33,57 @@
             android:padding="8dp"
             >
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/personalInfoConstraintImage"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/personal_info_description" />
+                android:layout_gravity="center">
+
+                <Button
+                    android:elevation="5dp"
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/edit"
+                    app:icon="@drawable/baseline_edit_24"
+                    />
+
+                <androidx.cardview.widget.CardView
+                    android:elevation="1dp"
+                    android:layout_width="155dp"
+                    android:layout_height="155dp"
+                    app:cardCornerRadius="250dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:cardBackgroundColor="@color/white">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        app:cardCornerRadius="250dp"
+                        android:layout_gravity="center">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/personalInfoImage"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_gravity="center"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/original_logo"
+                            tools:src="@drawable/baseline_person_24" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <TextView
                 android:id="@+id/textViewName"

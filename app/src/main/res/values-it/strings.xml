@@ -105,5 +105,10 @@
 
     <!--Personal info-->
     <string name="personal_info_saved">Informazioni personali salvate correttamente</string>
+    <string name="username_error">Username è obbligatorio</string>
+    <string name="change_profile_photo">Cambia foto profilo</string>
+    <string name="take_a_picture">Scatta una foto</string>
+    <string name="choose_from_gallery">Scegli dalla galleria</string>
+    <string name="error_upload_image">Errore aggiornando l\'immagine</string>
 
 </resources>
