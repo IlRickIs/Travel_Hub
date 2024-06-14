@@ -137,7 +137,8 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
     }
 
     @Override
-    public void signInWithGoogle(String idToken) {
+    public void signInWithGoogle(User user) {
+        String idToken = user.getIdToken();
         if (idToken !=  null) {
             // Got an ID token from Google. Use it to authenticate with Firebase.
             AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
@@ -149,7 +150,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                     if (firebaseUser != null) {
 
                         userResponseCallback.onSuccessFromAuthentication(
-                                new User(genNewUsername(firebaseUser.getDisplayName(), firebaseUser.getEmail()),
+                                new User(user.getUsername(),
                                         firebaseUser.getEmail(),
                                         firebaseUser.getUid()
                                 )
@@ -166,6 +167,32 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
             });
         }
     }
+
+    public interface GoogleUserCallback {
+        void wasGoogleUserRegistered(int responseCode);
+    }
+    public void isGoogleUserRegistered(User user, GoogleUserCallback googleUserCallback) {
+        String idToken = user.getIdToken();
+        if (idToken != null) {
+            AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+            firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    if (task.getResult().getAdditionalUserInfo().isNewUser()) {
+                        Log.d(TAG, "l'utente è nuovo");
+                        googleUserCallback.wasGoogleUserRegistered(1);
+                    } else {
+                        Log.d(TAG, "l'utente è già registrato");
+                        googleUserCallback.wasGoogleUserRegistered(2);
+                    }
+                } else {
+                    Log.d(TAG, "errore durante il login con google");
+                    googleUserCallback.wasGoogleUserRegistered(0);
+                }
+            });
+        }
+    }
+
 
     private String genNewUsername(String username, String email) {
         String newUsername = username;

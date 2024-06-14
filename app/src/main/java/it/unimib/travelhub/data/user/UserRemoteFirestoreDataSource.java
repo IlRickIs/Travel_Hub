@@ -95,15 +95,15 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
 
     @Override
     public void isUsernameTaken(String username, String email, String password) {
-        db.collection(FIREBASE_USERS_COLLECTION).document(username).get()
+        db.collection(FIREBASE_USERNAMES_COLLECTION).document(username).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            Log.d(TAG, "User already present in Firebase Realtime Database");
+                            Log.d(TAG, "IsUsernameTaken true: " + document.getData());
                             userResponseCallback.onFailureFromRemoteDatabase(USERNAME_NOT_AVAILABLE);
                         } else {
-                            Log.d(TAG, "User not present in Firebase Realtime Database");
+                            Log.d(TAG, "IsUsernameTaken false: " + document.getData());
                             userResponseCallback.signUp(username, email, password);
                         }
                     } else {

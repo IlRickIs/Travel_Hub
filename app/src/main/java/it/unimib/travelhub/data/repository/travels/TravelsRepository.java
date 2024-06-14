@@ -20,13 +20,11 @@ import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class TravelsRepository implements ITravelsRepository, TravelsCallback {
+    private static final String TAG = TravelsRepository.class.getSimpleName();
     private final BaseTravelsLocalDataSource travelsLocalDataSource;
     private final BaseTravelsRemoteDataSource travelsRemoteDataSource;
     private final SharedPreferencesUtil sharedPreferencesUtil;
     private final MutableLiveData<Result> travelsMutableLiveData;
-
-    private static final String TAG = TravelsRepository.class.getSimpleName();
-    private MutableLiveData<Result> updateTravelsMutableLiveData; //TODO: remove this if not needed
 
     public TravelsRepository(BaseTravelsLocalDataSource travelsLocalDataSource,
                              BaseTravelsRemoteDataSource travelsRemoteDataSource,
@@ -100,7 +98,7 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     @Override
     public void onSuccessFromLocal(TravelsResponse travelsResponse) {
         if (travelsMutableLiveData.getValue() != null && travelsMutableLiveData.getValue().isSuccess()) {
-            ArrayList<Travels> travelsList = addDifferentTravels( //TODO: Vedere se serve
+            ArrayList<Travels> travelsList = addDifferentTravels( //TODO: Viene fatto sia da insert che da get
                     ((Result.TravelsResponseSuccess)travelsMutableLiveData.getValue()).getData().getTravelsList(),
                     travelsResponse.getTravelsList());
             travelsResponse.setTravelsList(travelsList);

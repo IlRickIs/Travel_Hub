@@ -69,8 +69,8 @@ public class UserViewModel extends ViewModel {
         userMutableLiveData = userRepository.getUser(mail, password, isUserRegistered);
     }
 
-    private void getUserData(String token) {
-        userMutableLiveData = userRepository.getGoogleUser(token);
+    private void getUserData(User user) {
+        userMutableLiveData = userRepository.getGoogleUser(user);
     }
 
     public MutableLiveData<Result> getUserPreferencesMutableLiveData() {
@@ -97,9 +97,9 @@ public class UserViewModel extends ViewModel {
         authenticationError = b;
     }
 
-    public MutableLiveData<Result> getGoogleUserMutableLiveData(String idToken) {
+    public MutableLiveData<Result> getGoogleUserMutableLiveData(User user) {
         if (userMutableLiveData == null) {
-                getUserData(idToken);
+                getUserData(user);
             }
         return userMutableLiveData;
     }
@@ -134,11 +134,11 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onUsernameResponse(Result result) {
                 if (result instanceof Result.Error) {
-                    isUsernameAlraedyTaken.postValue(new Result.Error("Username " + username +" not found"));
-                    isUsernameAlraedyTaken = null;
+                    isUsernameAlraedyTaken.postValue(new Result.Error("Username: " + username + " not registered"));
+                    isUsernameAlraedyTaken=null;
                 } else {
                     isUsernameAlraedyTaken.postValue(new Result.UserResponseSuccess(((Result.UserResponseSuccess) result).getData()));
-                    isUsernameAlraedyTaken = null;
+                    isUsernameAlraedyTaken=null;
                 }
             }
         });

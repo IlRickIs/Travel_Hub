@@ -234,6 +234,7 @@
     <!--Personal Information-->
     <string name="personal_info_saved">Personal information saved correctly</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="username_error">username is required</string>
 
 
 </resources>
