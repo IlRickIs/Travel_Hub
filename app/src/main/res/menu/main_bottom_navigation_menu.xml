@@ -14,7 +14,7 @@
         android:title="@string/community_nav"/>
 
     <item
-        android:id="@+id/mapFragment"
+        android:id="@+id/mapFragment_button"
         android:enabled="true"
         android:icon="@drawable/baseline_map_24"
         android:title="@string/map_nav"/>

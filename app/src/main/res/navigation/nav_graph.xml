@@ -42,11 +42,6 @@
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/mapFragment"
-        android:name="it.unimib.travelhub.ui.main.MapFragment"
-        android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
-    <fragment
         android:id="@+id/communityFragment"
         android:name="it.unimib.travelhub.ui.main.CommunityFragment"
         android:label="fragment_community"

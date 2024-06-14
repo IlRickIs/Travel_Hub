@@ -137,6 +137,7 @@ public class ProfileFragment extends Fragment {
                 result -> {
                     if (result.isSuccess()) {
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
+                        binding.textViewTravelNumber.setText(String.valueOf(travelsResponse.getOnGoingTravelList().size()));
                         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                             @Override
                             public void onTabSelected(TabLayout.Tab tab) {
@@ -152,19 +153,12 @@ public class ProfileFragment extends Fragment {
                         FragmentManager fragmentManager = getParentFragmentManager();
                         ProfileFragmentAdapter myFragmentAdapter = new ProfileFragmentAdapter(fragmentManager, getLifecycle(), travelsResponse);
                         binding.viewPagerProfile.setAdapter(myFragmentAdapter);
-                        binding.textViewTravelNumber.setText(String.valueOf(travelsResponse.getOnGoingTravelList().size()));
 
                     } else {
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                 getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
                     }
                 });
-
-
-
-
-
-
 
 
         FrameLayout standardBottomSheet = binding.profileBottomSheet;

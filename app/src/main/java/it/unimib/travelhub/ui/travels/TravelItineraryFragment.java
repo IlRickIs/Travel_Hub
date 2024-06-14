@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,6 +36,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -87,6 +97,8 @@ public class TravelItineraryFragment extends Fragment {
             travel = (Travels) getArguments().getSerializable(TRAVEL);
         }
 
+        Places.initialize(requireContext(), "AIzaSyCFJYe15Sn6wp0A8yYWl3qv8t5pHsxaYUU");
+        PlacesClient placesClient = Places.createClient(requireContext());
     }
 
     @Override
@@ -175,6 +187,38 @@ public class TravelItineraryFragment extends Fragment {
             TextInputLayout seg_location = view1.findViewById(R.id.seg_location_text_field);
             TextInputLayout seg_description = view1.findViewById(R.id.seg_description_text_field);
 
+            AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                    requireActivity().getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                @Override
+                public void onError(@NonNull Status status) {
+                    Log.d("TravelItineraryFragment", "An error occurred: " + status);
+                }
+
+                @Override
+                public void onPlaceSelected(@NonNull Place place) {
+                    Log.d("TravelItineraryFragment", "Place: " + place.getLatLng());
+                    seg_location.getEditText().setText(place.getName());
+                    travelSegment.setLatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+                }
+            });
+
+            seg_location.getEditText().addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    travel.setTitle(s.toString());
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
 
 
             MaterialButton createButton = view1.findViewById(R.id.button_create_segment);
@@ -182,7 +226,7 @@ public class TravelItineraryFragment extends Fragment {
                 travelSegment.setLocation(Objects.requireNonNull(seg_location.getEditText()).getText().toString());
                 travelSegment.setDescription(Objects.requireNonNull(seg_description.getEditText()).getText().toString());
 
-                if (travelSegment.getDateFrom() == null || travelSegment.getDateTo() == null || travelSegment.getLocation().isEmpty()) {
+                if (travelSegment.getDateFrom() == null || travelSegment.getDateTo() == null || travelSegment.getLocation().isEmpty() || travelSegment.getLat() == 0 || travelSegment.getLng() == 0 ) {
                     seg_date_from.setError("Seleziona una data di inizio");
                     seg_date_to.setError("Seleziona una data di fine");
                     seg_location.setError("Inserisci una località");
