@@ -50,7 +50,8 @@ public class Constants {
     public static final long FRESH_TIMEOUT = 0;
 
     //Images
-    public static final String PROFILE_PICTURE_FILE_NAME = "profile_picture.png";
+    public static final String PROFILE_PICTURE_FILE_NAME = "profile_picture.webp";
     public static final String PROFILE_IMAGE_REMOTE_PATH = "profile_images/";
+    public static final String IMAGE_UPLOAD_SUCCESS = "image_upload_success";
 
 }
