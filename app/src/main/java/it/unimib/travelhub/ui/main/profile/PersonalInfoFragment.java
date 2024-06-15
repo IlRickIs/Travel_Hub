@@ -3,12 +3,11 @@ package it.unimib.travelhub.ui.main.profile;
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
-import static it.unimib.travelhub.util.Constants.IMAGE_UPLOAD_SUCCESS;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
 import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
-import static it.unimib.travelhub.util.Constants.PROFILE_IMAGE;
 import static it.unimib.travelhub.util.Constants.PROFILE_IMAGE_REMOTE_PATH;
 import static it.unimib.travelhub.util.Constants.PROFILE_PICTURE_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.PROFILE_PICTURE_TEMP_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.USERNAME;
 import static it.unimib.travelhub.util.Constants.USER_BIRTHDATE;
 import static it.unimib.travelhub.util.Constants.USER_NAME;
@@ -18,7 +17,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,10 +24,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,9 +49,6 @@ import androidx.navigation.Navigation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -77,13 +69,9 @@ import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
-import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class PersonalInfoFragment extends Fragment {
-    public boolean isCameraPermissionGranted = false;
-    private Uri capturedImageUri;
-    private String dir = null;
-    private final ActivityResultLauncher<Intent> mGetContent = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+    private final ActivityResultLauncher<Intent> mGetContentFromCam = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
@@ -96,7 +84,9 @@ public class PersonalInfoFragment extends Fragment {
                         Log.d(TAG, "Intent is null");
                         return;
                     }
-                    displayPicture(capturedImageUri, binding.personalInfoImage, 1);
+                    Uri uri = compressAndSaveToFile(capturedImageUri, tempProfileImagePath);
+                    displayPicture(uri, binding.personalInfoImage);
+                    isImageChanged = true;
                 }
             });
 
@@ -105,13 +95,14 @@ public class PersonalInfoFragment extends Fragment {
                 @Override
                 public void onActivityResult(Uri uri) {
                     if (uri != null) {
-                        displayPicture(uri, binding.personalInfoImage, 2);
+                        Uri tempUri = compressAndSaveToFile(uri, null);
+                        displayPicture(tempUri, binding.personalInfoImage);
+                        isImageChanged = true;
                     } else {
                         Log.d(TAG, "No image selected");
                     }
                 }
             });
-
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
         if(isGranted){
             Log.d(TAG, "Permission for camera granted");
@@ -119,13 +110,18 @@ public class PersonalInfoFragment extends Fragment {
             Log.d(TAG, "Permission denied");
         }
     });
+
     private static final String TAG = PersonalInfoFragment.class.getSimpleName();
+    public boolean isCameraPermissionGranted = false;
+    private Uri capturedImageUri;
+    private String dir = null;
+    private String profileImagePath = null;
+    private String tempProfileImagePath = null;
     private Uri imageUri;
     private boolean isImageChanged;
     private FragmentPersonalInfoBinding binding;
     final Calendar myCalendar= Calendar.getInstance();
     private DataEncryptionUtil dataEncryptionUtil;
-    private SharedPreferencesUtil sharedPreferencesUtil;
     private UserViewModel userViewModel;
     private IUserRepository userRepository;
 
@@ -149,9 +145,10 @@ public class PersonalInfoFragment extends Fragment {
             return;
         }
         dir = getContext().getFilesDir() + PICS_FOLDER;
+        profileImagePath = dir + PROFILE_PICTURE_FILE_NAME;
+        tempProfileImagePath = dir + PROFILE_PICTURE_TEMP_FILE_NAME;
 
         dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
-        sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
 
         userRepository = ServiceLocator.getInstance().
                 getUserRepository(requireActivity().getApplication());
@@ -216,23 +213,16 @@ public class PersonalInfoFragment extends Fragment {
             Objects.requireNonNull(binding.textFieldBirth.getEditText()).setHint(birthDate);
             binding.textFieldBirth.getEditText().setText(birthDate);
 
-            String uploadSuccess = sharedPreferencesUtil.readStringData(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PROFILE_IMAGE);
-
-            if (uploadSuccess != null && uploadSuccess.equals(IMAGE_UPLOAD_SUCCESS)) { //TODO: mettere un file temporaneo
-                String profileImagePath = dir + PROFILE_PICTURE_FILE_NAME;
-                try {
-                    File file = new File(profileImagePath);
-                    Log.d(TAG, "File exist: " + file.exists());
-                    if (file.exists()) {
-                        imageUri = Uri.fromFile(file);
-                        sharedPreferencesUtil.writeStringData(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PROFILE_IMAGE, "");
-                        displayPicture(imageUri, binding.personalInfoImage, 0);
-                    } else {
-                        Log.d(TAG, "File does not exist");
-                    }
-                } catch (Exception e) {
-                    Log.d(TAG, "Error while reading profile image", e);
+            try {
+                File file = new File(profileImagePath);
+                if (file.exists()) {
+                    imageUri = Uri.fromFile(file);
+                    displayPicture(imageUri, binding.personalInfoImage);
+                } else {
+                    Log.d(TAG, "File does not exist");
                 }
+            } catch (Exception e) {
+                Log.d(TAG, "Error while reading profile image", e);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error while reading data from encrypted shared preferences", e);
@@ -309,7 +299,7 @@ public class PersonalInfoFragment extends Fragment {
                     return;
                 }
                 if(ContextCompat.checkSelfPermission(
-                        getContext(), android.Manifest.permission.CAMERA) ==
+                        getContext(), Manifest.permission.CAMERA) ==
                         PackageManager.PERMISSION_GRANTED) {
 
                     isCameraPermissionGranted = true;
@@ -319,7 +309,7 @@ public class PersonalInfoFragment extends Fragment {
                     return;
                 }
 
-                File profileImage = createImageFile(dir);
+                File profileImage = createTempImageFile(dir);
                 if (profileImage == null) {
                     Log.e(TAG, "Unexpected error: File is null");
                     return;
@@ -332,12 +322,12 @@ public class PersonalInfoFragment extends Fragment {
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageUri);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                mGetContent.launch(cameraIntent);
+                mGetContentFromCam.launch(cameraIntent);
                 bottomSheetDialog.dismiss();
             });
 
             view1.findViewById(R.id.button_choose_gallery).setOnClickListener(v1 -> {
-                openGallery();
+                mGetContentFromGallery.launch("image/*");
                 bottomSheetDialog.dismiss();
             });
         });
@@ -370,6 +360,8 @@ public class PersonalInfoFragment extends Fragment {
     }
 
     private void saveUserDataRemote() {
+        binding.loadingData.setVisibility(View.VISIBLE);
+
         String name = Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString().isEmpty() ?
                 null : Objects.requireNonNull(binding.textFieldName.getEditText()).getText().toString();
         String surname = Objects.requireNonNull(binding.textFieldSurname.getEditText()).getText().toString().isEmpty() ?
@@ -385,9 +377,7 @@ public class PersonalInfoFragment extends Fragment {
 
             String remotePath = PROFILE_IMAGE_REMOTE_PATH + idToken + ".webp";
 
-            Log.d(TAG, "PATH: " + remotePath);
-
-            if (imageUri != null) {
+            if (isImageChanged) {
                 userRepository.uploadProfileImage(remotePath, imageUri, new RemoteFileStorageSource.uploadCallback() {
                     @Override
                     public void onSuccessUpload(String downloadUrl) {
@@ -418,6 +408,12 @@ public class PersonalInfoFragment extends Fragment {
                             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USER_BIRTHDATE,
                                     parseDateToString(birthDate == null ? null : new Date(birthDate)));
 
+                            if (replaceFile(profileImagePath, tempProfileImagePath)) {
+                                Log.d(TAG, "File replaced");
+                            } else {
+                                Log.e(TAG, "Unexpected error: File not replaced");
+                            }
+                            binding.loadingData.setVisibility(View.GONE);
                             Snackbar.make(requireView(),
                                     requireActivity().getString(R.string.personal_info_saved),
                                     Snackbar.LENGTH_SHORT).show();
@@ -461,181 +457,89 @@ public class PersonalInfoFragment extends Fragment {
         }
     }
 
-    private void openGallery() {
-        //Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        mGetContentFromGallery.launch("image/*");
-    }
-
-    private File createImageFile(String dir) {
+    private File createTempImageFile(String dir) {
         File file = new File(dir);
         if(!file.exists())
             if (!file.mkdir())
                 return null;
-        String fileName = dir + PROFILE_PICTURE_FILE_NAME;
-        file = new File(fileName);
+        file = new File(tempProfileImagePath);
         try {
             if (file.createNewFile())
-                Log.d(TAG, "File created");
+                Log.d(TAG, "Temp file created");
         } catch (Exception e) {
             Log.d(TAG, "Error creating file");
         }
         return file;
     }
 
-    private void displayPicture(Uri uri, View view, int options) {
+    private void displayPicture(Uri uri, View view) {
         if(view == null){
             Log.e(TAG, "View is null");
         }else if(view instanceof ImageView) {
             ((ImageView) view).setImageURI(uri);
-            if (options == 0) {
-                imageUri = uri;
-            } else if (options == 1) {
-                isImageChanged = true;
-                imageUri = compressAndSaveToFile(uri, dir + PROFILE_PICTURE_FILE_NAME);
-            } else if (options == 2) {
-                isImageChanged = true;
-                imageUri = compressAndSaveToFile(uri, null);
-            } else {
-                Log.e(TAG, "Invalid option");
-            }
+            imageUri = uri;
         }
     }
 
     private Uri compressAndSaveToFile(Uri uri, String path) {
+        createTempImageFile(dir);
         Bitmap bitmap = path != null ?
                 BitmapFactory.decodeFile(path) :
-                BitmapFactory.decodeFile(getPathFromUri(requireContext(), uri));
+                BitmapFactory.decodeFile(getRealPathFromURI(requireContext(), uri));
 
-        try (FileOutputStream out = new FileOutputStream(dir + PROFILE_PICTURE_FILE_NAME)) {
+        try (FileOutputStream out = new FileOutputStream(tempProfileImagePath)) {
             bitmap.compress(Bitmap.CompressFormat.WEBP, 20, out);
-            return Uri.fromFile(new File(dir + PROFILE_PICTURE_FILE_NAME));
+            return Uri.fromFile(new File(tempProfileImagePath));
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static String getPathFromUri(final Context context, final Uri uri) {
+    private boolean replaceFile(String originalFilePath, String tempFilePath) {
+        File originalFile = new File(originalFilePath);
+        File tempFile = new File(tempFilePath);
 
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
-        // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+        if (tempFile.exists()) {
+            if (originalFile.exists()) {
+                if (!originalFile.delete()) {
+                    Log.e(TAG, "Unexpected error: Original file not deleted");
+                    return false;
                 }
-
-                // TODO handle non-primary volumes
             }
-            // DownloadsProvider
-            else if (isDownloadsDocument(uri)) {
 
-                final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                return getDataColumn(context, contentUri, null, null);
+            if (tempFile.renameTo(originalFile)) {
+                return true;
+            } else {
+                Log.e(TAG, "Unexpected error: Temp file not renamed");
+                return false;
             }
-            // MediaProvider
-            else if (isMediaDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                Uri contentUri = null;
-                if ("image".equals(type)) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if ("audio".equals(type)) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                }
-
-                final String selection = "_id=?";
-                final String[] selectionArgs = new String[] {
-                        split[1]
-                };
-
-                return getDataColumn(context, contentUri, selection, selectionArgs);
-            }
+        } else {
+            Log.e(TAG, "Unexpected error: Temp file does not exist");
+            return false;
         }
-        // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(uri.getScheme())) {
-
-            // Return the remote address
-            if (isGooglePhotosUri(uri))
-                return uri.getLastPathSegment();
-
-            return getDataColumn(context, uri, null, null);
-        }
-        // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-
-        return null;
     }
 
-    public static String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
-
+    private String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
-        final String column = "_data";
-        final String[] projection = {
-                column
-        };
-
         try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
-                    null);
-            if (cursor != null && cursor.moveToFirst()) {
-                final int index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(index);
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            if (cursor == null) {
+                Log.e(TAG, "Cursor is null");
+                return "";
             }
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } catch (Exception e) {
+            Log.e(TAG, "getRealPathFromURI Exception : " + e);
+            return "";
         } finally {
-            if (cursor != null)
+            if (cursor != null) {
                 cursor.close();
+            }
         }
-        return null;
-    }
-
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
-    public static boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
 }
