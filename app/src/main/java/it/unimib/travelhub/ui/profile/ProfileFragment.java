@@ -61,7 +61,6 @@ public class ProfileFragment extends Fragment {
     private TravelsResponse travelsResponse;
     private TravelsViewModel travelsViewModel;
 
-
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -116,8 +115,6 @@ public class ProfileFragment extends Fragment {
         binding.textViewUsername.setText(username);
         binding.textViewName.setText(name);
         binding.textViewSurname.setText(surname);
-
-
         return binding.getRoot();
     }
 
@@ -137,7 +134,7 @@ public class ProfileFragment extends Fragment {
                 result -> {
                     if (result.isSuccess()) {
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
-                        binding.textViewTravelNumber.setText(String.valueOf(travelsResponse.getOnGoingTravelList().size()));
+                        binding.textViewTravelNumber.setText(String.valueOf(travelsResponse.getTravelsList().size()));
                         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                             @Override
                             public void onTabSelected(TabLayout.Tab tab) {
@@ -159,8 +156,6 @@ public class ProfileFragment extends Fragment {
                                 getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
                     }
                 });
-
-
         FrameLayout standardBottomSheet = binding.profileBottomSheet;
         BottomSheetBehavior<View> standardBottomSheetBehavior = BottomSheetBehavior.from(standardBottomSheet);
         binding.buttonMenu.setOnClickListener(new View.OnClickListener() {
@@ -193,10 +188,7 @@ public class ProfileFragment extends Fragment {
         super.onDestroy();
         binding = null;
     }
-
     private void getTravels(){
-
-
 
     }
 }

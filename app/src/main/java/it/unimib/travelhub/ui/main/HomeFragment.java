@@ -242,7 +242,7 @@ public class HomeFragment extends Fragment {
                         LinearLayoutManager.HORIZONTAL, false);
 
         binding.homeCardOngoing.setVisibility(View.VISIBLE);
-        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, false, "#FFFFFF", null);
+        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, null, "#FFFFFF", null);
         friendsRecyclerView.setLayoutManager(layoutManagerRunning);
         friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
 

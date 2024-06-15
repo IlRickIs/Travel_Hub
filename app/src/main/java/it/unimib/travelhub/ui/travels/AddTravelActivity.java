@@ -27,11 +27,10 @@ public class AddTravelActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityAddTravelBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-     binding = ActivityAddTravelBinding.inflate(getLayoutInflater());
-     setContentView(binding.getRoot());
-
-     viewModel = new ViewModelProvider(this).get(FragmentActivityAddViewModel.class);
+        viewModel = new ViewModelProvider(this).get(FragmentActivityAddViewModel.class);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
                 findFragmentById(R.id.activityAddFragmentContainerView);
@@ -55,15 +54,15 @@ public class AddTravelActivity extends AppCompatActivity {
             }
         });
 
-//        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) { TODO: check if this is needed
-//            @Override
-//            public void handleOnBackPressed() {
-//                // Back is pressed... Finishing the activity
-//                Intent intent = new Intent(AddTravelActivity.this, MainActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
+    //        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) { TODO: check if this is needed
+    //            @Override
+    //            public void handleOnBackPressed() {
+    //                // Back is pressed... Finishing the activity
+    //                Intent intent = new Intent(AddTravelActivity.this, MainActivity.class);
+    //                startActivity(intent);
+    //                finish();
+    //            }
+    //        });
     }
 
 

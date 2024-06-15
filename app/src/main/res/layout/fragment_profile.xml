@@ -17,15 +17,38 @@
         app:layout_constraintTop_toTopOf="parent"
         android:padding="12dp">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageViewUsername"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewProfileImage"
+            android:elevation="1dp"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
+            app:cardCornerRadius="250dp"
+            android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/original_logo"
-            tools:src="@drawable/baseline_person_24" />
+            app:cardBackgroundColor="@color/white">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:cardCornerRadius="250dp"
+                android:layout_gravity="center">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageViewUsername"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/baseline_person_24"
+                    tools:src="@drawable/baseline_person_24" />
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/buttonMenu"
@@ -51,7 +74,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageViewUsername">
+            app:layout_constraintTop_toBottomOf="@+id/cardViewProfileImage">
 
             <TextView
                 android:id="@+id/textViewName"
