@@ -214,6 +214,14 @@ public class NewTravelSegment extends Fragment {
                                 Integer.parseInt(binding.toEditText.getText().toString().split("/")[0])).show();
         });
 
+        binding.showAutocompleteLocatorLayout.setOnClickListener(v -> {
+            Log.d("TravelItineraryFragment", "autocompleteNewLayout clicked");
+            binding.autocompleteNewLayout.setVisibility(View.VISIBLE);
+            binding.autocompleteNewLayout.setOnClickListener(v1 -> {
+                binding.autocompleteNewLayout.setVisibility(View.GONE);
+            });
+        });
+
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(view.findViewById(R.id.autocomplete_new_fragment).getId());
         Log.d("TravelItineraryFragment", "autocompleteFragment: " + autocompleteFragment);
@@ -224,6 +232,7 @@ public class NewTravelSegment extends Fragment {
             @Override
             public void onError(@NonNull Status status) {
                 Log.d("TravelItineraryFragment", "An error occurred: " + status);
+                binding.autocompleteNewLayout.setVisibility(View.GONE);
             }
 
             @Override
@@ -232,6 +241,7 @@ public class NewTravelSegment extends Fragment {
                 binding.destinationEditText.setText(place.getName());
                 binding.latitudeEditText.setText(String.valueOf(place.getLatLng().latitude));
                 binding.longitudeEditText.setText(String.valueOf(place.getLatLng().longitude));
+                binding.autocompleteNewLayout.setVisibility(View.GONE);
             }
         });
 

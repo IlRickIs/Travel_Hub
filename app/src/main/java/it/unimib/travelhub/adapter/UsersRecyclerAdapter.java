@@ -1,5 +1,6 @@
 package it.unimib.travelhub.adapter;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.model.TravelMember;
+import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.ui.travels.TravelActivity;
 
 public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdapter.ViewHolder> {
@@ -22,16 +24,16 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
     int type;
     String textcolor;
 
-    boolean isTravelActivity;
+    Activity activity;
 
     public interface OnLongButtonClickListener {
         void onLongButtonItemClick(TravelMember travelMember, ImageView seg_long_button);
     }
     private static OnLongButtonClickListener onLongButtonClickListener = null;
 
-    public UsersRecyclerAdapter(List<TravelMember> data, int type, boolean isTravelActivity, String textcolor, OnLongButtonClickListener onLongButtonClickListener) {
+    public UsersRecyclerAdapter(List<TravelMember> data, int type, Activity activity, String textcolor, OnLongButtonClickListener onLongButtonClickListener) {
         UsersRecyclerAdapter.onLongButtonClickListener = onLongButtonClickListener;
-        this.isTravelActivity = isTravelActivity;
+        this.activity = activity;
         this.data = data;
         this.type = type;
         this.textcolor = textcolor;
@@ -47,7 +49,7 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.compact_friend_list_item, parent, false);
         }
-        return new ViewHolder(view, type, isTravelActivity);
+        return new ViewHolder(view, type, activity);
     }
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(data.get(position), textcolor);
@@ -65,11 +67,11 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         ImageView participant_creator;
         int type;
 
-        boolean isTravelActivity;
-        public ViewHolder(@NonNull View itemView, int type, boolean isTravelActivity) {
+        Activity activity;
+        public ViewHolder(@NonNull View itemView, int type, Activity activity) {
             super(itemView);
             this.type = type;
-            this.isTravelActivity = isTravelActivity;
+            this.activity = activity;
             participant_name = itemView.findViewById(R.id.participant_name);
             participant_image = itemView.findViewById(R.id.participant_image);
             participant_creator = itemView.findViewById(R.id.participant_creator_flag);
@@ -82,14 +84,19 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
                 participant_creator.setVisibility(View.VISIBLE);
             }
 
-            if (isTravelActivity){
+            if (activity instanceof TravelActivity){
                 participant_image.setOnLongClickListener(v -> {
-                    Log.d("UsersRecyclerAdapter", "onLongClick: " + travelMember.getUsername());
                     if (((TravelActivity) itemView.getContext()).isTravelCreator && ((TravelActivity) itemView.getContext()).enableEdit){
                         onLongButtonClickListener.onLongButtonItemClick(travelMember, participant_image);
                     }
                     return true;
                 });
+            } else if (activity instanceof AddTravelActivity){
+                participant_image.setOnLongClickListener(v -> {
+                    onLongButtonClickListener.onLongButtonItemClick(travelMember, participant_image);
+                    return true;
+                });
+
             }
 
 

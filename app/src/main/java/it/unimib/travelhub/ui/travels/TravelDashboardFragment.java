@@ -147,7 +147,6 @@ public class TravelDashboardFragment extends Fragment {
 
 
             });
-
         }
         return binding.getRoot();
     }
@@ -188,7 +187,7 @@ public class TravelDashboardFragment extends Fragment {
         RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
-        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, true, "#000000",
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, requireActivity(), "#000000",
                 (travelMember, seg_long_button) -> {
                     PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
                     popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());

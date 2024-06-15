@@ -9,6 +9,7 @@ import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.USERNAME;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -23,12 +24,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -36,7 +40,9 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -52,6 +58,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
+import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
@@ -69,6 +76,8 @@ public class NewTravelFragment extends Fragment {
     private FragmentEditTravelBinding binding;
 
     private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
+
+
 
     private TextBoxesRecyclerAdapter friendTextBoxesRecyclerAdapter;
     private static final String TAG = NewTravelFragment.class.getSimpleName();
@@ -188,6 +197,11 @@ public class NewTravelFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         memberList = new ArrayList<>();
+        TravelMember creator = new TravelMember(TravelMember.Role.CREATOR);
+        creator.setUsername(getLoggedUsername());
+        creator.setIdToken(getLoggedIdToken());
+        memberList.add(creator);
+
         DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR,year);
             myCalendar.set(Calendar.MONTH,month);
@@ -263,30 +277,104 @@ public class NewTravelFragment extends Fragment {
         binding.addDestinationButton.setOnClickListener(v -> {
             updateItem(textBoxesRecyclerAdapter, R.string.destination);
         });*/
-        friendTextBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(friendHintsList, friendTextList, new TextBoxesRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                int actualItems = friendTextBoxesRecyclerAdapter.getItemCount();
-                if (actualItems > 0){
-                    removeItem(friendTextBoxesRecyclerAdapter,position);
-                }
-            }
-            @Override
-            public void onKeyPressed(int position, String text) {
-                friendTextBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
-                friendTextList = friendTextBoxesRecyclerAdapter.getDestinationsTexts(); // Update the list immediately
-            }
-        });
-        LinearLayoutManager friendLayoutManager =
-                new LinearLayoutManager(requireContext(),
-                        LinearLayoutManager.VERTICAL, false);
 
-        binding.recyclerFriends.setLayoutManager(friendLayoutManager);
-        binding.recyclerFriends.setAdapter(friendTextBoxesRecyclerAdapter);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        binding.addFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                @SuppressLint("InflateParams") View view1 = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout_add_participant, null);
+                bottomSheetDialog.setContentView(view1);
+                bottomSheetDialog.show();
 
-        binding.addFriendButton.setOnClickListener(v -> {
-            updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_username);
+                @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button add_participant = view1.findViewById(R.id.button_add_partecipant);
+                @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextInputLayout username = view1.findViewById(R.id.username_text_field);
+
+                add_participant.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if (Objects.requireNonNull(username.getEditText()).getText() == null || username.getEditText().getText().toString().isEmpty()) {
+                            username.setError(getString(R.string.error_empty_username));
+                        }else{
+                            username.setError(null);
+                            userViewModel.isUsernameAlreadyTaken(username.getEditText().getText().toString());
+                            Observer<Result> observer = new Observer<Result>(){
+                                @Override
+                                public void onChanged(Result result) {
+                                    if (result instanceof Result.Error) {
+                                        Log.d(TAG, ((Result.Error) result).getMessage());
+                                        username.setError(((Result.Error) result).getMessage());
+                                    } else {
+                                        User user = ((Result.UserResponseSuccess) result).getData();
+                                        Log.d(TAG, "User found: " + user);
+                                        if (user != null) {
+                                            memberList.add(new TravelMember(user.getUsername(), user.getIdToken(), TravelMember.Role.MEMBER));
+                                            binding.friendsRecyclerView.getAdapter().notifyDataSetChanged();
+                                            Log.d(TAG, "Member list: " + memberList);
+                                            bottomSheetDialog.dismiss();
+                                        } else {
+                                            username.setError(getString(R.string.error_empty_username));
+                                        }
+                                    }
+                                    userViewModel.getIsUsernameAlreadyTaken().removeObserver(this);
+                                }
+                            };
+
+                            userViewModel.getIsUsernameAlreadyTaken().observe(getViewLifecycleOwner(), observer);
+
+                        }
+                    }
+
+                });
+            }
+
+
         });
+
+        RecyclerView recyclerView = binding.friendsRecyclerView;
+        mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(memberList, 2, requireActivity(), "#000000",
+                (travelMember, seg_long_button) -> {
+                    PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
+                    popupMenu.getMenuInflater().inflate(R.menu.edit_travel_member, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(item -> {
+                        // Toast message on menu item clicked
+                        if (item.getItemId() == R.id.delete_member) {
+                            removeUser(travelMember);
+                        }
+                        return true;
+                    });
+                    popupMenu.show();
+                });
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(usersRecyclerAdapter);
+
+
+
+
+//        friendTextBoxesRecyclerAdapter = new TextBoxesRecyclerAdapter(friendHintsList, friendTextList, new TextBoxesRecyclerAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(int position) {
+//                int actualItems = friendTextBoxesRecyclerAdapter.getItemCount();
+//                if (actualItems > 0){
+//                    removeItem(friendTextBoxesRecyclerAdapter,position);
+//                }
+//            }
+//            @Override
+//            public void onKeyPressed(int position, String text) {
+//                friendTextBoxesRecyclerAdapter.getDestinationsTexts().set(position, text);
+//                friendTextList = friendTextBoxesRecyclerAdapter.getDestinationsTexts(); // Update the list immediately
+//            }
+//        });
+//        LinearLayoutManager friendLayoutManager =
+//                new LinearLayoutManager(requireContext(),
+//                        LinearLayoutManager.VERTICAL, false);
+//
+//        binding.recyclerFriends.setLayoutManager(friendLayoutManager);
+//        binding.recyclerFriends.setAdapter(friendTextBoxesRecyclerAdapter);
+//        binding.addFriendButton.setOnClickListener(v -> {
+//            updateItem(friendTextBoxesRecyclerAdapter, R.string.add_friends_username);
+//        });
 
         //make the save button non clickable and make it appear it is not clickable
         mainActivity.findViewById(R.id.button_save_activity).setClickable(false);
@@ -296,19 +384,26 @@ public class NewTravelFragment extends Fragment {
             if(checkNullValues()){
                 return;
             }
-            checkUsers();
-            observeUserRegistration();
+            goToNewFragment(buildTravel());
+        });
+
+        binding.showAutocompleteLocatorLayout.setOnClickListener(v -> {
+            Log.d("TravelItineraryFragment", "autocompleteNewLayout clicked");
+            binding.autocompleteNewLayout.setVisibility(View.VISIBLE);
+            binding.autocompleteNewLayout.setOnClickListener(v1 -> {
+                binding.autocompleteNewLayout.setVisibility(View.GONE);
+            });
         });
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(view.findViewById(R.id.autocomplete_new_fragment).getId());
-        Log.d("TravelItineraryFragment", "autocompleteFragment: " + autocompleteFragment);
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {
                 Log.d("TravelItineraryFragment", "An error occurred: " + status);
+                binding.autocompleteNewLayout.setVisibility(View.GONE);
             }
 
             @Override
@@ -317,61 +412,10 @@ public class NewTravelFragment extends Fragment {
                 binding.departureFormEditText.setText(place.getName());
                 binding.latitudeEditText.setText(String.valueOf(place.getLatLng().latitude));
                 binding.longitudeEditText.setText(String.valueOf(place.getLatLng().longitude));
+                binding.autocompleteNewLayout.setVisibility(View.GONE);
             }
         });
 
-    }
-
-    private void observeUserRegistration() {
-        /*userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()){
-                List<User> users = ((Result.UsersResponseSuccess) result).getData();
-                Log.d(TAG, "user exists: " + users.toString());
-                for(User u : users){
-                    TravelMember member = new TravelMember(u.getUsername(),
-                            u.getIdToken(),
-                            TravelMember.Role.MEMBER);
-                    memberList.add(member);
-                }
-                Travels travel = buildTravel();
-                //travelsViewModel.addTravel(travels);
-                //attachTravelObserver();
-                userViewModel.getIsUserRegistered().removeObservers(getViewLifecycleOwner());
-                goToNewFragment(travel);
-                //detach observer
-            } else {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                        ((Result.Error) result).getMessage(),
-                        Snackbar.LENGTH_SHORT).show();
-            }
-        });*/
-
-        Observer<Result> myObserver = new Observer<Result>() {
-            public void onChanged(Result result) {
-                if(result.isSuccess()){
-                    List<User> users = ((Result.UsersResponseSuccess) result).getData();
-                    Log.d(TAG, "user exists: " + users.toString());
-                    for(User u : users){
-                        TravelMember member = new TravelMember(u.getUsername(),
-                                u.getIdToken(),
-                                TravelMember.Role.MEMBER);
-                        memberList.add(member);
-                    }
-                    Travels travel = buildTravel();
-                    //travelsViewModel.addTravel(travels);
-                    //attachTravelObserver();
-                    userViewModel.getIsUserRegistered().removeObservers(getViewLifecycleOwner());
-                    goToNewFragment(travel);
-                    //detach observer
-                } else {
-                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                            ((Result.Error) result).getMessage(),
-                            Snackbar.LENGTH_SHORT).show();
-                }
-                userViewModel.getIsUserRegistered().removeObserver(this);
-            }
-        };
-        userViewModel.getIsUserRegistered().observe(getViewLifecycleOwner(), myObserver);
     }
 
     private void
@@ -389,30 +433,14 @@ public class NewTravelFragment extends Fragment {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
-    private void checkUsers(){
-        List<String> userToCheck = new ArrayList<>();
-        String firstUser = binding.friendsEmailFormEditText.getText().toString();
-        if(!firstUser.isEmpty() && firstUser != null){
-            if( !firstUser.equals(getLoggedUsername()))
-                userToCheck.add(firstUser);
+    private void removeUser(TravelMember travelMember){
+        if (travelMember.getRole() == TravelMember.Role.CREATOR){
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.cannot_remove_creator), Snackbar.LENGTH_SHORT).show();
+            return;
         }
-        for(String s : friendTextList){
-            if(s != null && !s.isEmpty()) {
-                if( !s.equals(getLoggedUsername()))
-                    userToCheck.add(s);
-            }
-        }
-        if(userToCheck.isEmpty()){
-//            Travels upload = buildTravel();
-//            travelsViewModel.addTravel(upload);
-//            attachTravelObserver();
-            //here we dont need to do anything just build the travel
-            goToNewFragment(buildTravel());
-        }else {
-            Log.d(TAG, "checkUsers: " + userToCheck);
-            userViewModel.checkUsernames(userToCheck);
-        }
+        memberList.remove(travelMember);
+        binding.friendsRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     public Travels buildTravel(){
@@ -436,31 +464,17 @@ public class NewTravelFragment extends Fragment {
         double lng = Double.parseDouble(binding.longitudeEditText.getText().toString());
 
         List<TravelSegment> destinations = buildDestinationsList(departure, lat, lng);
-
-
-        String firstMember = binding.friendsEmailFormEditText.getText().toString();
-        List<TravelMember> members = buildFriendsList();
-
         travel.setId(Long.parseLong(travelId));
         travel.setTitle(title);
         travel.setDescription(description);
         travel.setStartDate(startDate);
         travel.setEndDate(endDate);
         travel.setDestinations(destinations);
-        travel.setMembers(members);
+        travel.setMembers(memberList);
 
         return travel;
     }
 
-    public List<TravelMember> buildFriendsList(){
-        List<TravelMember> members = new ArrayList<>();
-        TravelMember creator = new TravelMember(TravelMember.Role.CREATOR);
-        creator.setUsername(getLoggedUsername());
-        creator.setIdToken(getLoggedIdToken());
-        members.add(creator);
-        members.addAll(memberList);
-        return members;
-    }
     public List <TravelSegment> buildDestinationsList(String departure, double lat, double lng){
         List<TravelSegment> destinations = new ArrayList<>();
         TravelSegment start = new TravelSegment(departure);
@@ -577,7 +591,7 @@ public class NewTravelFragment extends Fragment {
         outState.putStringArrayList(FRIENDS_TEXTS, (ArrayList<String>) friendTextList);
         outState.putStringArrayList(DESTINATIONS_HINTS, (ArrayList<String>) hintsList);
         outState.putStringArrayList(FRIENDS_HINTS, (ArrayList<String>) friendHintsList);
-        outState.putString(FRIEND, binding.friendsEmailFormEditText.getText().toString());
+        //outState.putString(FRIEND, binding.friendsEmailFormEditText.getText().toString());
         //outState.putString(TRAVEL_TITLE, binding.titleFormEditText.getText().toString());
         //outState.putString(TRAVEL_DESCRIPTION, binding.descriptionFormEditText.getText().toString());
     }

@@ -58,24 +58,25 @@
                     tools:ignore="VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/button_forgot_password"
-                android:layout_width="wrap_content"
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
                 android:layout_below="@id/txt_input_layout_pwd"
-                android:layout_alignParentEnd="true"
-                android:text="@string/forgot_password"
-                android:textColor="#0277BD"
-                android:layout_marginVertical="12dp"/>
-
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:indicatorColor="@color/purple_700"
+                app:trackColor="@color/purple_200" />
 
             <Button
                 android:id="@+id/button_login"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/button_forgot_password"
+                android:layout_below="@id/txt_input_layout_pwd"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
+                android:layout_marginTop="12dp"
                 android:text="@string/login" />
 
             <RelativeLayout
@@ -154,17 +155,6 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/textview_new_account"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textview_new_account" />
-
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:indicatorColor="@color/purple_700"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:trackColor="@color/purple_200" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

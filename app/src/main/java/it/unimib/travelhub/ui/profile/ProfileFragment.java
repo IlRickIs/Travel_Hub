@@ -13,20 +13,35 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.adapter.TravelRecyclerAdapter;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentProfileBinding;
 import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
+import it.unimib.travelhub.ui.main.MainActivity;
+import it.unimib.travelhub.ui.travels.TravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
@@ -45,7 +60,6 @@ public class ProfileFragment extends Fragment {
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
     private TravelsViewModel travelsViewModel;
-
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -101,8 +115,6 @@ public class ProfileFragment extends Fragment {
         binding.textViewUsername.setText(username);
         binding.textViewName.setText(name);
         binding.textViewSurname.setText(surname);
-
-
         return binding.getRoot();
     }
 
@@ -116,12 +128,13 @@ public class ProfileFragment extends Fragment {
         }
 
         //List<Travels> runningTravelsList = getOngoingTravelsListWithGSon();
+        List<Travels> runningTravelsList = new ArrayList<Travels>();
 
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
-                        binding.textViewTravelNumber.setText(String.valueOf(travelsResponse.getOnGoingTravelList().size()));
+                        binding.textViewTravelNumber.setText(String.valueOf(travelsResponse.getTravelsList().size()));
                         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                             @Override
                             public void onTabSelected(TabLayout.Tab tab) {
@@ -143,15 +156,39 @@ public class ProfileFragment extends Fragment {
                                 getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
                     }
                 });
+        FrameLayout standardBottomSheet = binding.profileBottomSheet;
+        BottomSheetBehavior<View> standardBottomSheetBehavior = BottomSheetBehavior.from(standardBottomSheet);
+        binding.buttonMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+                View view1 = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout_profile, null);
+                bottomSheetDialog.setContentView(view1);
+                bottomSheetDialog.show();
 
-        binding.buttonMenu.setOnClickListener(view1 -> {
-            Intent intent = new Intent(requireContext(), SettingsActivity.class);
-            startActivity(intent);
+                MaterialButton button_settings = view1.findViewById(R.id.button_settings);
+
+                MainActivity mainActivity = (MainActivity) requireActivity();
+                ViewPager2 viewPager2 = mainActivity.findViewById(R.id.viewPagerMain);
+
+                button_settings.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(requireContext(), SettingsActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+
+            }
         });
 
     }
     public void onDestroy() {
         super.onDestroy();
         binding = null;
+    }
+    private void getTravels(){
+
     }
 }

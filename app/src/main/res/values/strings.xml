@@ -233,12 +233,14 @@
 
     <!--Personal Information-->
     <string name="personal_info_saved">Personal information saved correctly</string>
-    <string name="title_activity_maps">MapsActivity</string>
+    <string name="title_activity_maps" translatable="false">MapsActivity</string>
     <string name="username_error">Username is required</string>
     <string name="change_profile_photo">Change profile photo</string>
     <string name="take_a_picture">Take a picture</string>
     <string name="choose_from_gallery">Choose from gallery</string>
     <string name="error_upload_image">Error while uploading image</string>
+    <string name="cannot_remove_creator">You can not remove the Creator of the Travel</string>
+    <string name="select_location">Select Location</string>
 
 
 </resources>
