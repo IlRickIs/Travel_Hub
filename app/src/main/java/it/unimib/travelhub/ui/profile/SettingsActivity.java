@@ -77,11 +77,6 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d(TAG, "Error taking picture " + result.getResultCode());
                         return;
                     }
-                    Intent intent = result.getData();
-                    if(intent == null){
-                        Log.d(TAG, "Intent is null");
-                        return;
-                    }
                     displayPicture(capturedImageUri, binding.personalInfoImage);
                     imageUri = compressAndSaveToFile(capturedImageUri, tempProfileImagePath);
                     isImageChanged = true;
