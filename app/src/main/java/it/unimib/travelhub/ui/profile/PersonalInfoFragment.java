@@ -1,5 +1,5 @@
 package it.unimib.travelhub.ui.profile;
-
+//TODO: DELETE THIS FILE is in SettingsActivity
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
