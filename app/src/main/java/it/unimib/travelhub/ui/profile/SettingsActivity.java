@@ -17,7 +17,6 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -83,8 +82,8 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.d(TAG, "Intent is null");
                         return;
                     }
-                    Uri uri = compressAndSaveToFile(capturedImageUri, tempProfileImagePath);
-                    displayPicture(uri, binding.personalInfoImage);
+                    displayPicture(capturedImageUri, binding.personalInfoImage);
+                    imageUri = compressAndSaveToFile(capturedImageUri, tempProfileImagePath);
                     isImageChanged = true;
                 }
             });
@@ -94,8 +93,8 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(Uri uri) {
                     if (uri != null) {
-                        Uri tempUri = compressAndSaveToFile(uri, null);
-                        displayPicture(tempUri, binding.personalInfoImage);
+                        displayPicture(uri, binding.personalInfoImage);
+                        imageUri = compressAndSaveToFile(uri, null);
                         isImageChanged = true;
                     } else {
                         Log.d(TAG, "No image selected");
@@ -130,7 +129,7 @@ public class SettingsActivity extends AppCompatActivity {
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        dir = getApplicationContext().getFilesDir() + PICS_FOLDER;
+        dir = this.getFilesDir() + PICS_FOLDER;
         profileImagePath = dir + PROFILE_PICTURE_FILE_NAME;
         tempProfileImagePath = dir + PROFILE_PICTURE_TEMP_FILE_NAME;
 
@@ -141,13 +140,6 @@ public class SettingsActivity extends AppCompatActivity {
         userViewModel = new ViewModelProvider(
                 this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
-        binding.buttonBack.setOnClickListener(v -> {
-            finish();
-            this.getOnBackPressedDispatcher().onBackPressed();
-        });
-    }
-
-    public void onViewCreated(@NonNull View view) {
         imageUri = null;
         isImageChanged = false;
 
@@ -160,20 +152,17 @@ public class SettingsActivity extends AppCompatActivity {
         };
 
         binding.textEditBirth.setOnClickListener(v -> {
-            if (getApplicationContext() != null)
-                if (Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().isEmpty()) {
-                    new DatePickerDialog(getApplicationContext(), date1,
-                            myCalendar.get(Calendar.YEAR),
-                            myCalendar.get(Calendar.MONTH),
-                            myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                } else {
-                    new DatePickerDialog(getApplicationContext(), date1,
-                            Integer.parseInt(Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().split("/")[2]),
-                            Integer.parseInt(Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().split("/")[1]) - 1,
-                            Integer.parseInt(Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().split("/")[0])).show();
-                }
-            else
-                Log.e(TAG, "Unexpected error: Context is null");
+            if (Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().isEmpty()) {
+                new DatePickerDialog(this, date1,
+                        myCalendar.get(Calendar.YEAR),
+                        myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            } else {
+                new DatePickerDialog(this, date1,
+                        Integer.parseInt(Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().split("/")[2]),
+                        Integer.parseInt(Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().split("/")[1]) - 1,
+                        Integer.parseInt(Objects.requireNonNull(binding.textFieldBirth.getEditText()).getText().toString().split("/")[0])).show();
+            }
         });
 
         try {
@@ -237,10 +226,10 @@ public class SettingsActivity extends AppCompatActivity {
                             } catch (GeneralSecurityException | IOException e) {
                                 e.printStackTrace();
                             }
-                            Navigation.findNavController(view).navigate(R.id.action_personalInfoFragment_to_welcomeActivity);
+                            Navigation.findNavController(findViewById(android.R.id.content)).navigate(R.id.action_personalInfoFragment_to_welcomeActivity);
                             this.finish();
                         } else {
-                            Snackbar.make(view,
+                            Snackbar.make(findViewById(android.R.id.content),
                                     this.getString(R.string.unexpected_error),
                                     Snackbar.LENGTH_SHORT).show();
                         }
@@ -261,7 +250,7 @@ public class SettingsActivity extends AppCompatActivity {
                 saveUserDataRemote();
             } else {
                 Log.d(TAG, "Nothing is changed");
-                Snackbar.make(view,
+                Snackbar.make(findViewById(android.R.id.content),
                         R.string.personal_info_saved,
                         Snackbar.LENGTH_SHORT).show();
             }
@@ -275,12 +264,8 @@ public class SettingsActivity extends AppCompatActivity {
             bottomSheetDialog.show();
 
             view1.findViewById(R.id.button_take_picture).setOnClickListener(v1 -> {
-                if (getApplicationContext() == null) {
-                    Log.e(TAG, "Unexpected error: Context is null");
-                    return;
-                }
                 if(ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.CAMERA) ==
+                        this, Manifest.permission.CAMERA) ==
                         PackageManager.PERMISSION_GRANTED) {
 
                     isCameraPermissionGranted = true;
@@ -295,8 +280,8 @@ public class SettingsActivity extends AppCompatActivity {
                     Log.e(TAG, "Unexpected error: File is null");
                     return;
                 }
-                capturedImageUri = FileProvider.getUriForFile(getApplicationContext(),
-                        getApplicationContext().getApplicationContext().getPackageName() + ".provider",
+                capturedImageUri = FileProvider.getUriForFile(this,
+                        this.getPackageName() + ".provider",
                         profileImage);
 
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -314,6 +299,11 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         binding.buttonBack.setOnClickListener(v -> this.getOnBackPressedDispatcher().onBackPressed());
+
+        binding.buttonBack.setOnClickListener(v -> {
+            finish();
+            this.getOnBackPressedDispatcher().onBackPressed();
+        });
     }
 
 
@@ -468,7 +458,7 @@ public class SettingsActivity extends AppCompatActivity {
         createTempImageFile(dir);
         Bitmap bitmap = path != null ?
                 BitmapFactory.decodeFile(path) :
-                BitmapFactory.decodeFile(getRealPathFromURI(getApplicationContext(), uri));
+                BitmapFactory.decodeFile(getRealPathFromURI(this, uri));
 
         try (FileOutputStream out = new FileOutputStream(tempProfileImagePath)) {
             bitmap.compress(Bitmap.CompressFormat.WEBP, 20, out);
