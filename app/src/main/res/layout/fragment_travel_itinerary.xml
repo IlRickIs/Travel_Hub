@@ -8,6 +8,7 @@
     tools:context=".ui.travels.TravelItineraryFragment"
     >
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/segments_recycler_view"
         android:layout_width="match_parent"

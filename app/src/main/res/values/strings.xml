@@ -14,11 +14,11 @@
     <string name="add_nav">Add</string>
 
     <string name="forgot_password">Forgot password?</string>
-    <string name="login">login</string>
+    <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="logout_message">Are you sure you want to logout?</string>
     <string name="txt_or">or</string>
-    <string name="google_login">login with Google</string>
+    <string name="google_login">Login with Google</string>
     <string name="register">Register</string>
     <string name="new_account">New to Travel Hub?</string>
 
@@ -233,6 +233,7 @@
 
     <!--Personal Information-->
     <string name="personal_info_saved">Personal information saved correctly</string>
+    <string name="title_activity_maps">MapsActivity</string>
     <string name="username_error">Username is required</string>
     <string name="change_profile_photo">Change profile photo</string>
     <string name="take_a_picture">Take a picture</string>

@@ -22,10 +22,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -85,6 +92,9 @@ public class NewTravelSegment extends Fragment {
                     requireActivity(),
                     new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
         }
+
+        Places.initialize(requireContext(), "AIzaSyCFJYe15Sn6wp0A8yYWl3qv8t5pHsxaYUU");
+        PlacesClient placesClient = Places.createClient(requireContext());
     }
 
     @Override
@@ -124,6 +134,7 @@ public class NewTravelSegment extends Fragment {
 
 
 
+
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -147,8 +158,6 @@ public class NewTravelSegment extends Fragment {
                 alert11.show();
             }
         });
-
-
         return binding.getRoot();
     }
 
@@ -205,6 +214,28 @@ public class NewTravelSegment extends Fragment {
                                 Integer.parseInt(binding.toEditText.getText().toString().split("/")[0])).show();
         });
 
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager().findFragmentById(view.findViewById(R.id.autocomplete_new_fragment).getId());
+        Log.d("TravelItineraryFragment", "autocompleteFragment: " + autocompleteFragment);
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.d("TravelItineraryFragment", "An error occurred: " + status);
+            }
+
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Log.d("TravelItineraryFragment", "Place: " + place.getLatLng());
+                binding.destinationEditText.setText(place.getName());
+                binding.latitudeEditText.setText(String.valueOf(place.getLatLng().latitude));
+                binding.longitudeEditText.setText(String.valueOf(place.getLatLng().longitude));
+            }
+        });
+
+
         saveTravelBtn.setOnClickListener(v -> {
             if(checkNulls()){
                 return;
@@ -225,6 +256,9 @@ public class NewTravelSegment extends Fragment {
         travelSegment.setDescription(binding.descriptionEditText.getText().toString());
         String dateFrom = binding.fromEditText.getText().toString() + " 00:00:00";
         String dateTo = binding.toEditText.getText().toString() + " 23:59:59";
+
+        travelSegment.setLatLng(Double.parseDouble(binding.latitudeEditText.getText().toString()),
+                Double.parseDouble(binding.longitudeEditText.getText().toString()));
         //TODO: what if the date is empty?
         travelSegment.setDateFrom(parseStringToDate(dateFrom));
         travelSegment.setDateTo(parseStringToDate(dateTo));

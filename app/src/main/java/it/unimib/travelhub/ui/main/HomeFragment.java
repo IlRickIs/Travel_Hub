@@ -166,6 +166,7 @@ public class HomeFragment extends Fragment {
 
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
             result -> {
+                binding.homeProgressBar.setVisibility(View.GONE);
                 if (result.isSuccess()) {
                     Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
                     travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
@@ -278,7 +279,7 @@ public class HomeFragment extends Fragment {
         binding.homeLayoutOther.setVisibility(View.VISIBLE);
 
         binding.homeCardOther.setOnClickListener(v -> {
-            Intent intentOtherTravel = new Intent(getActivity(), AddTravelActivity.class);
+            Intent intentOtherTravel = new Intent(getActivity(), TravelActivity.class);
             intentOtherTravel.putExtra("travel", futureTravel);
             startActivity(intentOtherTravel);
         });

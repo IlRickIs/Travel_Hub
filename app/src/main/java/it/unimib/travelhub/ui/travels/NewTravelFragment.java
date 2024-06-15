@@ -30,6 +30,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -37,6 +43,7 @@ import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -134,6 +141,9 @@ public class NewTravelFragment extends Fragment {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
+
+        Places.initialize(requireContext(), "AIzaSyCFJYe15Sn6wp0A8yYWl3qv8t5pHsxaYUU");
+        PlacesClient placesClient = Places.createClient(requireContext());
     }
 
     @Override
@@ -290,6 +300,26 @@ public class NewTravelFragment extends Fragment {
             observeUserRegistration();
         });
 
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager().findFragmentById(view.findViewById(R.id.autocomplete_new_fragment).getId());
+        Log.d("TravelItineraryFragment", "autocompleteFragment: " + autocompleteFragment);
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.d("TravelItineraryFragment", "An error occurred: " + status);
+            }
+
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Log.d("TravelItineraryFragment", "Place: " + place.getLatLng());
+                binding.departureFormEditText.setText(place.getName());
+                binding.latitudeEditText.setText(String.valueOf(place.getLatLng().latitude));
+                binding.longitudeEditText.setText(String.valueOf(place.getLatLng().longitude));
+            }
+        });
+
     }
 
     private void observeUserRegistration() {
@@ -402,7 +432,11 @@ public class NewTravelFragment extends Fragment {
         }
 
         String departure = binding.departureFormEditText.getText().toString();
-        List<TravelSegment> destinations = buildDestinationsList(departure);
+        double lat = Double.parseDouble(binding.latitudeEditText.getText().toString());
+        double lng = Double.parseDouble(binding.longitudeEditText.getText().toString());
+
+        List<TravelSegment> destinations = buildDestinationsList(departure, lat, lng);
+
 
         String firstMember = binding.friendsEmailFormEditText.getText().toString();
         List<TravelMember> members = buildFriendsList();
@@ -427,9 +461,11 @@ public class NewTravelFragment extends Fragment {
         members.addAll(memberList);
         return members;
     }
-    public List <TravelSegment> buildDestinationsList(String departure){
+    public List <TravelSegment> buildDestinationsList(String departure, double lat, double lng){
         List<TravelSegment> destinations = new ArrayList<>();
         TravelSegment start = new TravelSegment(departure);
+
+        start.setLatLng(lat, lng);
         start.setDateTo(parseStringToDate(binding.editTxtFromForm.getText().toString() + " 00:00:00"));
         destinations.add(start);
         return destinations;

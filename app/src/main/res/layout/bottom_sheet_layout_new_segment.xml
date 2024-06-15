@@ -31,17 +31,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Località"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/seg_add_title"
             app:startIconDrawable="@drawable/baseline_location_on_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/seg_location_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/seg_location_text_field"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/seg_date_from_text_field"
@@ -51,7 +61,7 @@
             android:hint="Partenza"
             app:layout_constraintEnd_toStartOf="@id/seg_date_to_text_field"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seg_location_text_field"
+            app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -73,7 +83,7 @@
             android:hint="Ritorno"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/seg_date_from_text_field"
-            app:layout_constraintTop_toBottomOf="@+id/seg_location_text_field"
+            app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -84,7 +94,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:textColorHint="#546E7A"
-                app:helperTextEnabled="false"/>
+                app:helperTextEnabled="false" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
