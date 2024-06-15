@@ -81,7 +81,6 @@
                         android:id="@+id/home_ongoing_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/primaryColor"
                         android:cropToPadding="false"
                         android:scaleType="centerCrop"
                         android:tintMode="src_over"
@@ -102,7 +101,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                            android:textColor="@color/onPrimaryColor"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -114,9 +112,7 @@
                             android:layout_marginTop="6dp"
                             android:drawableLeft="@drawable/baseline_airplane_ticket_24"
                             android:drawablePadding="4dp"
-                            android:drawableTint="@color/secondaryColor"
                             android:gravity="center"
-                            android:textColor="@color/onPrimaryColor"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/home_ongoing_title" />
 
@@ -127,9 +123,7 @@
                             android:layout_marginTop="6dp"
                             android:drawableLeft="@drawable/baseline_calendar_month_24"
                             android:drawablePadding="4dp"
-                            android:drawableTint="@color/secondaryColor"
                             android:gravity="center"
-                            android:textColor="@color/onPrimaryColor"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/home_ongoing_location" />
 
@@ -140,8 +134,6 @@
                             android:layout_marginTop="6dp"
                             android:drawableLeft="@drawable/baseline_map_24"
                             android:drawablePadding="4dp"
-                            android:drawableTint="@color/secondaryColor"
-                            android:textColor="@color/onPrimaryColor"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/home_ongoing_dates" />
 
@@ -198,7 +190,6 @@
                             android:id="@+id/home_ongoing_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:backgroundTint="@color/secondaryColor"
                             android:text="Vai al Viaggio"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -216,7 +207,6 @@
                     android:layout_height="150dp"
                     android:layout_marginHorizontal="12dp"
                     android:layout_marginTop="12dp"
-                    app:cardBackgroundColor="@color/primaryVariantColor"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -249,7 +239,6 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="viewStart"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                            android:textColor="@color/onPrimaryColor"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -259,7 +248,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="0dp"
-                            android:backgroundTint="@color/secondaryColor"
                             android:minWidth="0dp"
                             android:text="Crea un viaggio"
                             android:textStyle="bold"
@@ -286,7 +274,6 @@
                         android:layout_height="wrap_content"
                         android:text="Altri viaggi"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/primaryVariantColor"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -302,7 +289,6 @@
                         android:minHeight="0dp"
                         android:padding="0dp"
                         android:text="Vedi tutti"
-                        android:textColor="@color/blue"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

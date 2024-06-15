@@ -27,7 +27,6 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="@drawable/baseline_location_on_24"
-                    android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

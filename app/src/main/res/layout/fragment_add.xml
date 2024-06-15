@@ -38,8 +38,7 @@
                 android:layout_height="1dp"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="24dp"
-                android:layout_toStartOf="@id/textview_or"
-                android:background="@color/grey_separator" />
+                android:layout_toStartOf="@id/textview_or"/>
 
             <TextView
                 android:id="@+id/textview_or"
@@ -55,8 +54,7 @@
                 android:layout_height="1dp"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="24dp"
-                android:layout_toEndOf="@id/textview_or"
-                android:background="@color/grey_separator" />
+                android:layout_toEndOf="@id/textview_or"/>
 
 
 
