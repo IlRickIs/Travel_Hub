@@ -54,11 +54,36 @@
 
     <!-- Travel -->
 
+    <string name="travel_tab_dashboard">Dashboard</string>
+    <string name="travel_tab_itinerary">Itinerary</string>
+
+    <string name="travel_title">Title*</string>
+    <string name="travel_title_hint">Title</string>
     <string name="travel_no_description">Scrivi una descrizione del tuo viaggio. Raccontaci qualcosa a riguardo!</string>
+    <string name="travel_edit">Edit Travel</string>
+    <string name="travel_delete">Delete Travel</string>
+    <string name="travel_departure">Departure</string>
+    <string name="travel_departure_hint">Departure</string>
+    <string name="add_travel">Add Travel</string>
+    <string name="travel_no_title">Travel has no title</string>
+    <string name="travel_description_hint">Descriprion</string>
+    <string name="travel_duration">Duration</string>
+    <string name="travel_progress">Progress</string>
+    <string name="travel_participants">Participants</string>
+    <string name="travel_description">Description</string>
+
+    <string name="travel_segment_number">Destinations</string>
+    <string name="travel_segment_no_date">No date</string>
+
+
+    <string name="error_delete_participant">Error deleting participant, cannot delete the travel Creator</string>
+
+
+    <!-- Travel -->
+
 
 
     <string name="subscription">Subscription</string>
-
     <string name="settings">Settings</string>
     <string name="general">General</string>
     <string name="theme">Theme</string>
@@ -72,13 +97,14 @@
     <string name="saveSettings">Save Settings</string>
 
     <string name="privacyAndSecurity">Privacy and Security</string>
-
     <string name="privacyPolicy" translatable="false">Privacy Policy</string>
     <string name="privacyPolicyText" translatable="false">
         Last updated: January 31, 2024
         \nThis Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.
         \n\nWe use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the Free Privacy Policy Generator.
     </string>
+
+
 
     <string name="interpretationAndDefinitions" translatable="false">Interpretation and Definitions</string>
     <string name="interpretation" translatable="false">Interpretation</string>
@@ -134,12 +160,13 @@
     <string name="map_preview">Map preview</string>
 
     <string name="ongoing_travel">Ongoing Travel</string>
+    <string name="ongoing_travels">Ongoing Travels</string>
+
+    <string name="terminated_travel">Past Travel</string>
+    <string name="terminated_travels">Past Travels</string>
+
     <string name="other_travels">Other Travels</string>
-    <string name="travel_description" translatable="false">
-        Welcome to the beautiful land of Salvador, a charming destination for a beach vacation that will take your breath away. Located along the northeastern coast of Brazil, Salvador is a vibrant and colorful city, rich in culture, history, and of course, beautiful beaches.
-        \n\nImagine waking up to the sound of waves gently crashing on the golden sand. Your day begins with a stroll along the beach as the sun rises on the horizon, painting the sky with shades of pink and orange. Salvadors beaches are spectacular, with kilometers of fine sand and crystal-clear waters that invite you to relax and enjoy the tropical sun.
-        \n\nAfter a morning of beachside relaxation, immerse yourself in Salvadors lively culture. Explore the historic center, declared a UNESCO World Heritage Site, and wander through narrow cobblestone streets lined with charming colorful colonial buildings. Stop for an authentic Brazilian meal at one of the local restaurants, where you can savor delicacies like moqueca, a delicious fish stew made with the freshest ingredients.
-       </string>
+
 
 
     <string name="dash">-</string>
@@ -211,5 +238,6 @@
     <string name="take_a_picture">Take a picture</string>
     <string name="choose_from_gallery">Choose from gallery</string>
     <string name="error_upload_image">Error while uploading image</string>
+
 
 </resources>

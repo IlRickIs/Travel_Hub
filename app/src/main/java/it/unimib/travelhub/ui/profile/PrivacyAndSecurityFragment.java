@@ -1,4 +1,4 @@
-package it.unimib.travelhub.ui.main.profile;
+package it.unimib.travelhub.ui.profile;
 
 import android.os.Bundle;
 
