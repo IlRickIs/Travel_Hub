@@ -29,7 +29,7 @@ import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
 
-public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource{
+public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
 
     private final SharedPreferencesUtil sharedPreferencesUtil;
     private final DatabaseReference databaseReference;

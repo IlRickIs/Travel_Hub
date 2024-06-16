@@ -3,6 +3,7 @@ package it.unimib.travelhub.ui.welcome;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;

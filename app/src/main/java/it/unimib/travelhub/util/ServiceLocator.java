@@ -12,8 +12,10 @@ import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.data.repository.travels.TravelsRepository;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.repository.user.UserRepository;
+import it.unimib.travelhub.data.source.BaseRemoteFileStorageSource;
 import it.unimib.travelhub.data.source.BaseTravelsLocalDataSource;
 import it.unimib.travelhub.data.source.BaseTravelsRemoteDataSource;
+import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.data.source.TravelsLocalDataSource;
 import it.unimib.travelhub.data.source.TravelsMockRemoteDataSource;
 import it.unimib.travelhub.data.source.TravelsRemoteDataSource;
@@ -57,9 +59,10 @@ public class ServiceLocator {
         BaseUserDataRemoteDataSource userDataRemoteDataSource =
                 new UserRemoteFirestoreDataSource(sharedPreferencesUtil);
 
+        BaseRemoteFileStorageSource remoteFileStorageSource = new RemoteFileStorageSource(sharedPreferencesUtil);
 
         return new UserRepository(userRemoteAuthenticationDataSource,
-                userDataRemoteDataSource);
+                userDataRemoteDataSource, remoteFileStorageSource);
     }
 
     public ITravelsRepository getTravelsRepository(Application application) {

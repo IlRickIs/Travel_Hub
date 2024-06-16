@@ -1,10 +1,10 @@
 package it.unimib.travelhub.data.repository.user;
 
-import androidx.lifecycle.LiveData;
+import android.net.Uri;
+
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.Set;
-
+import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
@@ -23,7 +23,8 @@ public interface IUserRepository {
 
     MutableLiveData<Result> isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
 
-    MutableLiveData<Result> updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback);
+    void updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback);
+    void uploadProfileImage(String remotePath, Uri imageUri, RemoteFileStorageSource.uploadCallback uploadCallback);
 
     void isGoogleUserAlreadyRegistered(User user, UserAuthenticationRemoteDataSource.GoogleUserCallback callback);
 }

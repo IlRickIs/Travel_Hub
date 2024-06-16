@@ -68,6 +68,9 @@ import static it.unimib.travelhub.util.Constants.INVALID_USER_ERROR;
 import static it.unimib.travelhub.util.Constants.PASSWORD;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.USERNAME;
+import static it.unimib.travelhub.util.Constants.USER_BIRTHDATE;
+import static it.unimib.travelhub.util.Constants.USER_NAME;
+import static it.unimib.travelhub.util.Constants.USER_SURNAME;
 
 import it.unimib.travelhub.GlobalClass;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
@@ -351,15 +354,15 @@ public class LoginFragment extends Fragment {
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN, idToken);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
-                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name", name);
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USER_NAME, name);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
-                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname", surname);
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USER_SURNAME, surname);
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
             if (birthdate != null)
                 dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
-                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate", sdf.format(new Date(birthdate)));
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USER_BIRTHDATE, sdf.format(new Date(birthdate)));
             else dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
-                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_birthDate", null);
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USER_BIRTHDATE, null);
 
 
         } catch (GeneralSecurityException | IOException e) {

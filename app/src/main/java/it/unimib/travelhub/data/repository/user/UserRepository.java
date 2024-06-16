@@ -1,9 +1,13 @@
 package it.unimib.travelhub.data.repository.user;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import it.unimib.travelhub.data.source.BaseRemoteFileStorageSource;
+import it.unimib.travelhub.data.source.RemoteFileStorageCallback;
+import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
@@ -11,25 +15,26 @@ import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 
-public class UserRepository implements IUserRepository, UserResponseCallback{
+public class UserRepository implements IUserRepository, UserResponseCallback, RemoteFileStorageCallback {
 
     private static final String TAG = UserRepository.class.getSimpleName();
 
     private final BaseUserAuthenticationRemoteDataSource userRemoteDataSource;
     private final BaseUserDataRemoteDataSource userDataRemoteDataSource;
+    private final BaseRemoteFileStorageSource remoteFileStorageSource;
     private final MutableLiveData<Result> userMutableLiveData;
     private final MutableLiveData<Result> userPreferencesMutableLiveData;
 
     public UserRepository
-            (
-                          BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
-                          BaseUserDataRemoteDataSource userDataRemoteDataSource
-
-            ) {
+            (BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
+             BaseUserDataRemoteDataSource userDataRemoteDataSource,
+             BaseRemoteFileStorageSource remoteFileStorageSource) {
         this.userRemoteDataSource = userRemoteDataSource;
         this.userDataRemoteDataSource = userDataRemoteDataSource;
+        this.remoteFileStorageSource = remoteFileStorageSource;
         this.userRemoteDataSource.setUserResponseCallback(this);
         this.userDataRemoteDataSource.setUserResponseCallback(this);
+        this.remoteFileStorageSource.setRemoteFileStorageCallback(this);
         this.userMutableLiveData = new MutableLiveData<>();
         this.userPreferencesMutableLiveData = new MutableLiveData<>();
     }
@@ -107,11 +112,14 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         return userMutableLiveData;
     }
     @Override
-    public MutableLiveData<Result> updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback) {
+    public void updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback) {
         userDataRemoteDataSource.updateUserData(user, userCallback);
-        return userMutableLiveData;
     }
 
+    @Override
+    public void uploadProfileImage(String remotePath, Uri imageUri, RemoteFileStorageSource.uploadCallback uploadCallback) {
+        remoteFileStorageSource.upload(remotePath, imageUri, uploadCallback);
+    }
 
     @Override
     public void onSuccessFromAuthentication(User user) {
@@ -155,5 +163,23 @@ public class UserRepository implements IUserRepository, UserResponseCallback{
         userRemoteDataSource.isGoogleUserRegistered(user, callback);
     }
 
+    @Override
+    public void onSuccessProfileImageUpload(String downloadUrl, User user) {
 
+    }
+
+    @Override
+    public void onSuccessDownload(String filePath) {
+
+    }
+
+    @Override
+    public void onSuccessDelete() {
+
+    }
+
+    @Override
+    public void onFailure(Exception exception) {
+
+    }
 }
