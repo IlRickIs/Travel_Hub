@@ -153,6 +153,11 @@ public class NewTravelFragment extends Fragment {
 
         Places.initialize(requireContext(), "AIzaSyCFJYe15Sn6wp0A8yYWl3qv8t5pHsxaYUU");
         PlacesClient placesClient = Places.createClient(requireContext());
+        memberList = new ArrayList<>();
+        TravelMember creator = new TravelMember(TravelMember.Role.CREATOR);
+        creator.setUsername(getLoggedUsername());
+        creator.setIdToken(getLoggedIdToken());
+        memberList.add(creator);
     }
 
     @Override
@@ -196,11 +201,7 @@ public class NewTravelFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        memberList = new ArrayList<>();
-        TravelMember creator = new TravelMember(TravelMember.Role.CREATOR);
-        creator.setUsername(getLoggedUsername());
-        creator.setIdToken(getLoggedIdToken());
-        memberList.add(creator);
+
 
         DatePickerDialog.OnDateSetListener date1 = (v, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR,year);

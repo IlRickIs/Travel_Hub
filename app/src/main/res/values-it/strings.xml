@@ -19,7 +19,7 @@
     <string name="logout">Logout</string>
     <string name="logout_message">Sei sicuro di voler uscire?</string>
     <string name="txt_or">or</string>
-    <string name="google_login">Login with Google</string>
+    <string name="google_login">Accedi con Google</string>
     <string name="register">Register</string>
     <string name="new_account">New to Travel Hub?</string>
 
@@ -133,13 +133,14 @@
 
     <!--Personal info-->
     <string name="personal_info_saved">Informazioni personali salvate correttamente</string>
-    <string name="cannot_remove_creator">You can not remove the Creator of the Travel</string>
-    <string name="select_location">Select Location</string>
     <string name="username_error">Username è obbligatorio</string>
     <string name="change_profile_photo">Cambia foto profilo</string>
     <string name="take_a_picture">Scatta una foto</string>
     <string name="choose_from_gallery">Scegli dalla galleria</string>
     <string name="error_upload_image">Errore aggiornando l\'immagine</string>
+    <string name="cannot_remove_creator">You can not remove Creator of the Travel</string>
+    <string name="select_location">Select Location</string>
+    <string name="travel_participants">Participants</string>
     <string name="add">Add</string>
 
 

@@ -104,8 +104,6 @@
         \n\nWe use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the Free Privacy Policy Generator.
     </string>
 
-
-
     <string name="interpretationAndDefinitions" translatable="false">Interpretation and Definitions</string>
     <string name="interpretation" translatable="false">Interpretation</string>
     <string name="interpretationText" translatable="false">
@@ -160,11 +158,6 @@
     <string name="map_preview">Map preview</string>
 
     <string name="ongoing_travel">Ongoing Travel</string>
-    <string name="ongoing_travels">Ongoing Travels</string>
-
-    <string name="terminated_travel">Past Travel</string>
-    <string name="terminated_travels">Past Travels</string>
-
     <string name="other_travels">Other Travels</string>
 
 
@@ -233,13 +226,12 @@
 
     <!--Personal Information-->
     <string name="personal_info_saved">Personal information saved correctly</string>
-    <string name="title_activity_maps" translatable="false">MapsActivity</string>
     <string name="username_error">Username is required</string>
     <string name="change_profile_photo">Change profile photo</string>
     <string name="take_a_picture">Take a picture</string>
     <string name="choose_from_gallery">Choose from gallery</string>
     <string name="error_upload_image">Error while uploading image</string>
-    <string name="cannot_remove_creator">You can not remove the Creator of the Travel</string>
+    <string name="cannot_remove_creator">You can not remove Creator of the Travel</string>
     <string name="select_location">Select Location</string>
 
     <!--Design-->
@@ -247,5 +239,6 @@
     <string name="star_desc" translatable="false">Creator</string>
     <string name="add">Add</string>
 
+    <string name="travel_participants">Participants</string>
 
 </resources>
