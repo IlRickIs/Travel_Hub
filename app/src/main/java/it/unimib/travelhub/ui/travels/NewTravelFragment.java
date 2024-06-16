@@ -153,7 +153,6 @@ public class NewTravelFragment extends Fragment {
 
         Places.initialize(requireContext(), "AIzaSyCFJYe15Sn6wp0A8yYWl3qv8t5pHsxaYUU");
         PlacesClient placesClient = Places.createClient(requireContext());
-
         memberList = new ArrayList<>();
         TravelMember creator = new TravelMember(TravelMember.Role.CREATOR);
         creator.setUsername(getLoggedUsername());
@@ -420,7 +419,8 @@ public class NewTravelFragment extends Fragment {
 
     }
 
-    private void goToNewFragment(Travels travel){
+    private void
+    goToNewFragment(Travels travel){
         Bundle bundle = new Bundle();
         bundle.putSerializable("travel", travel);
 

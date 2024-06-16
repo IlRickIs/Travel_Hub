@@ -3,6 +3,5 @@
     <item
         android:id="@+id/delete_segment"
         android:icon="@drawable/baseline_delete_24"
-        android:title="Elimina Destinazione"
-        android:iconTint="@color/black"/>
+        android:title="Elimina Destinazione"/>
 </menu>

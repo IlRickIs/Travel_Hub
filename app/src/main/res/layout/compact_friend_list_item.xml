@@ -50,10 +50,10 @@
         android:layout_height="15dp"
         android:visibility="gone"
         android:elevation="2dp"
+        app:tint="@color/md_theme_primaryFixed"
         app:layout_constraintEnd_toEndOf="@+id/cardView2"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_stars_24"
-        app:tint="@color/secondaryColor" />
+        app:srcCompat="@drawable/baseline_stars_24"/>
 
     <TextView
         android:id="@+id/participant_name"
@@ -61,7 +61,6 @@
         android:layout_height="match_parent"
         android:text="miaomiaomiaomiao"
         android:textAlignment="center"
-        android:textColor="@color/onBackgroundColor"
         android:textSize="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

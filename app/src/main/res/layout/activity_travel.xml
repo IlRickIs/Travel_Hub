@@ -52,7 +52,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_arrow_back_ios_new_24"
-            app:tint="@color/white"
             tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -87,7 +86,6 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:drawablePadding="12dp"
-                        android:drawableTint="@color/borderSecondaryDark"
                         android:focusable="false"
                         android:text="@string/travel_title"
                         android:textSize="24sp"
@@ -172,7 +170,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/travel_tab_dashboard"
-                        android:textColor="@color/primaryColor"
                         android:textStyle="bold" />
 
                     <com.google.android.material.tabs.TabItem

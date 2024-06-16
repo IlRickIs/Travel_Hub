@@ -1,11 +1,6 @@
 package it.unimib.travelhub.data.source;
 
-import static it.unimib.travelhub.util.Constants.IMAGE_UPLOAD_SUCCESS;
-import static it.unimib.travelhub.util.Constants.PROFILE_IMAGE;
-import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
-
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -55,8 +50,6 @@ public class RemoteFileStorageSource extends BaseRemoteFileStorageSource {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
-                    sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, PROFILE_IMAGE, IMAGE_UPLOAD_SUCCESS);
-                    Log.d("RemoteFileStorageSource", "File uploaded successfully" + imageUri.getPath());
                     uploadCallback.onSuccessUpload(task.getResult().toString());
                 } else {
                     uploadCallback.onFailure(task.getException());

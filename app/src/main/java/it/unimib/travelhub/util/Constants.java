@@ -17,7 +17,6 @@ public class Constants {
     public static final String USER_NAME = "user_name";
     public static final String USER_SURNAME = "user_surname";
     public static final String USER_BIRTHDATE = "user_birthDate";
-    public static final String PROFILE_IMAGE = "profile_image";
 
     //FIREBASE
     public static final String FIREBASE_REALTIME_DATABASE = "https://travelhub-9bc21-default-rtdb.europe-west1.firebasedatabase.app/";
@@ -53,7 +52,7 @@ public class Constants {
 
     //Images
     public static final String PROFILE_PICTURE_FILE_NAME = "profile_picture.webp";
+    public static final String PROFILE_PICTURE_TEMP_FILE_NAME = "profile_picture_temp.webp";
     public static final String PROFILE_IMAGE_REMOTE_PATH = "profile_images/";
-    public static final String IMAGE_UPLOAD_SUCCESS = "image_upload_success";
 
 }

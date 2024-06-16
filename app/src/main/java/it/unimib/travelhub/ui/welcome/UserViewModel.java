@@ -135,7 +135,7 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onUsernameResponse(Result result) {
                 if (result instanceof Result.Error) {
-                    isUsernameAlraedyTaken.postValue(new Result.Error("Username: " + username + " not registered"));
+                    isUsernameAlraedyTaken.postValue(new Result.Error("Username: " + username + " not already taken"));
                     isUsernameAlraedyTaken=null;
                 } else {
                     isUsernameAlraedyTaken.postValue(new Result.UserResponseSuccess(((Result.UserResponseSuccess) result).getData()));

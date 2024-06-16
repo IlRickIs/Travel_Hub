@@ -113,13 +113,13 @@ public class TravelSegmentTimeRecyclerAdapter extends RecyclerView.Adapter<Trave
                 long currentTime = System.currentTimeMillis();
                 if (currentTime >= travelSegment.getDateFrom().getTime() && currentTime <= travelSegment.getDateTo().getTime()) {
                     seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
-                    seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.orange));
+                    //seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.orange));
                 } else if (currentTime > travelSegment.getDateTo().getTime()) {
                     seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
-                    seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.grey_separator));
+                    //seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.grey_separator));
                 } else {
                     seg_icon.setBackgroundResource(R.drawable.baseline_location_on_24);
-                    seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.primaryVariantColor));
+                    //seg_icon.getBackground().setTint(itemView.getResources().getColor(R.color.primaryVariantColor));
                 }
             }
 
