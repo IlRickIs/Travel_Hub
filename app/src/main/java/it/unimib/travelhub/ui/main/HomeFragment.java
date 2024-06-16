@@ -227,7 +227,7 @@ public class HomeFragment extends Fragment {
                             setPastView(doneTravel);
                         }else{
                             //binding.homeCardNoTravel.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primaryVariantColor));
-                            binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
+                            binding.homeTextNoFutureTravels.setText(R.string.no_travels_msg);
                             binding.homeNewTravelImage.setVisibility(View.GONE);
                             binding.homeCardNoTravel.setVisibility(View.VISIBLE);
                         }
@@ -238,12 +238,14 @@ public class HomeFragment extends Fragment {
                         if (doneTravel != null) {
                             setPastView(doneTravel);
                         }else {
-                            binding.homeTextNoFutureTravels.setText("Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!");
+                            binding.homeTextNoFutureTravels.setText(R.string.no_travels_msg);
                             binding.homeCardNoTravel.setVisibility(View.VISIBLE);
                         }
 
 
                     } else {
+                        binding.homeTextNoFutureTravels.setText(R.string.no_travels_msg);
+                        binding.homeNewTravelImage.setVisibility(View.GONE);
                         binding.homeCardNoTravel.setVisibility(View.VISIBLE);
                         if (doneTravel != null) {
                             setPastView(doneTravel);
@@ -269,7 +271,7 @@ public class HomeFragment extends Fragment {
                 } else {
                     Log.d(TAG, "TravelsResponse Error: " + ((Result.Error) result).getMessage());
                     binding.homeCardNoTravel.setVisibility(View.VISIBLE);
-                    binding.homeTextNoFutureTravels.setText("Sembra tu non abbia viaggi in programma. Creane uno nuovo!");
+                    binding.homeTextNoFutureTravels.setText(R.string.no_travels_msg);
                     binding.homeButtonCreateTravel.setOnClickListener(v -> {
                         Intent AddTravelintent = new Intent(getActivity(), AddTravelActivity.class);
                         startActivity(AddTravelintent);

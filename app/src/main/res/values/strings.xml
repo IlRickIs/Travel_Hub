@@ -239,6 +239,9 @@
     <string name="star_desc" translatable="false">Creator</string>
     <string name="add">Add</string>
 
-    <string name="travel_participants">Participants</string>
+    <string name="ongoing_travels">Ongoing Travels</string>
+    <string name="terminated_travel">Past Travel</string>
+    <string name="terminated_travels">Past Travels</string>
+    <string name="no_travels_msg">It appears you have no other trips planned. Create a new one!</string>
 
 </resources>
