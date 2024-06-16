@@ -7,11 +7,11 @@
         android:icon="@drawable/baseline_home_24"
         android:title="@string/home_nav"/>
 
-    <item
-        android:id="@+id/communityFragment"
-        android:enabled="true"
-        android:icon="@drawable/baseline_groups_24"
-        android:title="@string/community_nav"/>
+<!--    <item-->
+<!--        android:id="@+id/communityFragment"-->
+<!--        android:enabled="true"-->
+<!--        android:icon="@drawable/baseline_groups_24"-->
+<!--        android:title="@string/community_nav"/>-->
 
     <item
         android:id="@+id/mapFragment_button"
