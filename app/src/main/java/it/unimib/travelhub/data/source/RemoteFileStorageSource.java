@@ -58,18 +58,22 @@ public class RemoteFileStorageSource extends BaseRemoteFileStorageSource {
         });
     }
 
+    public interface downloadCallback {
+        void onSuccessDownload(String url);
+        void onFailure(Exception e);
+    }
     @Override
-    public void download(String downloadUrl, File file) {
+    public void download(String downloadUrl, File file, RemoteFileStorageSource.downloadCallback downloadCallback) {
         StorageReference storageReference = storage.getReferenceFromUrl(downloadUrl);
         storageReference.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                remoteFileStorageCallback.onSuccessDownload(file.getPath());
+                downloadCallback.onSuccessDownload(file.getPath());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                remoteFileStorageCallback.onFailure(exception);
+                downloadCallback.onFailure(exception);
             }
         });
     }

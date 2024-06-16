@@ -22,7 +22,6 @@ import it.unimib.travelhub.ui.travels.TravelActivity;
 public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdapter.ViewHolder> {
     List<TravelMember> data;
     int type;
-    String textcolor;
 
     Activity activity;
 
@@ -31,12 +30,11 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
     }
     private static OnLongButtonClickListener onLongButtonClickListener = null;
 
-    public UsersRecyclerAdapter(List<TravelMember> data, int type, Activity activity, String textcolor, OnLongButtonClickListener onLongButtonClickListener) {
+    public UsersRecyclerAdapter(List<TravelMember> data, int type, Activity activity, OnLongButtonClickListener onLongButtonClickListener) {
         UsersRecyclerAdapter.onLongButtonClickListener = onLongButtonClickListener;
         this.activity = activity;
         this.data = data;
         this.type = type;
-        this.textcolor = textcolor;
     }
     @NonNull
     @Override
@@ -52,7 +50,7 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         return new ViewHolder(view, type, activity);
     }
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(data.get(position), textcolor);
+        holder.bind(data.get(position));
     }
     @Override
     public int getItemCount() {
@@ -76,9 +74,8 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
             participant_image = itemView.findViewById(R.id.participant_image);
             participant_creator = itemView.findViewById(R.id.participant_creator_flag);
         }
-        public void bind(TravelMember travelMember, String textcolor) {
+        public void bind(TravelMember travelMember) {
             participant_name.setText(travelMember.getUsername());
-            participant_name.setTextColor(Color.parseColor(textcolor));
 
             if (travelMember.getRole() == TravelMember.Role.CREATOR) {
                 participant_creator.setVisibility(View.VISIBLE);

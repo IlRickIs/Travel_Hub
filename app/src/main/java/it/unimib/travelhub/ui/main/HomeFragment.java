@@ -1,10 +1,14 @@
 package it.unimib.travelhub.ui.main;
 
+import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
+import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
+import static it.unimib.travelhub.util.Constants.PROFILE_PICTURE_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
 import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DELETED;
+import static it.unimib.travelhub.util.Constants.USER_PROFILE_IMAGE;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,12 +40,16 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
+import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
+import it.unimib.travelhub.data.repository.user.IUserRepository;
+import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.Travels;
@@ -65,8 +73,9 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private TravelsViewModel travelsViewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
+    private DataEncryptionUtil dataEncryptionUtil;
     private TravelsResponse travelsResponse;
-
+    private IUserRepository userRepository;
     private Travels onGoingTravel;
     private Travels futureTravel;
     private Travels doneTravel;
@@ -107,8 +116,42 @@ public class HomeFragment extends Fragment {
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
+        userRepository = ServiceLocator.getInstance().
+                getUserRepository(requireActivity().getApplication());
+
         if (sharedPreferencesUtil == null) {
             sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
+        }
+        dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
+
+        try{
+            String profileImageURL = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
+                    USER_PROFILE_IMAGE
+            );
+            if (profileImageURL != null) {
+                try {
+                    File file = new File(requireActivity().getFilesDir() + PICS_FOLDER + PROFILE_PICTURE_FILE_NAME);
+                    if (!file.exists())
+                        if(!file.createNewFile())
+                            Log.e(TAG, "Error creating profile image file");
+                    userRepository.downloadProfileImage(profileImageURL, file, new RemoteFileStorageSource.downloadCallback() {
+                        @Override
+                        public void onSuccessDownload(String url) {
+                            Log.d(TAG, "Profile image downloaded successfully");
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.e(TAG, "Error downloading profile image: " + e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e(TAG, "Error creating profile image file: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error decrypting profile image URL: " + e.getMessage());
         }
     }
 
@@ -242,7 +285,7 @@ public class HomeFragment extends Fragment {
                         LinearLayoutManager.HORIZONTAL, false);
 
         binding.homeCardOngoing.setVisibility(View.VISIBLE);
-        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, null, "#FFFFFF", null);
+        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, null, null);
         friendsRecyclerView.setLayoutManager(layoutManagerRunning);
         friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
 

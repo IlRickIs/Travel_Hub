@@ -2,10 +2,13 @@ package it.unimib.travelhub.ui.profile;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
+import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
+import static it.unimib.travelhub.util.Constants.PROFILE_PICTURE_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+
+import java.io.File;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
@@ -39,6 +44,7 @@ import it.unimib.travelhub.util.SharedPreferencesUtil;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
+    private final String TAG = ProfileFragment.class.getSimpleName();
     private String name, surname, username, email;
     private FragmentProfileBinding binding;
     private DataEncryptionUtil dataEncryptionUtil;
@@ -96,6 +102,21 @@ public class ProfileFragment extends Fragment {
             String TAG = "ProfileFragment";
             Log.e(TAG, "Error while reading data from encrypted shared preferences", e);
         }
+        if (getContext() != null) {
+            String profileImagePath = getContext().getFilesDir() + PICS_FOLDER + PROFILE_PICTURE_FILE_NAME;
+            try {
+                File file = new File(profileImagePath);
+                if (file.exists()) {
+                    Uri imageUri = Uri.fromFile(file);
+                    binding.imageViewUsername.setImageURI(imageUri);
+                } else {
+                    Log.d(TAG, "File does not exist");
+                }
+            } catch (Exception e) {
+                Log.d(TAG, "Error while reading profile image", e);
+            }
+        }
+
         binding.textViewUsername.setText(username);
         binding.textViewUsername.setText(username);
         binding.textViewName.setText(name);

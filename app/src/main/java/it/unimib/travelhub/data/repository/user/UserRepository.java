@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import java.io.File;
+
 import it.unimib.travelhub.data.source.BaseRemoteFileStorageSource;
 import it.unimib.travelhub.data.source.RemoteFileStorageCallback;
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
@@ -119,6 +121,11 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
     @Override
     public void uploadProfileImage(String remotePath, Uri imageUri, RemoteFileStorageSource.uploadCallback uploadCallback) {
         remoteFileStorageSource.upload(remotePath, imageUri, uploadCallback);
+    }
+
+    @Override
+    public void downloadProfileImage(String url, File file, RemoteFileStorageSource.downloadCallback downloadCallback) {
+        remoteFileStorageSource.download(url, file, downloadCallback);
     }
 
     @Override

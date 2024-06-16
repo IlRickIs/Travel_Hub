@@ -4,6 +4,8 @@ import android.net.Uri;
 
 import androidx.lifecycle.MutableLiveData;
 
+import java.io.File;
+
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
@@ -25,6 +27,7 @@ public interface IUserRepository {
 
     void updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback);
     void uploadProfileImage(String remotePath, Uri imageUri, RemoteFileStorageSource.uploadCallback uploadCallback);
+    void downloadProfileImage(String url, File file, RemoteFileStorageSource.downloadCallback downloadCallback);
 
     void isGoogleUserAlreadyRegistered(User user, UserAuthenticationRemoteDataSource.GoogleUserCallback callback);
 }

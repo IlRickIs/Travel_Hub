@@ -9,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -187,7 +187,7 @@ public class TravelDashboardFragment extends Fragment {
         RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
-        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, requireActivity(), "#000000",
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, requireActivity(),
                 (travelMember, seg_long_button) -> {
                     PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
                     popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());

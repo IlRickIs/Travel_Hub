@@ -13,6 +13,8 @@ public abstract class BaseRemoteFileStorageSource {
 
     //public abstract void uploadProfileImage(Uri file, String idToken);
     public abstract void upload(String remotePath, Uri imageUri, RemoteFileStorageSource.uploadCallback uploadCallback);
-    public abstract void download(String downloadUrl, File file);
+
+    public abstract void download(String downloadUrl, File file, RemoteFileStorageSource.downloadCallback downloadCallback);
+
     public abstract void delete(String downloadUrl);
 }

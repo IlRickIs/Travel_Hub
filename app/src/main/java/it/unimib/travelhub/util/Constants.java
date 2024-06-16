@@ -17,6 +17,7 @@ public class Constants {
     public static final String USER_NAME = "user_name";
     public static final String USER_SURNAME = "user_surname";
     public static final String USER_BIRTHDATE = "user_birthDate";
+    public static final String USER_PROFILE_IMAGE = "user_profile_image";
 
     //FIREBASE
     public static final String FIREBASE_REALTIME_DATABASE = "https://travelhub-9bc21-default-rtdb.europe-west1.firebasedatabase.app/";

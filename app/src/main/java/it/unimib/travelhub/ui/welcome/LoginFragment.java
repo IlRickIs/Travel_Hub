@@ -70,6 +70,7 @@ import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FI
 import static it.unimib.travelhub.util.Constants.USERNAME;
 import static it.unimib.travelhub.util.Constants.USER_BIRTHDATE;
 import static it.unimib.travelhub.util.Constants.USER_NAME;
+import static it.unimib.travelhub.util.Constants.USER_PROFILE_IMAGE;
 import static it.unimib.travelhub.util.Constants.USER_SURNAME;
 
 import it.unimib.travelhub.GlobalClass;
@@ -174,7 +175,9 @@ public class LoginFragment extends Fragment {
                                 userViewModel.getGoogleUserMutableLiveData(user).observe(getViewLifecycleOwner(), authenticationResult -> {
                                     if (authenticationResult.isSuccess()) {
                                         User userResponse = ((Result.UserResponseSuccess) authenticationResult).getData();
-                                        saveLoginData(userResponse.getEmail(), userResponse.getUsername(), null, userResponse.getIdToken(), userResponse.getName(), userResponse.getSurname(), userResponse.getBirthDate());
+                                        saveLoginData(userResponse.getEmail(), userResponse.getUsername(), null,
+                                                userResponse.getIdToken(), userResponse.getName(), userResponse.getSurname(),
+                                                userResponse.getBirthDate(), userResponse.getPhotoUrl());
                                         userViewModel.setAuthenticationError(false);
                                         retrieveUserInformationAndStartActivity(userResponse, R.id.action_loginFragment_to_mainActivity);
                                     } else {
@@ -262,7 +265,8 @@ public class LoginFragment extends Fragment {
                             getViewLifecycleOwner(), result -> {
                                 if (result.isSuccess()) {
                                     User user = ((Result.UserResponseSuccess) result).getData();
-                                    saveLoginData(email, user.getUsername(), password, user.getIdToken(), user.getName(), user.getSurname(), user.getBirthDate());
+                                    saveLoginData(email, user.getUsername(), password, user.getIdToken(),
+                                            user.getName(), user.getSurname(), user.getBirthDate(), user.getPhotoUrl());
                                     userViewModel.setAuthenticationError(false);
                                     startActivityBasedOnCondition(MainActivity.class,
                                             R.id.action_loginFragment_to_mainActivity);
@@ -343,7 +347,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void saveLoginData(String email, String username, String password, String idToken, String name, String surname, Long birthdate) {
+    private void saveLoginData(String email, String username, String password, String idToken, String name, String surname, Long birthdate, String profileImageURL) {
         try {
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USERNAME, username);
@@ -357,6 +361,8 @@ public class LoginFragment extends Fragment {
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USER_NAME, name);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USER_SURNAME, surname);
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USER_PROFILE_IMAGE, profileImageURL);
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", getResources().getConfiguration().getLocales().get(0));
             if (birthdate != null)
                 dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(

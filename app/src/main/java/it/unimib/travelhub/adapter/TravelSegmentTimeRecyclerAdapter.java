@@ -1,28 +1,20 @@
 package it.unimib.travelhub.adapter;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.model.TravelSegment;
-import it.unimib.travelhub.ui.travels.TravelActivity;
 
 public class TravelSegmentTimeRecyclerAdapter extends RecyclerView.Adapter<TravelSegmentTimeRecyclerAdapter.ViewHolder>{
 

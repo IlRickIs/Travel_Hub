@@ -140,6 +140,7 @@
     <string name="take_a_picture">Scatta una foto</string>
     <string name="choose_from_gallery">Scegli dalla galleria</string>
     <string name="error_upload_image">Errore aggiornando l\'immagine</string>
+    <string name="add">Add</string>
 
 
 </resources>

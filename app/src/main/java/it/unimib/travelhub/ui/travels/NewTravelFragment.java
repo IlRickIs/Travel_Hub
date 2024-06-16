@@ -15,6 +15,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -32,7 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupMenu;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -333,7 +333,7 @@ public class NewTravelFragment extends Fragment {
 
         RecyclerView recyclerView = binding.friendsRecyclerView;
         mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(memberList, 2, requireActivity(), "#000000",
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(memberList, 1, requireActivity(),
                 (travelMember, seg_long_button) -> {
                     PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
                     popupMenu.getMenuInflater().inflate(R.menu.edit_travel_member, popupMenu.getMenu());

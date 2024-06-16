@@ -221,6 +221,20 @@ public class SettingsActivity extends AppCompatActivity {
                             } catch (GeneralSecurityException | IOException e) {
                                 e.printStackTrace();
                             }
+
+                            try{
+                                File file = new File(profileImagePath);
+                                if (file.exists()) {
+                                    if (file.delete()) {
+                                        Log.d(TAG, "Profile image deleted");
+                                    } else {
+                                        Log.e(TAG, "Unexpected error: Profile image not deleted");
+                                    }
+                                }
+                            } catch (Exception e) {
+                                Log.d(TAG, "Error while deleting profile image", e);
+                            }
+
                             Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
                             startActivity(intent);
                             this.finish(); // TODO: the main activity should be finished
