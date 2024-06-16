@@ -5,10 +5,13 @@ import android.net.Uri;
 import androidx.lifecycle.MutableLiveData;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
+import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 
@@ -26,6 +29,7 @@ public interface IUserRepository {
     MutableLiveData<Result> isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
 
     void updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback);
+    void getUserProfileImage(String id, UserRemoteFirestoreDataSource.getProfileImagesCallback callback);
     void uploadProfileImage(String remotePath, Uri imageUri, RemoteFileStorageSource.uploadCallback uploadCallback);
     void downloadProfileImage(String url, File file, RemoteFileStorageSource.downloadCallback downloadCallback);
 

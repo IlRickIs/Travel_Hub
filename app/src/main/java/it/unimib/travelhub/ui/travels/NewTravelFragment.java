@@ -87,6 +87,7 @@ public class NewTravelFragment extends Fragment {
     private List<String> hintsList;
     private List<String> friendHintsList;
     private Activity mainActivity;
+    private IUserRepository userRepository;
     private TravelsViewModel travelsViewModel;
     private DataEncryptionUtil dataEncryptionUtil;
 
@@ -137,7 +138,7 @@ public class NewTravelFragment extends Fragment {
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
-        IUserRepository userRepository =
+        userRepository =
                 ServiceLocator.getInstance().getUserRepository(
                         requireActivity().getApplication()
                 );
@@ -346,7 +347,7 @@ public class NewTravelFragment extends Fragment {
                         return true;
                     });
                     popupMenu.show();
-                });
+                }, userRepository);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(usersRecyclerAdapter);
 

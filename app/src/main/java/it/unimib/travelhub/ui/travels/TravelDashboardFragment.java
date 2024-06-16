@@ -50,6 +50,7 @@ public class TravelDashboardFragment extends Fragment {
     private FragmentTravelDashboardBinding binding;
     private Travels travel;
     private UserViewModel userViewModel;
+    private IUserRepository userRepository;
     private static final String TAG = TravelDashboardFragment.class.getSimpleName();
 
     public TravelDashboardFragment(Travels travel) {
@@ -70,7 +71,7 @@ public class TravelDashboardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        IUserRepository userRepository =
+        userRepository =
                 ServiceLocator.getInstance().getUserRepository(
                         requireActivity().getApplication()
                 );
@@ -199,7 +200,7 @@ public class TravelDashboardFragment extends Fragment {
                         return true;
                     });
                     popupMenu.show();
-            });
+            }, userRepository);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(usersRecyclerAdapter);
     }

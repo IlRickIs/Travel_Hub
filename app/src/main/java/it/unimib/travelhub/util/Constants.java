@@ -49,7 +49,8 @@ public class Constants {
     public static final int TRAVELS_DATABASE_VERSION = 2;
     public static final String TRAVELS_DATABASE_NAME = "travels_database";
     public static final String LAST_UPDATE = "last_update";
-    public static final long FRESH_TIMEOUT = 0;
+    public static final String LAST_IMAGE_UPDATE = "last_image_update";
+    public static final long FRESH_TIMEOUT = 60 * 60 * 1000; // 1 hour
 
     //Images
     public static final String PROFILE_PICTURE_FILE_NAME = "profile_picture.webp";

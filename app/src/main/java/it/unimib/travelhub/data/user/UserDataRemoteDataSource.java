@@ -147,6 +147,11 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
         });
     }
 
+    @Override
+    public void getUserProfileImage(String id, UserRemoteFirestoreDataSource.getProfileImagesCallback getProfileImagesCallback) {
+
+    }
+
     private void mapUsernameToId(User user) {
         Log.d(TAG, "Mapping username to id");
         databaseReference.child(FIREBASE_USERNAMES_COLLECTION).child(user.getUsername()).setValue(user.getIdToken())

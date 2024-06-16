@@ -1,6 +1,8 @@
 package it.unimib.travelhub.ui.main;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.FRESH_TIMEOUT;
+import static it.unimib.travelhub.util.Constants.LAST_IMAGE_UPDATE;
 import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
 import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
 import static it.unimib.travelhub.util.Constants.PROFILE_PICTURE_FILE_NAME;
@@ -43,6 +45,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
@@ -50,8 +56,10 @@ import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
+import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
@@ -185,6 +193,7 @@ public class HomeFragment extends Fragment {
                     getString(R.string.travel_added_success),
                     Snackbar.LENGTH_SHORT).show();
             intent.removeExtra(TRAVEL_ADDED);
+            sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_IMAGE_UPDATE, null);
         }
 
         if (intent.getBooleanExtra(TRAVEL_DELETED, false)) {
@@ -192,11 +201,19 @@ public class HomeFragment extends Fragment {
                     getString(R.string.travel_deleted_success),
                     Snackbar.LENGTH_SHORT).show();
             intent.removeExtra(TRAVEL_DELETED);
+            sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_IMAGE_UPDATE, null);
         }
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
             lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
+        }
+
+        String lastImagesUpdate;
+        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_IMAGE_UPDATE) != null) {
+            lastImagesUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_IMAGE_UPDATE);
+        } else {
+            lastImagesUpdate = "0";
         }
 
         friendsRecyclerView = binding.friendsRecyclerView;
@@ -209,11 +226,12 @@ public class HomeFragment extends Fragment {
 
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
             result -> {
-                binding.homeProgressBar.setVisibility(View.GONE);
                 if (result.isSuccess()) {
+                    binding.homeProgressBar.setVisibility(View.GONE);
                     Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
                     travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 
+                    Log.d(TAG, "Setting home view");
                     onGoingTravel = travelsResponse.getOnGoingTravel();
                     futureTravel = travelsResponse.getFutureTravel();
                     doneTravel = travelsResponse.getDoneTravel();
@@ -268,6 +286,7 @@ public class HomeFragment extends Fragment {
                         intentOngoing.putExtra("travel", onGoingTravel);
                         startActivity(intentOngoing);
                     });
+
                 } else {
                     Log.d(TAG, "TravelsResponse Error: " + ((Result.Error) result).getMessage());
                     binding.homeCardNoTravel.setVisibility(View.VISIBLE);
@@ -287,7 +306,7 @@ public class HomeFragment extends Fragment {
                         LinearLayoutManager.HORIZONTAL, false);
 
         binding.homeCardOngoing.setVisibility(View.VISIBLE);
-        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, null, null);
+        UsersRecyclerAdapter travelRecyclerAdapterRunning = new UsersRecyclerAdapter(onGoingTravel.getMembers(), 2, null, null, userRepository);
         friendsRecyclerView.setLayoutManager(layoutManagerRunning);
         friendsRecyclerView.setAdapter(travelRecyclerAdapterRunning);
 
