@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -65,6 +64,7 @@ import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.ui.welcome.UserViewModel;
 import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
+import it.unimib.travelhub.ui.welcome.WelcomeActivity;
 import it.unimib.travelhub.util.ServiceLocator;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -221,8 +221,9 @@ public class SettingsActivity extends AppCompatActivity {
                             } catch (GeneralSecurityException | IOException e) {
                                 e.printStackTrace();
                             }
-                            Navigation.findNavController(findViewById(android.R.id.content)).navigate(R.id.action_personalInfoFragment_to_welcomeActivity);
-                            this.finish();
+                            Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                            startActivity(intent);
+                            this.finish(); // TODO: the main activity should be finished
                         } else {
                             Snackbar.make(findViewById(android.R.id.content),
                                     this.getString(R.string.unexpected_error),
