@@ -29,10 +29,10 @@ public class MainFragmentAdapter extends FragmentStateAdapter{
     @Override
     public Fragment createFragment(int position) {
         if (position == 1) {
-            return new CommunityFragment();
-        } else if (position == 2) {
             return new MapFragment();
-        } else if (position == 3) {
+//        } else if (position == 2) {
+//            return new CommunityFragment();
+        } else if (position == 2) {
             return new ProfileFragment();
         } else {
             return new HomeFragment();

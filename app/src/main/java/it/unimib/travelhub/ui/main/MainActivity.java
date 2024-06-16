@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         binding.viewPagerMain.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                if (position == 2){
+                if (position == 1){
                     binding.viewPagerMain.setUserInputEnabled(false);
                 } else {
                     binding.viewPagerMain.setUserInputEnabled(true);
@@ -71,15 +71,15 @@ public class MainActivity extends AppCompatActivity {
             if(item.getItemId() == R.id.homeFragment) {
                 binding.viewPagerMain.setCurrentItem(0);
                 return true;
-            } else if(item.getItemId() == R.id.communityFragment){
-                binding.viewPagerMain.setCurrentItem(1);
-                return true;
+//            } else if(item.getItemId() == R.id.communityFragment){
+//                binding.viewPagerMain.setCurrentItem(1);
+//                return true;
             } else if(item.getItemId() == R.id.mapFragment_button){
                 Log.d(TAG, "MapFragment selected");
-                binding.viewPagerMain.setCurrentItem(2);
+                binding.viewPagerMain.setCurrentItem(1);
                 return true;
             } else if(item.getItemId() == R.id.profileFragment){
-                binding.viewPagerMain.setCurrentItem(3);
+                binding.viewPagerMain.setCurrentItem(2);
                 return true;
             }
             return false;
