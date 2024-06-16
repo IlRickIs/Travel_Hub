@@ -102,6 +102,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
                             android:textStyle="bold"
+                            android:textColor="#F7FBEA"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -110,32 +111,38 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:drawableLeft="@drawable/baseline_airplane_ticket_24"
                             android:drawablePadding="4dp"
                             android:gravity="center"
+                            android:textColor="#F7FBEA"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/home_ongoing_title" />
+                            app:layout_constraintTop_toBottomOf="@+id/home_ongoing_title"
+                            app:drawableStartCompat="@drawable/baseline_airplane_ticket_24"
+                            app:drawableTint="#F7FBEA"/>
 
                         <TextView
                             android:id="@+id/home_ongoing_dates"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:drawableLeft="@drawable/baseline_calendar_month_24"
                             android:drawablePadding="4dp"
                             android:gravity="center"
+                            android:textColor="#F7FBEA"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/home_ongoing_location" />
+                            app:layout_constraintTop_toBottomOf="@+id/home_ongoing_location"
+                            app:drawableLeftCompat="@drawable/baseline_calendar_month_24"
+                            app:drawableTint="#F7FBEA" />
 
                         <TextView
                             android:id="@+id/home_ongoing_nsegremts"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:drawableLeft="@drawable/baseline_map_24"
                             android:drawablePadding="4dp"
+                            android:textColor="#F7FBEA"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/home_ongoing_dates" />
+                            app:layout_constraintTop_toBottomOf="@+id/home_ongoing_dates"
+                            app:drawableLeftCompat="@drawable/baseline_map_24"
+                            app:drawableTint="#F7FBEA" />
 
 
                         <androidx.recyclerview.widget.RecyclerView
