@@ -77,7 +77,7 @@ public class TravelRecyclerAdapter extends RecyclerView.Adapter<TravelRecyclerAd
         public void bind(Travels travels) {
             textViewTitle.setText(travels.getTitle());
             textViewStartDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(travels.getStartDate()));
-            textViewDestinations.setText(travels.getDestinations().size() + " luoghi");
+            textViewDestinations.setText(travels.getDestinations().size() + " " + itemView.getContext().getString(R.string.travel_segment_number));
         }
 
         @Override

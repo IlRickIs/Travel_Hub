@@ -5,7 +5,6 @@ import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
 import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
 import static it.unimib.travelhub.util.Constants.PROFILE_PICTURE_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
-import static it.unimib.travelhub.util.Constants.TRAVELS_TEST_JSON_FILE;
 import static it.unimib.travelhub.util.Constants.TRAVEL_ADDED;
 import static it.unimib.travelhub.util.Constants.TRAVEL_DELETED;
 import static it.unimib.travelhub.util.Constants.USER_PROFILE_IMAGE;
@@ -13,21 +12,6 @@ import static it.unimib.travelhub.util.Constants.USER_PROFILE_IMAGE;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,13 +19,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.view.MenuProvider;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import it.unimib.travelhub.R;
@@ -58,7 +50,6 @@ import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.ui.travels.TravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
-import it.unimib.travelhub.util.JSONParserUtil;
 import it.unimib.travelhub.util.ServiceLocator;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
 
@@ -73,16 +64,12 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private TravelsViewModel travelsViewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
-    private DataEncryptionUtil dataEncryptionUtil;
     private TravelsResponse travelsResponse;
-    private IUserRepository userRepository;
     private Travels onGoingTravel;
     private Travels futureTravel;
     private Travels doneTravel;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected RecyclerView friendsRecyclerView;
-    protected RecyclerView travelSegmentsRecyclerView;
-
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -116,13 +103,13 @@ public class HomeFragment extends Fragment {
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
-        userRepository = ServiceLocator.getInstance().
+        IUserRepository userRepository = ServiceLocator.getInstance().
                 getUserRepository(requireActivity().getApplication());
 
         if (sharedPreferencesUtil == null) {
             sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
         }
-        dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
+        DataEncryptionUtil dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
 
         try{
             String profileImageURL = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
@@ -214,6 +201,8 @@ public class HomeFragment extends Fragment {
                     Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
                     travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 
+                    Log.d(TAG, "TravelsResponse: " + travelsResponse.getDoneTravelsList());
+
                     onGoingTravel = travelsResponse.getOnGoingTravel();
                     futureTravel = travelsResponse.getFutureTravel();
                     doneTravel = travelsResponse.getDoneTravel();
@@ -296,12 +285,12 @@ public class HomeFragment extends Fragment {
         binding.cardViewStatus.setVisibility(View.VISIBLE);
 
         if(onGoingTravel.getStartDate().getTime() <= currentTime && onGoingTravel.getEndDate().getTime() >= currentTime){
-            binding.textViewStatus.setText("In corso");
+            binding.textViewStatus.setText(R.string.status_ongoing);
             binding.textViewStatus.setTextColor(Color.parseColor("#BCECAF"));
             binding.cardViewStatus.getBackground().setTint(Color.parseColor("#2A2FFF00"));
             binding.imageViewStatus.setColorFilter(Color.parseColor("#BCECAF"));
         } else {
-            binding.textViewStatus.setText("In programma");
+            binding.textViewStatus.setText(R.string.status_future);
             binding.textViewStatus.setTextColor(Color.parseColor("#BCECAF"));
             binding.cardViewStatus.getBackground().setTint(Color.parseColor("#7A8959DF"));
             binding.imageViewStatus.setColorFilter(Color.parseColor("#BCECAF"));
@@ -316,7 +305,7 @@ public class HomeFragment extends Fragment {
                                 .format(onGoingTravel.getEndDate())
         );
 
-        binding.homeOngoingNsegremts.setText(onGoingTravel.getDestinations().size() + " destinazioni");
+        binding.homeOngoingNsegremts.setText(onGoingTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
     }
 
     private void setFutureView(Travels futureTravel) {
@@ -330,7 +319,7 @@ public class HomeFragment extends Fragment {
         });
 
         CardView travel_card = binding.homeTravelItem.getRoot();
-        ImageView travel_image = travel_card.findViewById(R.id.travel_image);
+        //ImageView travel_image = travel_card.findViewById(R.id.travel_image);
         TextView travel_title = travel_card.findViewById(R.id.travel_title);
         TextView travel_date = travel_card.findViewById(R.id.travel_date);
         TextView travel_destinations = travel_card.findViewById(R.id.travel_destinations);
@@ -340,7 +329,7 @@ public class HomeFragment extends Fragment {
                 new SimpleDateFormat("dd/MM", requireActivity().getResources().getConfiguration().getLocales().get(0))
                         .format(futureTravel.getStartDate())
         );
-        travel_destinations.setText(futureTravel.getDestinations().size() + " luoghi");
+        travel_destinations.setText(futureTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
 
     }
     private void setPastView(Travels pastTravel) {
@@ -353,7 +342,7 @@ public class HomeFragment extends Fragment {
         });
 
         CardView travel_card = binding.homeTravelItem.getRoot();
-        ImageView travel_image = travel_card.findViewById(R.id.travel_image);
+        //ImageView travel_image = travel_card.findViewById(R.id.travel_image);
         TextView travel_title = travel_card.findViewById(R.id.travel_title);
         TextView travel_date = travel_card.findViewById(R.id.travel_date);
         TextView travel_destinations = travel_card.findViewById(R.id.travel_destinations);
@@ -363,17 +352,8 @@ public class HomeFragment extends Fragment {
                 new SimpleDateFormat("dd/MM", requireActivity().getResources().getConfiguration().getLocales().get(0))
                         .format(pastTravel.getEndDate())
         );
-        travel_destinations.setText(pastTravel.getDestinations().size() + " luoghi");
+        travel_destinations.setText(pastTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
 
-    }
-    private TravelsResponse getTravelsResponseWithGSon() {
-        JSONParserUtil jsonParserUtil = new JSONParserUtil(requireActivity().getApplication());
-        try {
-            return jsonParserUtil.parseJSONFileWithGSon(TRAVELS_TEST_JSON_FILE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 }

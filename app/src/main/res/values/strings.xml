@@ -243,5 +243,10 @@
     <string name="terminated_travel">Past Travel</string>
     <string name="terminated_travels">Past Travels</string>
     <string name="no_travels_msg">It appears you have no other trips planned. Create a new one!</string>
+    <string name="go_to_travel">Open Travel</string>
+    <string name="create_travel">Create Travel</string>
+    <string name="see_all">See All</string>
+    <string name="status_ongoing">Ongoing</string>
+    <string name="status_future">Scheduled</string>
 
 </resources>
