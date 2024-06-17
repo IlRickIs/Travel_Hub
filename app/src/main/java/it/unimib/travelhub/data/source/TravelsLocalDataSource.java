@@ -1,8 +1,5 @@
 package it.unimib.travelhub.data.source;
 
-import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
-import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
-
 import android.util.Log;
 
 import java.util.List;
@@ -11,7 +8,6 @@ import it.unimib.travelhub.data.database.TravelsDao;
 import it.unimib.travelhub.data.database.TravelsRoomDatabase;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
-import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class TravelsLocalDataSource extends BaseTravelsLocalDataSource {
     private final TravelsDao travelsDao;

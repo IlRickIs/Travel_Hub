@@ -122,14 +122,6 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     }
 
     @Override
-    public void onSuccessFromCloudReading(TravelsResponse travelsResponse) {
-        if (travelsResponse != null) {
-            travelsLocalDataSource.insertTravels(travelsResponse.getTravelsList());
-            travelsMutableLiveData.postValue(new Result.TravelsResponseSuccess(travelsResponse));
-        }
-    }
-
-    @Override
     public void onSuccessSynchronization(Travels travel) {
         List<Travels> travelList = new ArrayList<>();
         travelList.add(travel);

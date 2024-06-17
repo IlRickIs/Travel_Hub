@@ -8,10 +8,6 @@ import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -80,27 +76,20 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
     @Override
     public void addTravel(Travels travel) {
         try {
-            String idToken = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
             databaseReference.child("travels").child(Long.toString(travel.getId())).setValue(travel)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            List<String> usersId = new ArrayList<>();
-                            for(TravelMember s : travel.getMembers()){
-                                usersId.add(s.getIdToken());
-                            }
-                            Log.d(TAG, usersId.toString());
-                            //addTravelIdToUser(idToken, travel.getId(), travel);
-                            addTravelIdToUsers(usersId, travel.getId(), travel);
-                            Log.d(TAG, "Travel added successfully");
+                    .addOnSuccessListener(aVoid -> {
+                        List<String> usersId = new ArrayList<>();
+                        for(TravelMember s : travel.getMembers()){
+                            usersId.add(s.getIdToken());
                         }
+                        Log.d(TAG, usersId.toString());
+                        //addTravelIdToUser(idToken, travel.getId(), travel);
+                        addTravelIdToUsers(usersId, travel.getId(), travel);
+                        Log.d(TAG, "Travel added successfully");
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            travelsCallback.onFailureFromRemote(e);
-                            Log.d(TAG, "Error adding travel", e);
-                        }
+                    .addOnFailureListener(e -> {
+                        travelsCallback.onFailureFromRemote(e);
+                        Log.d(TAG, "Error adding travel", e);
                     });
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,22 +109,16 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                         Long id = ds.getValue(Long.class);
                         travelsIdList.add(id);
                     }
-                    travelsIdList.add((long) travelId);
+                    travelsIdList.add(travelId);
 
                     databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").setValue(travelsIdList)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "Travel id added to user successfully");
-                                    travelsCallback.onSuccessFromCloudWriting(travel);
-                                }
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "Travel id added to user successfully");
+                                travelsCallback.onSuccessFromCloudWriting(travel);
                             })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "Error adding travel id to user", e);
-                                    travelsCallback.onFailureFromRemote(e);
-                                }
+                            .addOnFailureListener(e -> {
+                                Log.d(TAG, "Error adding travel id to user", e);
+                                travelsCallback.onFailureFromRemote(e);
                             });
                 }
             });
@@ -160,29 +143,23 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                             Long id = ds.getValue(Long.class);
                             travelsIdList.add(id);
                         }
-                        travelsIdList.add((long) travelId);
+                        travelsIdList.add(travelId);
 
                         databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").setValue(travelsIdList)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "Travel id added to all users successfully");
-                                        count.set(count.get() + 1);
-                                        if(count.get() == usersId.size()){
-                                            travelsCallback.onSuccessFromCloudWriting(travel);
-                                        }
-                                        else{
-                                            travelsCallback.onFailureFromRemote(new Exception("travel id not added to all users"));
-                                            Log.d(TAG, "travel id not added to all users");
-                                        }
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "Travel id added to all users successfully");
+                                    count.set(count.get() + 1);
+                                    if(count.get() == usersId.size()){
+                                        travelsCallback.onSuccessFromCloudWriting(travel);
+                                    }
+                                    else{
+                                        travelsCallback.onFailureFromRemote(new Exception("travel id not added to all users"));
+                                        Log.d(TAG, "travel id not added to all users");
                                     }
                                 })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
-                                        Log.d(TAG, "Error adding travel id to user", e);
-                                    }
+                                .addOnFailureListener(e -> {
+                                    travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
+                                    Log.d(TAG, "Error adding travel id to user", e);
                                 });
                     }
                 });
@@ -198,20 +175,12 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
     public void updateTravel(Travels newTravel, Travels oldTravel) {
         try {
             databaseReference.child(FIREBASE_TRAVELS_COLLECTION).child(String.valueOf(newTravel.getId())).setValue(newTravel)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            //travelsCallback.onUpdateSuccess(travel);
-                            Log.d(TAG, "updating users collection");
-                            updateTravelInUsers(newTravel, oldTravel);
-                        }
+                    .addOnSuccessListener(aVoid -> {
+                        //travelsCallback.onUpdateSuccess(travel);
+                        Log.d(TAG, "updating users collection");
+                        updateTravelInUsers(newTravel, oldTravel);
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            travelsCallback.onFailureFromRemote(e);
-                        }
-                    });
+                    .addOnFailureListener(e -> travelsCallback.onFailureFromRemote(e));
         } catch (Exception e) {
             e.printStackTrace();
             travelsCallback.onFailureFromRemote(e);
@@ -220,12 +189,10 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
     }
 
     private void updateTravelInUsers(Travels newTravel, Travels oldTravel){
-        List<TravelMember> addedMembers = new ArrayList<>();
-        addedMembers.addAll(newTravel.getMembers());
+        List<TravelMember> addedMembers = new ArrayList<>(newTravel.getMembers());
         addedMembers.removeAll(oldTravel.getMembers());
 
-        List<TravelMember> removedMembers = new ArrayList<>();
-        removedMembers.addAll(oldTravel.getMembers());
+        List<TravelMember> removedMembers = new ArrayList<>(oldTravel.getMembers());
         removedMembers.removeAll(newTravel.getMembers());
 
         Log.d(TAG, "addedMembers: " + addedMembers);
@@ -248,28 +215,22 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                             Long id = ds.getValue(Long.class);
                             travelsIdList.add(id);
                         }
-                        travelsIdList.remove((long) newTravel.getId());
+                        travelsIdList.remove(newTravel.getId());
 
                         databaseReference.child(FIREBASE_USERS_COLLECTION).child(travelMember.getIdToken()).child("travels").setValue(travelsIdList)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        countRemoved.set(countRemoved.get() + 1);
-                                        if(countRemoved.get() == removedMembers.size()){
-                                            updateTravelInUsersAdd(newTravel, addedMembers);
-                                        }
-                                        else{
-                                            travelsCallback.onFailureFromRemote(new Exception("travel id not removed from all users"));
-                                            Log.d(TAG, "travel id not removed from all users");
-                                        }
+                                .addOnSuccessListener(aVoid -> {
+                                    countRemoved.set(countRemoved.get() + 1);
+                                    if(countRemoved.get() == removedMembers.size()){
+                                        updateTravelInUsersAdd(newTravel, addedMembers);
+                                    }
+                                    else{
+                                        travelsCallback.onFailureFromRemote(new Exception("travel id not removed from all users"));
+                                        Log.d(TAG, "travel id not removed from all users");
                                     }
                                 })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
-                                        Log.d(TAG, "Error removing travel id from user", e);
-                                    }
+                                .addOnFailureListener(e -> {
+                                    travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
+                                    Log.d(TAG, "Error removing travel id from user", e);
                                 });
                     }
                 });
@@ -294,29 +255,23 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                             Long id = ds.getValue(Long.class);
                             travelsIdList.add(id);
                         }
-                        travelsIdList.add((long) newTravel.getId());
+                        travelsIdList.add(newTravel.getId());
 
                         databaseReference.child(FIREBASE_USERS_COLLECTION).child(travelMember.getIdToken()).child("travels").setValue(travelsIdList)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        countAdded.set(countAdded.get() + 1);
-                                        if(countAdded.get() == addedMembers.size()){
-                                            //travelsCallback.onSuccessUpdateFromRemote(newTravel);
-                                            travelsCallback.onUpdateSuccess(newTravel);
-                                        }
-                                        else{
-                                            travelsCallback.onFailureFromRemote(new Exception("travel id not added to all users"));
-                                            Log.d(TAG, "travel id not added to all users");
-                                        }
+                                .addOnSuccessListener(aVoid -> {
+                                    countAdded.set(countAdded.get() + 1);
+                                    if(countAdded.get() == addedMembers.size()){
+                                        //travelsCallback.onSuccessUpdateFromRemote(newTravel);
+                                        travelsCallback.onUpdateSuccess(newTravel);
+                                    }
+                                    else{
+                                        travelsCallback.onFailureFromRemote(new Exception("travel id not added to all users"));
+                                        Log.d(TAG, "travel id not added to all users");
                                     }
                                 })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
-                                        Log.d(TAG, "Error adding travel id to user", e);
-                                    }
+                                .addOnFailureListener(e -> {
+                                    travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
+                                    Log.d(TAG, "Error adding travel id to user", e);
                                 });
                     }
                 });
@@ -353,29 +308,23 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                             Long id = ds.getValue(Long.class);
                             travelsIdList.add(id);
                         }
-                        travelsIdList.remove((long) travel.getId());
+                        travelsIdList.remove(travel.getId());
 
                         databaseReference.child(FIREBASE_USERS_COLLECTION).child(member.getIdToken()).child("travels").setValue(travelsIdList)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "Travel id removed from user successfully");
-                                        count.set(count.get() + 1);
-                                        if(count.get() == travel.getMembers().size()){
-                                            travelsCallback.onSuccessDeletionFromRemote(travel);
-                                        }
-                                        else{
-                                            travelsCallback.onFailureFromRemote(new Exception("travel id not removed from all users"));
-                                            Log.d(TAG, "travel id not removed from all users");
-                                        }
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "Travel id removed from user successfully");
+                                    count.set(count.get() + 1);
+                                    if(count.get() == travel.getMembers().size()){
+                                        travelsCallback.onSuccessDeletionFromRemote(travel);
+                                    }
+                                    else{
+                                        travelsCallback.onFailureFromRemote(new Exception("travel id not removed from all users"));
+                                        Log.d(TAG, "travel id not removed from all users");
                                     }
                                 })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
-                                        Log.d(TAG, "Error removing travel id from user", e);
-                                    }
+                                .addOnFailureListener(e -> {
+                                    travelsCallback.onFailureFromRemote(new Exception("something went wrong: " + e.getMessage()));
+                                    Log.d(TAG, "Error removing travel id from user", e);
                                 });
                     }
                 });
@@ -384,10 +333,5 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void deleteAllTravels() {
-
     }
 }

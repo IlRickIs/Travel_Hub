@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 import java.io.File;
 
 import it.unimib.travelhub.data.source.BaseRemoteFileStorageSource;
-import it.unimib.travelhub.data.source.RemoteFileStorageCallback;
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
@@ -18,7 +17,7 @@ import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 
-public class UserRepository implements IUserRepository, UserResponseCallback, RemoteFileStorageCallback {
+public class UserRepository implements IUserRepository, UserResponseCallback {
 
     private static final String TAG = UserRepository.class.getSimpleName();
 
@@ -36,7 +35,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
         this.remoteFileStorageSource = remoteFileStorageSource;
         this.userRemoteDataSource.setUserResponseCallback(this);
         this.userDataRemoteDataSource.setUserResponseCallback(this);
-        this.remoteFileStorageSource.setRemoteFileStorageCallback(this);
         this.userMutableLiveData = new MutableLiveData<>();
     }
 
@@ -161,25 +159,5 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
     @Override
     public void isGoogleUserAlreadyRegistered(User user, UserAuthenticationRemoteDataSource.GoogleUserCallback callback) {
         userRemoteDataSource.isGoogleUserRegistered(user, callback);
-    }
-
-    @Override
-    public void onSuccessProfileImageUpload(String downloadUrl, User user) {
-
-    }
-
-    @Override
-    public void onSuccessDownload(String filePath) {
-
-    }
-
-    @Override
-    public void onSuccessDelete() {
-
-    }
-
-    @Override
-    public void onFailure(Exception exception) {
-
     }
 }

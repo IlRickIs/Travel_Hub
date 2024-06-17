@@ -17,6 +17,5 @@ public abstract class BaseTravelsRemoteDataSource {
     public abstract void updateTravel(Travels newTravel, Travels oldTravel);
 
     public abstract void deleteTravel(Travels travels);
-    public abstract void deleteAllTravels();
 
 }

@@ -2,7 +2,6 @@ package it.unimib.travelhub.data.source;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.FIREBASE_TRAVELS_COLLECTION;
-import static it.unimib.travelhub.util.Constants.FIREBASE_TRAVELS_MEMBERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 
@@ -12,19 +11,16 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.model.TravelMember;
-import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 
@@ -52,11 +48,16 @@ public class TravelsRemoteFirestoreDataSource extends BaseTravelsRemoteDataSourc
             Log.e(TAG, "Error reading idToken from SharedPreferences", e);
             travelsCallback.onFailureFromRemote(e);
         }
-
+        if (idToken == null) {
+            Log.e(TAG, "idToken is null");
+            travelsCallback.onFailureFromRemote(new Exception("idToken is null"));
+            return;
+        }
         db.collection(FIREBASE_USERS_COLLECTION).document(idToken)
                 .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "get: " + task.getResult().getData().keySet());
+                        Log.d(TAG, "get: " + Objects.requireNonNull(task.getResult().getData()).keySet());
+                        @SuppressWarnings("unchecked")
                         List<Long> travelIds = (List<Long>) task.getResult().getData().get("travels");
 
                         if(travelIds == null || travelIds.isEmpty()) {
@@ -210,10 +211,5 @@ public class TravelsRemoteFirestoreDataSource extends BaseTravelsRemoteDataSourc
                     Log.e(TAG, "Error deleting travel", e);
                     travelsCallback.onFailureFromRemote(e);
                 });
-    }
-
-    @Override
-    public void deleteAllTravels() {
-
     }
 }
