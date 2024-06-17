@@ -47,7 +47,7 @@ import it.unimib.travelhub.util.SharedPreferencesUtil;
  */
 public class ProfileFragment extends Fragment {
     private final String TAG = ProfileFragment.class.getSimpleName();
-    private String name, surname, username, email;
+    private String name, surname, username;
     private FragmentProfileBinding binding;
     private DataEncryptionUtil dataEncryptionUtil;
     private SharedPreferencesUtil sharedPreferencesUtil;
@@ -70,7 +70,6 @@ public class ProfileFragment extends Fragment {
                 ServiceLocator.getInstance().getTravelsRepository(
                         requireActivity().getApplication()
                 );
-
         if (travelsRepository != null) {
             // This is the way to create a ViewModel with custom parameters
             // (see NewsViewModelFactory class for the implementation details)
@@ -116,8 +115,6 @@ public class ProfileFragment extends Fragment {
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name");
             surname = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname");
-            email = dataEncryptionUtil.
-                    readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "email_address");
         } catch (Exception e) {
             String TAG = "ProfileFragment";
             Log.e(TAG, "Error while reading data from encrypted shared preferences", e);
@@ -176,8 +173,7 @@ public class ProfileFragment extends Fragment {
                         binding.viewPagerProfile.setAdapter(myFragmentAdapter);
 
                     } else {
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+                        binding.textViewTravelNumber.setText("0");
                     }
                 });
 

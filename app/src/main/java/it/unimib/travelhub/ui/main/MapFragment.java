@@ -3,51 +3,33 @@ package it.unimib.travelhub.ui.main;
 import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
 import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
-import android.app.SearchManager;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SearchView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.search.SearchBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentMapBinding;
 import it.unimib.travelhub.model.Result;
-import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
-import it.unimib.travelhub.ui.profile.ProfileFragmentAdapter;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
@@ -55,14 +37,10 @@ import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-    private GoogleMap gmap;
-    private FragmentMapBinding binding;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
     private TravelsViewModel travelsViewModel;
 
-    private ListView listView;
-    private ArrayAdapter<Travels> arrayAdapter;
     private ArrayList<Travels> travelsList;
 
     public MapFragment() {
@@ -93,10 +71,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentMapBinding.inflate(inflater, container, false);
+        it.unimib.travelhub.databinding.FragmentMapBinding binding = FragmentMapBinding.inflate(inflater, container, false);
 
         SupportMapFragment supportMapFragment;
         GoogleMapOptions options = new GoogleMapOptions();
@@ -132,9 +110,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     }
                                 }
                             });
-                    } else {
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
                     }
                 });
         return binding.getRoot();
@@ -150,7 +125,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        gmap = googleMap;
     }
 
 
