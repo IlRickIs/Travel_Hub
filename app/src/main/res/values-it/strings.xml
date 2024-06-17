@@ -149,6 +149,7 @@
     <string name="travels_number">Viaggi</string>
     <string name="background">sfondo</string>
     <string name="travel_status">Stato viaggio</string>
+    <string name="travel_add_segment">Aggiungi Destinazione</string>
 
 
 </resources>
