@@ -1,12 +1,9 @@
 package it.unimib.travelhub.model;
 
-import com.google.firebase.database.Exclude;
-import com.google.type.LatLng;
+import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TravelSegment implements Serializable, Comparable<TravelSegment> {
 
@@ -76,6 +73,7 @@ public class TravelSegment implements Serializable, Comparable<TravelSegment> {
             return this.dateFrom.compareTo(travels.dateFrom);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "TravelSegment{" +
@@ -86,17 +84,6 @@ public class TravelSegment implements Serializable, Comparable<TravelSegment> {
                 ", lat=" + lat +
                 ", lng=" + lng +
                 '}';
-    }
-
-    @Exclude
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("location", location);
-        map.put("dateFrom", dateFrom);
-        map.put("dateTo", dateTo);
-        map.put("description", description);
-        return map;
-
     }
 
     public void setLatLng(double lat, double lng) {

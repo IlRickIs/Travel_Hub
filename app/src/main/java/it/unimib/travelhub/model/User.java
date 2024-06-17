@@ -1,10 +1,11 @@
 package it.unimib.travelhub.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,6 +116,7 @@ public class User implements Serializable {
         return result;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "User{" +

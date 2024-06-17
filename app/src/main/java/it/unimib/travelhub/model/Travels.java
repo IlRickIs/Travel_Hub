@@ -5,7 +5,6 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.firebase.database.Exclude;
-import com.google.firebase.database.PropertyName;
 
 import java.io.Serializable;
 import java.util.Date;

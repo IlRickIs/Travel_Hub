@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TravelMember extends User implements Serializable {
-    private Role role;
-    public enum Role {MEMBER, SUPPORTER, CREATOR}
+    private final Role role;
+    public enum Role {MEMBER, CREATOR}
 
     public TravelMember() {
         super();
@@ -41,13 +41,5 @@ public class TravelMember extends User implements Serializable {
 
     public Role getRole() {
         return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public void setRole() {
-        this.role = Role.MEMBER;
     }
 }

@@ -2,7 +2,7 @@ package it.unimib.travelhub.model;
 
 public class ValidationResult {
     public boolean success;
-    private String message;
+    private final String message;
 
     public ValidationResult(boolean success, String message) {
         this.success = success;
@@ -15,13 +15,5 @@ public class ValidationResult {
 
     public String getMessage() {
         return message;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 }

@@ -15,8 +15,8 @@ import it.unimib.travelhub.data.source.TravelsCallback;
 public class TravelsResponse implements Serializable {
     private static final String TAG = "TravelsResponse";
     private List<Travels> travelsList;
-    private TravelsCallback travelsCallback;
-    private Integer length;
+    private final TravelsCallback travelsCallback;
+    private final Integer length;
 
     public TravelsResponse(List<Travels> travelsList) {
         Collections.sort(travelsList);
