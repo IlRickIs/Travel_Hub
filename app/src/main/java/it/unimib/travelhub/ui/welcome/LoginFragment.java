@@ -24,44 +24,30 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
-import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.databinding.FragmentLoginBinding;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.model.IValidator;
-import it.unimib.travelhub.ui.travels.NewTravelSegment;
 import it.unimib.travelhub.util.ServiceLocator;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.model.ValidationResult;
-import it.unimib.travelhub.model.Result;
 
 import static it.unimib.travelhub.util.Constants.EMAIL_ADDRESS;
-import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
 import static it.unimib.travelhub.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static it.unimib.travelhub.util.Constants.INVALID_USER_ERROR;
@@ -74,7 +60,6 @@ import static it.unimib.travelhub.util.Constants.USER_PROFILE_IMAGE;
 import static it.unimib.travelhub.util.Constants.USER_SURNAME;
 
 import it.unimib.travelhub.GlobalClass;
-import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class LoginFragment extends Fragment {
 
@@ -82,17 +67,10 @@ public class LoginFragment extends Fragment {
 
     private static final String TAG = LoginFragment.class.getSimpleName();
     private FragmentLoginBinding binding;
-
     private DataEncryptionUtil dataEncryptionUtil;
-
-    private SharedPreferencesUtil sharedPreferencesUtil;
     private static final boolean USE_NAVIGATION_COMPONENT = true;
-
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
-    private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
-
     private UserViewModel userViewModel;
-
     private SignInClient oneTapClient;
     private BeginSignInRequest signInRequest;
 
@@ -119,7 +97,6 @@ public class LoginFragment extends Fragment {
                 new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
-        sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
 
         oneTapClient = Identity.getSignInClient(requireActivity());
         signInRequest = BeginSignInRequest.builder()
@@ -137,7 +114,7 @@ public class LoginFragment extends Fragment {
                 .setAutoSelectEnabled(true)
                 .build();
 
-        startIntentSenderForResult = new ActivityResultContracts.StartIntentSenderForResult();
+        ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult = new ActivityResultContracts.StartIntentSenderForResult();
 
         activityResultLauncher = registerForActivityResult(startIntentSenderForResult, activityResult -> {
             if (activityResult.getResultCode() == Activity.RESULT_OK) {
@@ -153,57 +130,52 @@ public class LoginFragment extends Fragment {
 
                     dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                             ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN, idToken);
-                    userRepository.isGoogleUserAlreadyRegistered(user, new UserAuthenticationRemoteDataSource.GoogleUserCallback() {
-                        @Override
-                        public void wasGoogleUserRegistered(int responseCode) {
-                            if (responseCode == 1) {
-                                Log.d(TAG, "Google is new, so we set a username for him");
-                                UsernameChoiceFragment usernameChoiceFragment = new UsernameChoiceFragment();
-                                usernameChoiceFragment.setArguments(bundle);
-                                // change fragment and pass the data
-                                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.nav_welcome_fragment, usernameChoiceFragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                            }
-                            if(responseCode == 2){
-                                Log.d(TAG, "Google user was already registered, so we log him up");
-                                User user = new User();
-                                user.setIdToken(idToken);
-                                userViewModel.getGoogleUserMutableLiveData(user).observe(getViewLifecycleOwner(), authenticationResult -> {
-                                    if (authenticationResult.isSuccess()) {
-                                        User userResponse = ((Result.UserResponseSuccess) authenticationResult).getData();
-                                        saveLoginData(userResponse.getEmail(), userResponse.getUsername(), null,
-                                                userResponse.getIdToken(), userResponse.getName(), userResponse.getSurname(),
-                                                userResponse.getBirthDate(), userResponse.getPhotoUrl());
-                                        userViewModel.setAuthenticationError(false);
-                                        retrieveUserInformationAndStartActivity(userResponse, R.id.action_loginFragment_to_mainActivity);
-                                    } else {
-                                        userViewModel.setAuthenticationError(true);
-                                        binding.progressBar.setVisibility(View.GONE);
-                                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                                getErrorMessage(((Result.Error) authenticationResult).getMessage()),
-                                                Snackbar.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                            if(responseCode == 0){
-                                Log.d(TAG, "an error occurred");
-                                Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                        R.string.unexpected_error,
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
+                    userRepository.isGoogleUserAlreadyRegistered(user, responseCode -> {
+                        if (responseCode == 1) {
+                            Log.d(TAG, "Google is new, so we set a username for him");
+                            UsernameChoiceFragment usernameChoiceFragment = new UsernameChoiceFragment();
+                            usernameChoiceFragment.setArguments(bundle);
+                            // change fragment and pass the data
+                            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.nav_welcome_fragment, usernameChoiceFragment);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+                        }
+                        if(responseCode == 2){
+                            Log.d(TAG, "Google user was already registered, so we log him up");
+                            User user1 = new User();
+                            user1.setIdToken(idToken);
+                            userViewModel.getGoogleUserMutableLiveData(user1).observe(getViewLifecycleOwner(), authenticationResult -> {
+                                if (authenticationResult.isSuccess()) {
+                                    User userResponse = ((Result.UserResponseSuccess) authenticationResult).getData();
+                                    saveLoginData(userResponse.getEmail(), userResponse.getUsername(), null,
+                                            userResponse.getIdToken(), userResponse.getName(), userResponse.getSurname(),
+                                            userResponse.getBirthDate(), userResponse.getPhotoUrl());
+                                    userViewModel.setAuthenticationError(false);
+                                    retrieveUserInformationAndStartActivity(userResponse, R.id.action_loginFragment_to_mainActivity);
+                                } else {
+                                    userViewModel.setAuthenticationError(true);
+                                    binding.progressBar.setVisibility(View.GONE);
+                                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                            getErrorMessage(((Result.Error) authenticationResult).getMessage()),
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        if(responseCode == 0){
+                            Log.d(TAG, "an error occurred");
+                            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                    R.string.unexpected_error,
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
 
-                    }
-                    });
+                });
                 }catch (ApiException e) {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                             requireActivity().getString(R.string.unexpected_error),
                             Snackbar.LENGTH_SHORT).show();
-                } catch (GeneralSecurityException e) {
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
+                } catch (GeneralSecurityException | IOException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -211,11 +183,10 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
-        return view;
+        return binding.getRoot();
     }
 
     @Override
@@ -241,7 +212,7 @@ public class LoginFragment extends Fragment {
 
                 if (mail != null &&  username != null) {
                     Log.d(TAG, "starting main activity");
-                    startActivityBasedOnCondition(MainActivity.class,
+                    startActivityBasedOnCondition(
                             R.id.action_loginFragment_to_mainActivity);
                 }
             } catch (GeneralSecurityException | IOException e) {
@@ -253,12 +224,12 @@ public class LoginFragment extends Fragment {
 
 
         binding.buttonLogin.setOnClickListener(V -> {
-            String email = binding.txtInputEditUser.getText().toString();
-            String password = binding.txtInputEditPwd.getText().toString();
+            String email = Objects.requireNonNull(binding.txtInputEditUser.getText()).toString();
+            String password = Objects.requireNonNull(binding.txtInputEditPwd.getText()).toString();
 
             if (isEmailOk(email) & isPasswordOk(password)) {
                 Log.d(TAG, "Email and password are ok");
-                if(!userViewModel.isAuthenticationError()){
+                if(userViewModel.isAuthenticationSuccess()){
                     binding.progressBar.setVisibility(View.VISIBLE);
                     userViewModel.getUserMutableLiveData(email, password, true).observe(
                             getViewLifecycleOwner(), result -> {
@@ -267,7 +238,7 @@ public class LoginFragment extends Fragment {
                                     saveLoginData(email, user.getUsername(), password, user.getIdToken(),
                                             user.getName(), user.getSurname(), user.getBirthDate(), user.getPhotoUrl());
                                     userViewModel.setAuthenticationError(false);
-                                    startActivityBasedOnCondition(MainActivity.class,
+                                    startActivityBasedOnCondition(
                                             R.id.action_loginFragment_to_mainActivity);
 
                                 } else {
@@ -294,24 +265,18 @@ public class LoginFragment extends Fragment {
         });
 
         binding.buttonGoogleLogin.setOnClickListener(v -> oneTapClient.beginSignIn(signInRequest)
-                .addOnSuccessListener(requireActivity(), new OnSuccessListener<BeginSignInResult>() {
-                    @Override
-                    public void onSuccess(BeginSignInResult result) {
-                        Log.d(TAG, "onSuccess from oneTapClient.beginSignIn(BeginSignInRequest)");
-                        IntentSenderRequest intentSenderRequest =
-                                new IntentSenderRequest.Builder(result.getPendingIntent()).build();
-                        activityResultLauncher.launch(intentSenderRequest);
-                    }
+                .addOnSuccessListener(requireActivity(), result -> {
+                    Log.d(TAG, "onSuccess from oneTapClient.beginSignIn(BeginSignInRequest)");
+                    IntentSenderRequest intentSenderRequest =
+                            new IntentSenderRequest.Builder(result.getPendingIntent()).build();
+                    activityResultLauncher.launch(intentSenderRequest);
                 })
-                .addOnFailureListener(requireActivity(), new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, e.getLocalizedMessage());
+                .addOnFailureListener(requireActivity(), e -> {
+                    Log.d(TAG, Objects.requireNonNull(e.getLocalizedMessage()));
 
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                requireActivity().getString(R.string.error_no_google_account_found_message),
-                                Snackbar.LENGTH_SHORT).show();
-                    }
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                            requireActivity().getString(R.string.error_no_google_account_found_message),
+                            Snackbar.LENGTH_SHORT).show();
                 }));
     }
 
@@ -325,7 +290,7 @@ public class LoginFragment extends Fragment {
     private boolean isEmailOk(String email) {
         ValidationResult validation = myValidator.validateMail(email);
         if (!validation.isSuccess()) {
-            binding.txtInputEditUser.setError(validation.getMessage().toString());
+            binding.txtInputEditUser.setError(validation.getMessage());
             return false;
         } else {
             binding.txtInputEditUser.setError(null);
@@ -338,7 +303,7 @@ public class LoginFragment extends Fragment {
         if(!validation.isSuccess()){
             //binding.txtInputLayoutPwd.setError(validation.getMessage().toString());
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                    validation.getMessage().toString(), Snackbar.LENGTH_SHORT).show();
+                    validation.getMessage(), Snackbar.LENGTH_SHORT).show();
             return false;
         }else{
             //binding.txtInputLayoutPwd.setError(null);
@@ -375,11 +340,11 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void startActivityBasedOnCondition(Class<?> destinationActivity, int destination) {
+    private void startActivityBasedOnCondition(int destination) {
         if (USE_NAVIGATION_COMPONENT) {
             Navigation.findNavController(requireView()).navigate(destination);
         } else {
-            Intent intent = new Intent(requireContext(), destinationActivity);
+            Intent intent = new Intent(requireContext(), MainActivity.class);
             startActivity(intent);
         }
         requireActivity().finish();
@@ -401,9 +366,8 @@ public class LoginFragment extends Fragment {
         userViewModel.getUserMutableLiveData(user.getEmail(), user.getIdToken(), false).observe(
                 getViewLifecycleOwner(), result -> {
                     if (result.isSuccess()) {
-                        User userWithPreferences = ((Result.UserResponseSuccess) result).getData();
                         binding.progressBar.setVisibility(View.GONE);
-                        startActivityBasedOnCondition(MainActivity.class, destination);
+                        startActivityBasedOnCondition(destination);
                     } else {
                         userViewModel.setAuthenticationError(true);
                         binding.progressBar.setVisibility(View.GONE);

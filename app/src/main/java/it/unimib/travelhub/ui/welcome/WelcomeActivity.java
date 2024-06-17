@@ -1,12 +1,6 @@
 package it.unimib.travelhub.ui.welcome;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentResultListener;
-import androidx.fragment.app.FragmentResultOwner;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Bundle;
 

@@ -14,8 +14,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-import androidx.security.crypto.EncryptedSharedPreferences;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,18 +28,14 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.model.Result;
-import it.unimib.travelhub.model.TravelMember;
-import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.User;
 import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.util.ServiceLocator;
-import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,22 +43,18 @@ import it.unimib.travelhub.util.SharedPreferencesUtil;
  * create an instance of this fragment.
  */
 public class UsernameChoiceFragment extends Fragment {
-
     private static final String TAG = UsernameChoiceFragment.class.getSimpleName();
     private User user;
-    private Button saveUsernameButton;
     private EditText usernameEditText;
     private UserViewModel userViewModel;
-
     private DataEncryptionUtil dataEncryptionUtil;
-    private SharedPreferencesUtil dataUtil;
+
     public UsernameChoiceFragment() {
         // Required empty public constructor
     }
 
     public static UsernameChoiceFragment newInstance() {
-        UsernameChoiceFragment fragment = new UsernameChoiceFragment();
-        return fragment;
+        return new UsernameChoiceFragment();
     }
 
     @Override
@@ -83,7 +73,6 @@ public class UsernameChoiceFragment extends Fragment {
                 new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
-        dataUtil = new SharedPreferencesUtil(requireActivity().getApplication());
 
     }
 
@@ -92,23 +81,18 @@ public class UsernameChoiceFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_username_choice, container, false);
 
-       saveUsernameButton = (Button) view.findViewById(R.id.button_save_username);
-       usernameEditText = (EditText) view.findViewById(R.id.username_edit_text);
-        saveUsernameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(usernameEditText.getText().toString().isEmpty()){
-                    usernameEditText.setError(getString(R.string.username_error));
-                    return;
-                }else{
-                    user.setUsername(usernameEditText.getText().toString());
-                    Log.d(TAG, "Username: " + user.getUsername() + " idToken: " + user.getIdToken());
-                    userViewModel.isUsernameAlreadyTaken(user.getUsername());
-                    observeUsernameAlreadyTaken();
+        Button saveUsernameButton = view.findViewById(R.id.button_save_username);
+       usernameEditText = view.findViewById(R.id.username_edit_text);
+        saveUsernameButton.setOnClickListener(v -> {
+            if(usernameEditText.getText().toString().isEmpty()){
+                usernameEditText.setError(getString(R.string.username_error));
+            }else{
+                user.setUsername(usernameEditText.getText().toString());
+                Log.d(TAG, "Username: " + user.getUsername() + " idToken: " + user.getIdToken());
+                userViewModel.isUsernameAlreadyTaken(user.getUsername());
+                observeUsernameAlreadyTaken();
 
-                }
             }
-
         });
 
         return view;
@@ -121,9 +105,9 @@ public class UsernameChoiceFragment extends Fragment {
             userViewModel.getGoogleUserMutableLiveData(user).observe(getViewLifecycleOwner(), authenticationResult -> {
                 if (authenticationResult.isSuccess()) {
                     User user = ((Result.UserResponseSuccess) authenticationResult).getData();
-                    saveLoginData(user.getEmail(), user.getUsername(), null, user.getIdToken(), user.getName(), user.getSurname(), user.getBirthDate());
+                    saveLoginData(user.getEmail(), user.getUsername(), user.getIdToken(), user.getName(), user.getSurname(), user.getBirthDate());
                     userViewModel.setAuthenticationError(false);
-                    retrieveUserInformationAndStartActivity(user, R.id.action_loginFragment_to_mainActivity);
+                    retrieveUserInformationAndStartActivity(user);
                 } else {
                     userViewModel.setAuthenticationError(true);
                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
@@ -156,14 +140,14 @@ public class UsernameChoiceFragment extends Fragment {
 
     }
 
-    private void saveLoginData(String email, String username, String password, String idToken, String name, String surname, Long birthdate) {
+    private void saveLoginData(String email, String username, String idToken, String name, String surname, Long birthdate) {
         try {
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, USERNAME, username);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS, email);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
-                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD, password);
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD, null);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN, idToken);
             dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
@@ -194,12 +178,11 @@ public class UsernameChoiceFragment extends Fragment {
         }
     }
 
-    private void retrieveUserInformationAndStartActivity(User user, int destination) {
+    private void retrieveUserInformationAndStartActivity(User user) {
         userViewModel.getUserMutableLiveData(user.getEmail(), user.getIdToken(), false).observe(
                 getViewLifecycleOwner(), result -> {
                     if (result.isSuccess()) {
-                        User userWithPreferences = ((Result.UserResponseSuccess) result).getData();
-                        startActivityBasedOnCondition(MainActivity.class, destination);
+                        startActivityBasedOnCondition();
                     } else {
                         userViewModel.setAuthenticationError(true);
                         Snackbar.make(requireActivity().findViewById(android.R.id.content),
@@ -209,8 +192,8 @@ public class UsernameChoiceFragment extends Fragment {
                 });
     }
 
-    private void startActivityBasedOnCondition(Class<?> destinationActivity, int destination) {
-            Intent intent = new Intent(requireContext(), destinationActivity);
+    private void startActivityBasedOnCondition() {
+            Intent intent = new Intent(requireContext(), MainActivity.class);
             startActivity(intent);
             requireActivity().finish();
     }

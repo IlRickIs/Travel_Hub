@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Objects;
 
 import it.unimib.travelhub.GlobalClass;
 import it.unimib.travelhub.R;
@@ -76,25 +77,24 @@ public class RegisterFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
-        return view;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.buttonRegister.setOnClickListener(V -> {
-            String email = binding.txtInputEditUser.getText().toString();
-            String password = binding.txtInputEditPwd.getText().toString();
-            String username = binding.txtInputEditName.getText().toString();
+            String email = Objects.requireNonNull(binding.txtInputEditUser.getText()).toString();
+            String password = Objects.requireNonNull(binding.txtInputEditPwd.getText()).toString();
+            String username = Objects.requireNonNull(binding.txtInputEditName.getText()).toString();
             Log.d(TAG, "passing mail: " + email + " password: " + password + " username: " + username);
             if(isEmailOk(email) && isPasswordOk(password) && isUsernameOk(username)){
                // binding.registerProgressBar.setVisibility(View.VISIBLE);
-                if (!userViewModel.isAuthenticationError()) {
+                if (userViewModel.isAuthenticationSuccess()) {
                     userViewModel.getUserMutableLiveData(username, email, password, false).observe(
                             getViewLifecycleOwner(), result -> {
                                 if (result.isSuccess()) {
@@ -133,7 +133,7 @@ public class RegisterFragment extends Fragment {
     private boolean isEmailOk(String email) {
         ValidationResult validation = myValidator.validateMail(email);
         if (!validation.isSuccess()) {
-            binding.txtInputEditUser.setError(validation.getMessage().toString());
+            binding.txtInputEditUser.setError(validation.getMessage());
             return false;
         } else {
             binding.txtInputEditUser.setError(null);
@@ -156,7 +156,7 @@ public class RegisterFragment extends Fragment {
         if(!validation.isSuccess()){
             //binding.txtInputLayoutPwd.setError(validation.getMessage().toString());
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                    validation.getMessage().toString(), Snackbar.LENGTH_SHORT).show();
+                    validation.getMessage(), Snackbar.LENGTH_SHORT).show();
             return false;
         }else{
             //binding.txtInputLayoutPwd.setError(null);
