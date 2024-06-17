@@ -248,5 +248,6 @@
     <string name="see_all">See All</string>
     <string name="status_ongoing">Ongoing</string>
     <string name="status_future">Scheduled</string>
+    <string name="travels_number">Travels</string>
 
 </resources>

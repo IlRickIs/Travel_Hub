@@ -1,7 +1,6 @@
 package it.unimib.travelhub.ui.main;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
-import static it.unimib.travelhub.util.Constants.FRESH_TIMEOUT;
 import static it.unimib.travelhub.util.Constants.LAST_IMAGE_UPDATE;
 import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
 import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
@@ -37,10 +36,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
@@ -48,16 +43,16 @@ import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
-import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
-import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.ui.travels.TravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
+import it.unimib.travelhub.ui.welcome.UserViewModel;
+import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
 
@@ -78,6 +73,8 @@ public class HomeFragment extends Fragment {
     private Travels doneTravel;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected RecyclerView friendsRecyclerView;
+    private UserViewModel userViewModel;
+    private IUserRepository userRepository;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -99,6 +96,20 @@ public class HomeFragment extends Fragment {
                 ServiceLocator.getInstance().getTravelsRepository(
                         requireActivity().getApplication()
                 );
+
+        userRepository =
+                ServiceLocator.getInstance().getUserRepository(
+                        requireActivity().getApplication()
+                );
+
+        if (userRepository != null) {
+            userViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
 
         if (travelsRepository != null) {
             // This is the way to create a ViewModel with custom parameters
@@ -213,8 +224,8 @@ public class HomeFragment extends Fragment {
 
         travelsViewModel.getTravels(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
             result -> {
+                binding.homeProgressBar.setVisibility(View.GONE);
                 if (result.isSuccess()) {
-                    binding.homeProgressBar.setVisibility(View.GONE);
                     Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
                     travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 

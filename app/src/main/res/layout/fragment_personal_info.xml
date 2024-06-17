@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="12dp">
 
     <Button
         android:id="@+id/buttonBack"
@@ -14,10 +15,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:minWidth="0dp"
         android:minHeight="0dp"
-        android:padding="2dp"
         android:layout_marginBottom="8dp"
         app:icon="@drawable/baseline_arrow_back_ios_new_24"
         app:iconTint="#000000" />
@@ -47,7 +46,6 @@
     <ScrollView
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonBack"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none"
@@ -57,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp"
             >
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -115,7 +112,7 @@
                 android:id="@+id/textViewName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/user_name" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -133,7 +130,7 @@
                 android:id="@+id/textViewSurname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/user_surname" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -150,7 +147,7 @@
                 android:id="@+id/textViewBirth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/user_birth" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -173,7 +170,7 @@
                 android:id="@+id/button_save_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/saveSettings" />
 
             <Button
@@ -181,12 +178,10 @@
                 style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/logout"
                 app:icon="@drawable/baseline_logout_24"
-                app:iconGravity="textStart"
-                tools:layout_editor_absoluteX="88dp"
-                tools:layout_editor_absoluteY="459dp" />
+                app:iconGravity="textStart"/>
 
 
         </LinearLayout>

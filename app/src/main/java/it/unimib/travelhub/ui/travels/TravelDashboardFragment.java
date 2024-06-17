@@ -199,7 +199,7 @@ public class TravelDashboardFragment extends Fragment {
                         return true;
                     });
                     popupMenu.show();
-                });
+                }, userRepository);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(usersRecyclerAdapter);
         if (((TravelActivity) requireActivity()).isTravelCreator){
