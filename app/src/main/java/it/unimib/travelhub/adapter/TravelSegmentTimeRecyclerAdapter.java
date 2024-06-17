@@ -23,10 +23,6 @@ public class TravelSegmentTimeRecyclerAdapter extends RecyclerView.Adapter<Trave
     private static final int VIEW_TYPE_MIDDLE = 1;
     private static final int VIEW_TYPE_BOTTOM = 2;
 
-
-    public TravelSegmentTimeRecyclerAdapter(List<TravelSegment> data) {
-        this.data = data;
-    }
     @NonNull
     @Override
     public TravelSegmentTimeRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

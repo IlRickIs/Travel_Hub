@@ -37,13 +37,6 @@ public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecy
         return textBoxesTexts;
     }
 
-    public void setDestinationsTexts(List<String> destinationsTexts) {
-        this.textBoxesTexts = destinationsTexts;
-    }
-
-    public void setTextBoxesHints(List<String> textBoxesHints) {
-        this.textBoxesHints = textBoxesHints;
-    }
     public List<String> getTextBoxesHints() {
         return textBoxesHints;
     }
@@ -55,18 +48,10 @@ public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecy
         this.onItemClickListener = onItemClickListener;
     }
 
-    public TextBoxesRecyclerAdapter(String hint, List<String> destinationsTexts , OnItemClickListener onItemClickListener) {
-        this.hint = hint;
-        this.textBoxesTexts = destinationsTexts;
-        this.onItemClickListener = onItemClickListener;
-    }
-
-
     @NonNull
     @Override
     public DestinationsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = null;
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_input_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_input_item, parent, false);
         return new DestinationsViewHolder(view);
     }
 
@@ -103,10 +88,10 @@ public class TextBoxesRecyclerAdapter extends RecyclerView.Adapter<TextBoxesRecy
             super(itemView);
 
             Log.d(TAG, "new view");
-            button = (Button) itemView.findViewById(R.id.cancel_input_button);
-            textInputLayout = (TextInputLayout) itemView.findViewById(R.id.txt_layout_in_recyclerview);
-            textInputEditText = (TextInputEditText) itemView.findViewById(R.id.txt_edit_in_recyclerview);
-            textInputEditText.addTextChangedListener((TextWatcher) this);
+            button = itemView.findViewById(R.id.cancel_input_button);
+            textInputLayout = itemView.findViewById(R.id.txt_layout_in_recyclerview);
+            textInputEditText = itemView.findViewById(R.id.txt_edit_in_recyclerview);
+            textInputEditText.addTextChangedListener(this);
             button.setOnClickListener(this);
         }
 

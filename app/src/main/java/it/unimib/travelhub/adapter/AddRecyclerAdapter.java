@@ -12,13 +12,9 @@ import it.unimib.travelhub.R;
 
 public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.ViewHolder>{
 
-    private String[] myDataset;
+    private final String[] myDataset;
 
     private final OnItemClickListener onItemClickListener;
-
-    public String[] getDataSet() {
-        return myDataset;
-    }
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -29,14 +25,6 @@ public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.
         this.onItemClickListener = onItemClickListener;
     }
 
-    public AddRecyclerAdapter(String[] myDataset) {
-        this.myDataset = myDataset;
-        onItemClickListener = null;
-    }
-
-    public void setDataSet(String[] myDataset) {
-        this.myDataset = myDataset;
-    }
     @NonNull
     @Override
     public AddRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,7 +51,7 @@ public class AddRecyclerAdapter extends RecyclerView.Adapter<AddRecyclerAdapter.
             super(view);
             // Define click listener for the DestinationsViewHolder's View
 
-            button = (Button) view.findViewById(R.id.button_add_activity);
+            button = view.findViewById(R.id.button_add_activity);
             button.setOnClickListener(this);
         }
 
