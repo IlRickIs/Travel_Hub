@@ -179,6 +179,7 @@ public class ProfileFragment extends Fragment {
 
                     } else {
                         binding.textViewTravelNumber.setText("0");
+                        binding.textViewDestinationsNumber.setText("0");
                     }
                 });
 

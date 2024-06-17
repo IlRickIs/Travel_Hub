@@ -127,5 +127,6 @@
     <string name="return_string">Return</string>
     <string name="create_destination">Create destination</string>
     <string name="point" translatable="false">point</string>
+    <string name="remove">Remove</string>
 
 </resources>

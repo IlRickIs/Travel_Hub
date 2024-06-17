@@ -34,8 +34,10 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
@@ -43,6 +45,7 @@ import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.ActivityTravelBinding;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.TravelMember;
+import it.unimib.travelhub.model.TravelSegment;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.ui.main.MainActivity;
 import it.unimib.travelhub.util.ServiceLocator;
@@ -75,7 +78,10 @@ public class TravelActivity extends AppCompatActivity {
         }
 
         travel = args.getTravel();
-        oldTravel = new Travels(travel.getId(), travel.getTitle(), travel.getDescription(), travel.getStartDate(), travel.getEndDate(), travel.getMembers(), travel.getDestinations());
+        Log.d(TAG, "Intent members: " + travel.getMembers());
+        List<TravelMember> members = new ArrayList<>(travel.getMembers());
+        List<TravelSegment> destinations = new ArrayList<>(travel.getDestinations());
+        oldTravel = new Travels(travel.getId(), travel.getTitle(), travel.getDescription(), travel.getStartDate(), travel.getEndDate(), members, destinations);
 
 
         isTravelCreator = isUserCreator();
