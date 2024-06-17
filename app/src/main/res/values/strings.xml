@@ -253,5 +253,6 @@
     <string name="app_logo" translatable="false">App logo</string>
     <string name="background">background</string>
     <string name="travel_status">Travel status</string>
+    <string name="travel_add_segment">Add Destination</string>
 
 </resources>
