@@ -112,8 +112,7 @@ public class LoginFragment extends Fragment {
 
         myValidator = ServiceLocator.getInstance().getCredentialsValidator(GlobalClass.getContext());
 
-        IUserRepository userRepository = ServiceLocator.getInstance().
-                getUserRepository(requireActivity().getApplication());
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository();
 
         userViewModel = new ViewModelProvider(
                 requireActivity(),

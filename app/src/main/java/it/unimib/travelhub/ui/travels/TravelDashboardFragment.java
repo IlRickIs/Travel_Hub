@@ -72,9 +72,7 @@ public class TravelDashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         userRepository =
-                ServiceLocator.getInstance().getUserRepository(
-                        requireActivity().getApplication()
-                );
+                ServiceLocator.getInstance().getUserRepository();
 
         if (userRepository != null) {
             userViewModel = new ViewModelProvider(

@@ -134,10 +134,7 @@ public class NewTravelFragment extends Fragment {
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
-        userRepository =
-                ServiceLocator.getInstance().getUserRepository(
-                        requireActivity().getApplication()
-                );
+        userRepository = ServiceLocator.getInstance().getUserRepository();
 
         if (userRepository != null) {
             userViewModel = new ViewModelProvider(

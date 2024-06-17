@@ -1,7 +1,5 @@
 package it.unimib.travelhub.data.user;
 
-import static it.unimib.travelhub.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static it.unimib.travelhub.util.Constants.FIREBASE_USERS_COLLECTION;
 import static it.unimib.travelhub.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static it.unimib.travelhub.util.Constants.INVALID_USER_ERROR;
 import static it.unimib.travelhub.util.Constants.UNEXPECTED_ERROR;
@@ -12,8 +10,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -23,9 +19,8 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+
+import java.util.Objects;
 
 import it.unimib.travelhub.model.User;
 
@@ -145,7 +140,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
             firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithgoogle:success");
+                    Log.d(TAG, "signInWithGoogle:success");
                     FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                     if (firebaseUser != null) {
 
@@ -161,7 +156,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                     }
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithgoogle", task.getException());
+                    Log.w(TAG, "signInWithGoogle", task.getException());
                     userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                 }
             });
@@ -177,29 +172,19 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
             AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
             firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                    if (task.getResult().getAdditionalUserInfo().isNewUser()) {
-                        Log.d(TAG, "l'utente è nuovo");
+                    if (Objects.requireNonNull(task.getResult().getAdditionalUserInfo()).isNewUser()) {
+                        Log.d(TAG, "User is new");
                         googleUserCallback.wasGoogleUserRegistered(1);
                     } else {
-                        Log.d(TAG, "l'utente è già registrato");
+                        Log.d(TAG, "User is already registered");
                         googleUserCallback.wasGoogleUserRegistered(2);
                     }
                 } else {
-                    Log.d(TAG, "errore durante il login con google");
+                    Log.d(TAG, "Error while logging in with Google");
                     googleUserCallback.wasGoogleUserRegistered(0);
                 }
             });
         }
-    }
-
-
-    private String genNewUsername(String username, String email) {
-        String newUsername = username;
-        newUsername = username.replace(" ", "");
-        newUsername.toLowerCase();
-        newUsername = newUsername + email.hashCode();
-        return newUsername;
     }
 
     private String getErrorMessage(Exception exception) {

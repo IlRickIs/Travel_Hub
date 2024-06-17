@@ -133,7 +133,7 @@ public class SettingsActivity extends AppCompatActivity {
         dataEncryptionUtil = new DataEncryptionUtil(this.getApplication());
 
         userRepository = ServiceLocator.getInstance().
-                getUserRepository(this.getApplication());
+                getUserRepository();
         userViewModel = new ViewModelProvider(
                 this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 

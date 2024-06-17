@@ -105,7 +105,7 @@ public class HomeFragment extends Fragment {
         }
 
         userRepository = ServiceLocator.getInstance().
-                getUserRepository(requireActivity().getApplication());
+                getUserRepository();
 
         if (sharedPreferencesUtil == null) {
             sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());

@@ -76,8 +76,7 @@ public class UsernameChoiceFragment extends Fragment {
             Log.d(TAG, "User is null");
         }
 
-        IUserRepository userRepository = ServiceLocator.getInstance().
-                getUserRepository(requireActivity().getApplication());
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository();
 
         userViewModel = new ViewModelProvider(
                 requireActivity(),

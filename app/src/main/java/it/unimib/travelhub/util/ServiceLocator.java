@@ -44,14 +44,12 @@ public class ServiceLocator {
     }
 
 
-    public IUserRepository getUserRepository(Application application) {
-        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
-
+    public IUserRepository getUserRepository() {
         BaseUserAuthenticationRemoteDataSource userRemoteAuthenticationDataSource =
                 new UserAuthenticationRemoteDataSource();
 
         BaseUserDataRemoteDataSource userDataRemoteDataSource =
-                new UserRemoteFirestoreDataSource(sharedPreferencesUtil);
+                new UserRemoteFirestoreDataSource();
 
         BaseRemoteFileStorageSource remoteFileStorageSource = new RemoteFileStorageSource();
 

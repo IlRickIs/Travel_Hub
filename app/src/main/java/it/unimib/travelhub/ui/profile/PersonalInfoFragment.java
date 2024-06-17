@@ -151,7 +151,7 @@ public class PersonalInfoFragment extends Fragment {
         dataEncryptionUtil = new DataEncryptionUtil(requireActivity().getApplication());
 
         userRepository = ServiceLocator.getInstance().
-                getUserRepository(requireActivity().getApplication());
+                getUserRepository();
         userViewModel = new ViewModelProvider(
                 requireActivity(),
                 new UserViewModelFactory(userRepository)).get(UserViewModel.class);

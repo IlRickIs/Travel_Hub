@@ -11,23 +11,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
-import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
-
-    private final SharedPreferencesUtil sharedPreferencesUtil;
-
     private final FirebaseFirestore db;
-
     private static final String TAG = UserRemoteFirestoreDataSource.class.getSimpleName();
-
-    public UserRemoteFirestoreDataSource(SharedPreferencesUtil sharedPreferencesUtil) {
-        this.sharedPreferencesUtil = sharedPreferencesUtil;
+    public UserRemoteFirestoreDataSource() {
         this.db = FirebaseFirestore.getInstance();
     }
     @Override
@@ -49,13 +42,13 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
                                             mapUsernameToId(user);
                                         } else {
                                             Log.d(TAG, "Error adding document", task1.getException());
-                                            userResponseCallback.onFailureFromRemoteDatabase(task1.getException().toString());
+                                            userResponseCallback.onFailureFromRemoteDatabase(Objects.requireNonNull(task1.getException()).toString());
                                         }
                                     });
                         }
                     } else {
                         Log.d(TAG, "Error getting document", task.getException());
-                        userResponseCallback.onFailureFromRemoteDatabase(task.getException().toString());
+                        userResponseCallback.onFailureFromRemoteDatabase(Objects.requireNonNull(task.getException()).toString());
                     }
                 });
 
@@ -83,32 +76,10 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
     @Override
     public void getUserProfileImage(String id, getProfileImagesCallback getProfileImagesCallback) {
         db.runTransaction(transaction -> {
-            String profileImagesURL = null;
             DocumentReference docRef = db.collection(FIREBASE_USERS_COLLECTION).document(id);
-            profileImagesURL = transaction.get(docRef).getString("photoUrl");
-            return profileImagesURL;
+            return transaction.get(docRef).getString("photoUrl");
         }).addOnSuccessListener(getProfileImagesCallback::onProfileImagesSuccess)
                 .addOnFailureListener(getProfileImagesCallback::onProfileImagesFailure);
-    }
-
-    @Override
-    public void getUserFavorite(String idToken) {
-
-    }
-
-    @Override
-    public void getUserPreferences(String idToken) {
-
-    }
-
-    @Override
-    public void saveUserPreferences(String preferences) {
-
-    }
-
-    @Override
-    public void isUsernameAvailable(String username) {
-
     }
 
     @Override
@@ -126,14 +97,9 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
                         }
                     } else {
                         Log.d(TAG, "Error getting document", task.getException());
-                        userResponseCallback.onFailureFromRemoteDatabase(task.getException().toString());
+                        userResponseCallback.onFailureFromRemoteDatabase(Objects.requireNonNull(task.getException()).toString());
                     }
                 });
-    }
-
-
-    public interface UsernameCheckCallback {
-        void onUsernameResponse(Result result);
     }
     @Override
     public void isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback) {
@@ -151,7 +117,7 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
                         }
                     } else {
                         Log.d(TAG, "Error getting document", task.getException());
-                        callback.onUsernameResponse(new Result.Error(task.getException().toString()));
+                        callback.onUsernameResponse(new Result.Error(Objects.requireNonNull(task.getException()).toString()));
                     }
                 });
     }

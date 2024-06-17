@@ -19,25 +19,17 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
-import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
-
-    private final SharedPreferencesUtil sharedPreferencesUtil;
     private final DatabaseReference databaseReference;
-
     private static final String TAG = UserDataRemoteDataSource.class.getSimpleName();
-
-    public UserDataRemoteDataSource(SharedPreferencesUtil sharedPreferencesUtil) {
-        this.sharedPreferencesUtil = sharedPreferencesUtil;
+    public UserDataRemoteDataSource() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
         databaseReference = firebaseDatabase.getReference().getRef();
     }
@@ -52,11 +44,11 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
                     /*databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).child(USERNAME).setValue(user.getUsername())
                             .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
                             .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));*/
-                    user.setUsername(snapshot.child(USERNAME).getValue().toString());
+                    user.setUsername(Objects.requireNonNull(snapshot.child(USERNAME).getValue()).toString());
                     if (snapshot.child("name").getValue() != null)
-                        user.setName(snapshot.child("name").getValue().toString());
+                        user.setName(Objects.requireNonNull(snapshot.child("name").getValue()).toString());
                     if (snapshot.child("surname").getValue() != null)
-                        user.setSurname(snapshot.child("surname").getValue().toString());
+                        user.setSurname(Objects.requireNonNull(snapshot.child("surname").getValue()).toString());
                     if (snapshot.child("birthDate").getValue() != null)
                         user.setBirthDate((Long) snapshot.child("birthDate").getValue());
                     userResponseCallback.onSuccessFromRemoteDatabase(user);
@@ -82,7 +74,7 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d(TAG, "onDataChange");
                 if (snapshot.exists()) {
-                    Log.d(TAG, "Username already taken" + snapshot.getValue().toString());
+                    Log.d(TAG, "Username already taken" + Objects.requireNonNull(snapshot.getValue()));
                     userResponseCallback.onFailureFromRemoteDatabase(USERNAME_NOT_AVAILABLE);
                 } else {
                     Log.d(TAG, "Username available");
@@ -92,7 +84,7 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 userResponseCallback.onFailureFromRemoteDatabase(error.getMessage());
-                Log.d(TAG, error.toString() + "onCancelled");
+                Log.d(TAG, error + "onCancelled");
             }
         });
 
@@ -118,7 +110,7 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
                     usernameCheckCallback.onUsernameResponse(new Result.Error("User not found"));
                 }
             } else {
-                Log.d(TAG, "checkIfUserExists: " + task.getException().getMessage());
+                Log.d(TAG, "checkIfUserExists: " + Objects.requireNonNull(task.getException()).getMessage());
                 //userResponseCallback.onFailureFromRemoteDatabase(task.getException().getMessage());
                 usernameCheckCallback.onUsernameResponse(new Result.Error(task.getException().getMessage()));
             }});
@@ -160,24 +152,5 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
                     Log.d(TAG, "Error while mapping username to id" + e.getLocalizedMessage());
                     userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage());
                 });
-    }
-
-    public void isUsernameAvailable(String username) {
-
-    }
-
-    @Override
-    public void getUserFavorite(String idToken) {
-
-    }
-
-    @Override
-    public void getUserPreferences(String idToken) {
-
-    }
-
-    @Override
-    public void saveUserPreferences(String preferences) {
-
     }
 }
