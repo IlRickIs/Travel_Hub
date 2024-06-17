@@ -298,14 +298,13 @@ public class HomeFragment extends Fragment {
 
         binding.homeOngoingTitle.setText(onGoingTravel.getTitle());
         binding.homeOngoingLocation.setText(onGoingTravel.getDestinations().get(0).getLocation());
-        binding.homeOngoingDates.setText(
+        String dates = new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                .format(onGoingTravel.getStartDate()) + " - " +
                 new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                        .format(onGoingTravel.getStartDate()) + " - " +
-                        new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                                .format(onGoingTravel.getEndDate())
-        );
-
-        binding.homeOngoingNsegremts.setText(onGoingTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
+                        .format(onGoingTravel.getEndDate());
+        binding.homeOngoingDates.setText(dates);
+        String destinations = (onGoingTravel.getDestinations().size() - 1) + " " + getResources().getString(R.string.travel_segment_number);
+        binding.homeOngoingNSegments.setText(destinations);
     }
 
     private void setFutureView(Travels futureTravel) {
@@ -329,7 +328,8 @@ public class HomeFragment extends Fragment {
                 new SimpleDateFormat("dd/MM", requireActivity().getResources().getConfiguration().getLocales().get(0))
                         .format(futureTravel.getStartDate())
         );
-        travel_destinations.setText(futureTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
+        String destinations = (futureTravel.getDestinations().size() - 1) + " " + getResources().getString(R.string.travel_segment_number);
+        travel_destinations.setText(destinations);
 
     }
     private void setPastView(Travels pastTravel) {
@@ -352,7 +352,8 @@ public class HomeFragment extends Fragment {
                 new SimpleDateFormat("dd/MM", requireActivity().getResources().getConfiguration().getLocales().get(0))
                         .format(pastTravel.getEndDate())
         );
-        travel_destinations.setText(pastTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
+        String destinations = (pastTravel.getDestinations().size() - 1) + " " + getResources().getString(R.string.travel_segment_number);
+        travel_destinations.setText(destinations);
 
     }
 

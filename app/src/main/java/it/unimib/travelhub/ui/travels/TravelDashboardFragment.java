@@ -126,7 +126,7 @@ public class TravelDashboardFragment extends Fragment {
 
         binding.travelDuration.setText(String.valueOf(diff / (1000 * 60 * 60 * 24)));
         binding.travelStart.setText(travel.getDestinations().get(0).getLocation());
-        binding.travelDestinations.setText(String.valueOf(travel.getDestinations().size()));
+        binding.travelDestinations.setText(String.valueOf((travel.getDestinations().size() - 1)));
         binding.travelParticipants.setText(String.valueOf(travel.getMembers().size()));
         binding.progressBar.setProgress(progress);
 
@@ -171,6 +171,10 @@ public class TravelDashboardFragment extends Fragment {
         ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
         UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, requireActivity(),
                 (travelMember, seg_long_button) -> {
+                    if (getContext() == null) {
+                        Log.e(TAG, "Context is null");
+                        return;
+                    }
                     PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
                     popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(item -> {
