@@ -88,6 +88,7 @@ public class NewTravelSegment extends Fragment {
         }
 
         Places.initialize(requireContext(), "AIzaSyCFJYe15Sn6wp0A8yYWl3qv8t5pHsxaYUU");
+        @SuppressWarnings("unused")
         PlacesClient placesClient = Places.createClient(requireContext());
     }
 
@@ -123,7 +124,7 @@ public class NewTravelSegment extends Fragment {
         });
 
         saveTravelBtn.setClickable(true);
-       //make it visible appear clikable
+       //make it visible appear clickable
         saveTravelBtn.setAlpha(1f);
 
 

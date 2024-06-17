@@ -71,7 +71,7 @@ public class TravelActivity extends AppCompatActivity {
 
         if (getIntent().getBooleanExtra(TRAVEL_UPDATED, false)) {
             Snackbar.make(TravelActivity.this.findViewById(android.R.id.content),
-                    "Viaggio aggiornato correttamente", Snackbar.LENGTH_SHORT).show();
+                    R.string.travel_updated_success_msg, Snackbar.LENGTH_SHORT).show();
         }
 
         travel = args.getTravel();
@@ -322,7 +322,7 @@ public class TravelActivity extends AppCompatActivity {
         buttonEdit.setOnClickListener(view2 -> {
             if (!isTravelCreator)
                 return;
-            builder.setMessage("Per modificare gli elementi del viaggio, tieni premuto sul campo da modificare.");
+            builder.setMessage(R.string.edit_dialog_msg);
             builder.setCancelable(true);
             builder.setPositiveButton(
                     "Ok",
@@ -337,7 +337,7 @@ public class TravelActivity extends AppCompatActivity {
         buttonDelete.setOnClickListener(view2 -> {
             if (!isTravelCreator)
                 return;
-            builder.setMessage("Sei sicuro di voler cancellare il viaggio?");
+            builder.setMessage(R.string.delete_travel_dialog_msg);
             builder.setCancelable(true);
 
             builder.setPositiveButton(

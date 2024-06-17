@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.PopupMenu;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,6 @@ import android.widget.EditText;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -98,6 +95,7 @@ public class TravelItineraryFragment extends Fragment {
         }
 
         Places.initialize(requireContext(), "AIzaSyCFJYe15Sn6wp0A8yYWl3qv8t5pHsxaYUU");
+        @SuppressWarnings("unused")
         PlacesClient placesClient = Places.createClient(requireContext());
     }
 
@@ -123,7 +121,10 @@ public class TravelItineraryFragment extends Fragment {
         travelLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
         TravelSegmentRecyclerAdapter travelSegmentRecyclerAdapter = new TravelSegmentRecyclerAdapter(
                 (travelSegment, seg_more) -> {
-
+                    if (getContext() == null) {
+                        Log.e(TAG, "Context is null");
+                        return;
+                    }
                     PopupMenu popupMenu = new PopupMenu(getContext(), seg_more);
                     popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(item -> {
@@ -189,6 +190,7 @@ public class TravelItineraryFragment extends Fragment {
 
             AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                     requireActivity().getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+            assert autocompleteFragment != null;
             autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -200,8 +202,8 @@ public class TravelItineraryFragment extends Fragment {
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
                     Log.d("TravelItineraryFragment", "Place: " + place.getLatLng());
-                    seg_location.getEditText().setText(place.getName());
-                    travelSegment.setLatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+                    Objects.requireNonNull(seg_location.getEditText()).setText(place.getName());
+                    travelSegment.setLatLng(Objects.requireNonNull(place.getLatLng()).latitude, place.getLatLng().longitude);
                 }
             });
 
@@ -211,9 +213,9 @@ public class TravelItineraryFragment extends Fragment {
                 travelSegment.setDescription(Objects.requireNonNull(seg_description.getEditText()).getText().toString());
 
                 if (travelSegment.getDateFrom() == null || travelSegment.getDateTo() == null || travelSegment.getLocation().isEmpty() || travelSegment.getLat() == 0 || travelSegment.getLng() == 0 ) {
-                    seg_date_from.setError("Seleziona una data di inizio");
-                    seg_date_to.setError("Seleziona una data di fine");
-                    seg_location.setError("Inserisci una località");
+                    seg_date_from.setError(getString(R.string.select_start_date_error));
+                    seg_date_to.setError(getString(R.string.select_end_date_error));
+                    seg_location.setError(getString(R.string.select_location_error));
                     return;
                 }
                 travel.getDestinations().add(travelSegment);

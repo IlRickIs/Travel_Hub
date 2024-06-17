@@ -1,7 +1,6 @@
 package it.unimib.travelhub.ui.travels;
 
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -15,15 +14,13 @@ import it.unimib.travelhub.R;
 import it.unimib.travelhub.databinding.ActivityEditTravelBinding;
 
 public class EditTravelActivity extends AppCompatActivity {
-
     private AppBarConfiguration appBarConfiguration;
-    private ActivityEditTravelBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityEditTravelBinding.inflate(getLayoutInflater());
+        it.unimib.travelhub.databinding.ActivityEditTravelBinding binding = ActivityEditTravelBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
 
@@ -31,14 +28,9 @@ public class EditTravelActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });
+        binding.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAnchorView(R.id.fab)
+                .setAction("Action", null).show());
     }
 
     @Override

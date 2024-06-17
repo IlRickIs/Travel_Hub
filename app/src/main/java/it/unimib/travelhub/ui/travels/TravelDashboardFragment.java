@@ -210,6 +210,7 @@ public class TravelDashboardFragment extends Fragment {
                                 userViewModel.isUsernameAlreadyTaken(username.getEditText().getText().toString());
 
                                 Observer<Result> observer = new Observer<Result>(){
+                                    @SuppressLint("NotifyDataSetChanged")
                                     @Override
                                     public void onChanged(Result result) {
                                         if (result instanceof Result.Error) {

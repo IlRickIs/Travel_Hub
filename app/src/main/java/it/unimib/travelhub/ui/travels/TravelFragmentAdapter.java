@@ -12,7 +12,7 @@ import it.unimib.travelhub.model.Travels;
 
 public class TravelFragmentAdapter extends FragmentStateAdapter{
 
-    private Travels travel;
+    private final Travels travel;
     public TravelFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Travels travel) {
         super(fragmentManager, lifecycle);
         this.travel = travel;

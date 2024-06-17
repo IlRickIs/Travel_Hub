@@ -1,13 +1,9 @@
 package it.unimib.travelhub.ui.travels;
 
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-
-import java.util.Objects;
 
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.model.Result;

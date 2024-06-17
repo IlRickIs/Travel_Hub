@@ -3,7 +3,6 @@ package it.unimib.travelhub.ui.travels;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_HINTS;
 import static it.unimib.travelhub.util.Constants.DESTINATIONS_TEXTS;
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
-import static it.unimib.travelhub.util.Constants.FRIEND;
 import static it.unimib.travelhub.util.Constants.FRIENDS_HINTS;
 import static it.unimib.travelhub.util.Constants.FRIENDS_TEXTS;
 import static it.unimib.travelhub.util.Constants.ID_TOKEN;
@@ -54,7 +53,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.TextBoxesRecyclerAdapter;
@@ -75,7 +73,6 @@ import it.unimib.travelhub.util.ServiceLocator;
 public class NewTravelFragment extends Fragment {
     private FragmentEditTravelBinding binding;
     private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
-    private TextBoxesRecyclerAdapter friendTextBoxesRecyclerAdapter;
     private static final String TAG = NewTravelFragment.class.getSimpleName();
     final Calendar myCalendar= Calendar.getInstance();
     private List<String> friendTextList;
@@ -84,16 +81,11 @@ public class NewTravelFragment extends Fragment {
     private List<String> friendHintsList;
     private Activity mainActivity;
     private IUserRepository userRepository;
-    private TravelsViewModel travelsViewModel;
     private DataEncryptionUtil dataEncryptionUtil;
-
     private List<TravelMember> memberList;
     private UserViewModel userViewModel;
-    AtomicBoolean exists = new AtomicBoolean(false);
-    public NewTravelFragment() {
-    }
 
-    public static NewTravelFragment newInstance(String param1, String param2) {
+    public static NewTravelFragment newInstance() {
         NewTravelFragment fragment = new NewTravelFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -123,13 +115,7 @@ public class NewTravelFragment extends Fragment {
                         requireActivity().getApplication()
                 );
 
-        if (travelsRepository != null) {
-            // This is the way to create a ViewModel with custom parameters
-            // (see NewsViewModelFactory class for the implementation details)
-            travelsViewModel = new ViewModelProvider(
-                    requireActivity(),
-                    new TravelsViewModelFactory(travelsRepository)).get(TravelsViewModel.class);
-        } else {
+        if (travelsRepository == null) {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
@@ -146,6 +132,7 @@ public class NewTravelFragment extends Fragment {
         }
 
         Places.initialize(requireContext(), "AIzaSyCFJYe15Sn6wp0A8yYWl3qv8t5pHsxaYUU");
+        @SuppressWarnings("unused")
         PlacesClient placesClient = Places.createClient(requireContext());
         memberList = new ArrayList<>();
         TravelMember creator = new TravelMember(TravelMember.Role.CREATOR);
@@ -155,10 +142,10 @@ public class NewTravelFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentEditTravelBinding.inflate(inflater, container, false);
-        mainActivity = (Activity) requireActivity();
+        mainActivity = requireActivity();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
@@ -262,9 +249,7 @@ public class NewTravelFragment extends Fragment {
             }
         });
 
-        LinearLayoutManager mLayoutManager =
-                new LinearLayoutManager(requireContext(),
-                        LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager mLayoutManager;
 
        /* binding.recyclerDestinations.setLayoutManager(mLayoutManager);
         binding.recyclerDestinations.setAdapter(textBoxesRecyclerAdapter);
@@ -294,6 +279,7 @@ public class NewTravelFragment extends Fragment {
                             username.setError(null);
                             userViewModel.isUsernameAlreadyTaken(username.getEditText().getText().toString());
                             Observer<Result> observer = new Observer<Result>(){
+                                @SuppressLint("NotifyDataSetChanged")
                                 @Override
                                 public void onChanged(Result result) {
                                     if (result instanceof Result.Error) {
@@ -304,7 +290,7 @@ public class NewTravelFragment extends Fragment {
                                         Log.d(TAG, "User found: " + user);
                                         if (user != null) {
                                             memberList.add(new TravelMember(user.getUsername(), user.getIdToken(), TravelMember.Role.MEMBER));
-                                            binding.friendsRecyclerView.getAdapter().notifyDataSetChanged();
+                                            Objects.requireNonNull(binding.friendsRecyclerView.getAdapter()).notifyDataSetChanged();
                                             Log.d(TAG, "Member list: " + memberList);
                                             bottomSheetDialog.dismiss();
                                         } else {
@@ -330,6 +316,9 @@ public class NewTravelFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(memberList, 1, requireActivity(),
                 (travelMember, seg_long_button) -> {
+                    if (getContext() == null) {
+                        return;
+                    }
                     PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
                     popupMenu.getMenuInflater().inflate(R.menu.edit_travel_member, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(item -> {
@@ -385,13 +374,12 @@ public class NewTravelFragment extends Fragment {
         binding.showAutocompleteLocatorLayout.setOnClickListener(v -> {
             Log.d("TravelItineraryFragment", "autocompleteNewLayout clicked");
             binding.autocompleteNewLayout.setVisibility(View.VISIBLE);
-            binding.autocompleteNewLayout.setOnClickListener(v1 -> {
-                binding.autocompleteNewLayout.setVisibility(View.GONE);
-            });
+            binding.autocompleteNewLayout.setOnClickListener(v1 -> binding.autocompleteNewLayout.setVisibility(View.GONE));
         });
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(view.findViewById(R.id.autocomplete_new_fragment).getId());
+        assert autocompleteFragment != null;
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -405,7 +393,7 @@ public class NewTravelFragment extends Fragment {
             public void onPlaceSelected(@NonNull Place place) {
                 Log.d("TravelItineraryFragment", "Place: " + place.getLatLng());
                 binding.departureFormEditText.setText(place.getName());
-                binding.latitudeEditText.setText(String.valueOf(place.getLatLng().latitude));
+                binding.latitudeEditText.setText(String.valueOf(Objects.requireNonNull(place.getLatLng()).latitude));
                 binding.longitudeEditText.setText(String.valueOf(place.getLatLng().longitude));
                 binding.autocompleteNewLayout.setVisibility(View.GONE);
             }
@@ -428,6 +416,7 @@ public class NewTravelFragment extends Fragment {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+    @SuppressLint("NotifyDataSetChanged")
     private void removeUser(TravelMember travelMember){
         if (travelMember.getRole() == TravelMember.Role.CREATOR){
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
@@ -435,7 +424,7 @@ public class NewTravelFragment extends Fragment {
             return;
         }
         memberList.remove(travelMember);
-        binding.friendsRecyclerView.getAdapter().notifyDataSetChanged();
+        Objects.requireNonNull(binding.friendsRecyclerView.getAdapter()).notifyDataSetChanged();
     }
 
     public Travels buildTravel(){
@@ -443,20 +432,20 @@ public class NewTravelFragment extends Fragment {
 
         String userId = getLoggedUsername();
         String travelId = buildTravelId(userId);
-        String title = binding.titleFormEditText.getText().toString();
-        String description = binding.descriptionFormEditText.getText().toString();
+        String title = Objects.requireNonNull(binding.titleFormEditText.getText()).toString();
+        String description = Objects.requireNonNull(binding.descriptionFormEditText.getText()).toString();
 
-        String start = binding.editTxtFromForm.getText().toString() + " 00:00:00";
-        String end = binding.editTxtToForm.getText().toString() + " 23:59:59";
+        String start = Objects.requireNonNull(binding.editTxtFromForm.getText()) + " 00:00:00";
+        String end = Objects.requireNonNull(binding.editTxtToForm.getText()) + " 23:59:59";
         Date startDate = parseStringToDate(start);
         Date endDate = parseStringToDate(end);
         if(startDate == null || endDate == null){
             throw new RuntimeException("Error while parsing dates, impossible to build the travel");
         }
 
-        String departure = binding.departureFormEditText.getText().toString();
-        double lat = Double.parseDouble(binding.latitudeEditText.getText().toString());
-        double lng = Double.parseDouble(binding.longitudeEditText.getText().toString());
+        String departure = Objects.requireNonNull(binding.departureFormEditText.getText()).toString();
+        double lat = Double.parseDouble(Objects.requireNonNull(binding.latitudeEditText.getText()).toString());
+        double lng = Double.parseDouble(Objects.requireNonNull(binding.longitudeEditText.getText()).toString());
 
         List<TravelSegment> destinations = buildDestinationsList(departure, lat, lng);
         travel.setId(Long.parseLong(travelId));
@@ -475,7 +464,7 @@ public class NewTravelFragment extends Fragment {
         TravelSegment start = new TravelSegment(departure);
 
         start.setLatLng(lat, lng);
-        start.setDateTo(parseStringToDate(binding.editTxtFromForm.getText().toString() + " 00:00:00"));
+        start.setDateTo(parseStringToDate(Objects.requireNonNull(binding.editTxtFromForm.getText()) + " 00:00:00"));
         destinations.add(start);
         return destinations;
     }
@@ -491,8 +480,7 @@ public class NewTravelFragment extends Fragment {
     }
 
     public String buildTravelId(String userId){
-        String hashId = (userId + System.currentTimeMillis()).hashCode() + "";
-        return hashId;
+        return String.valueOf((userId + System.currentTimeMillis()).hashCode());
     }
     public String getLoggedUsername(){
         String userId;
@@ -500,9 +488,7 @@ public class NewTravelFragment extends Fragment {
             userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
                     USERNAME);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
         return userId;
@@ -514,9 +500,7 @@ public class NewTravelFragment extends Fragment {
             userId = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(
                     ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
                     ID_TOKEN);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
         return userId;
@@ -525,25 +509,25 @@ public class NewTravelFragment extends Fragment {
     private boolean checkNullValues() {
         boolean isNull = false;
         //mandatory fields are title, from, to, departure, destinations
-        if (binding.titleFormEditText.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(binding.titleFormEditText.getText()).toString().isEmpty()) {
             binding.titleFormEditText.setError(getString(R.string.title_empty_error));
             isNull = true;
         }else{
             binding.titleFormEditText.setError(null);
         }
-        if (binding.editTxtFromForm.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(binding.editTxtFromForm.getText()).toString().isEmpty()) {
             binding.editTxtFromForm.setError(getString(R.string.date_empty_error));
             isNull = true;
         }else{
             binding.editTxtFromForm.setError(null);
         }
-        if (binding.editTxtToForm.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(binding.editTxtToForm.getText()).toString().isEmpty()) {
             binding.editTxtToForm.setError(getString(R.string.date_empty_error));
             isNull = true;
         }else{
             binding.editTxtToForm.setError(null);
         }
-        if (binding.departureFormEditText.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(binding.departureFormEditText.getText()).toString().isEmpty()) {
             binding.departureFormEditText.setError(getString(R.string.departure_empty_error));
             isNull = true;
         }else{
@@ -552,21 +536,13 @@ public class NewTravelFragment extends Fragment {
         return isNull;
     }
 
-    private void updateItem(TextBoxesRecyclerAdapter adapter, int id){
-        adapter.getTextBoxesHints().add(getString(id));
-        adapter.getDestinationsTexts().add("");
-        adapter.notifyDataSetChanged();
-}
+    @SuppressLint("NotifyDataSetChanged")
     private void removeItem(TextBoxesRecyclerAdapter adapter, int position) {
         adapter.getTextBoxesHints().remove(position);
         adapter.getDestinationsTexts().remove(position);
         adapter.notifyDataSetChanged();
-}
-    private void printdataset(List<String> dataset) {
-        for (String s : dataset) {
-           Log.d(TAG, "printdataset: " + s);
-        }
     }
+
 
     @Override
     public void onDestroy() {

@@ -253,5 +253,11 @@
     <string name="background">background</string>
     <string name="travel_status">Travel status</string>
     <string name="travel_add_segment">Add Destination</string>
+    <string name="travel_updated_success_msg">Travel updated successfully</string>
+    <string name="edit_dialog_msg">To edit trip items, press and hold the field you want to edit.</string>
+    <string name="delete_travel_dialog_msg">Are you sure you want to cancel your trip?</string>
+    <string name="select_start_date_error">Select a start date</string>
+    <string name="select_end_date_error">Select a end date</string>
+    <string name="select_location_error">Enter a location</string>
 
 </resources>

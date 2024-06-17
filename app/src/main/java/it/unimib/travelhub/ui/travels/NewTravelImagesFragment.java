@@ -37,7 +37,7 @@ public class NewTravelImagesFragment extends Fragment {
 
     private Uri capturedImageUri;
 
-    private ActivityResultLauncher<Intent> mGetContent = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+    private final ActivityResultLauncher<Intent> mGetContentFromCam = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
@@ -55,7 +55,7 @@ public class NewTravelImagesFragment extends Fragment {
                 }
             });
 
-    private ActivityResultLauncher<String> mGetContentFromGallery = registerForActivityResult(new ActivityResultContracts.GetContent(),
+    private final ActivityResultLauncher<String> mGetContentFromGallery = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
                 public void onActivityResult(Uri uri) {
@@ -67,7 +67,7 @@ public class NewTravelImagesFragment extends Fragment {
                 }
             });
 
-    private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
         if(isGranted){
             Log.d(TAG, "Permission for camera granted");
         }else{
@@ -96,7 +96,7 @@ public class NewTravelImagesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentEditTravelImagesBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -108,7 +108,10 @@ public class NewTravelImagesFragment extends Fragment {
 
         makeFolder(dir);
         binding.cameraButton.setOnClickListener(v -> {
-
+            if (getContext() == null) {
+                Log.e(TAG, "Context is null");
+                return;
+            }
             if(ContextCompat.checkSelfPermission(
                     getContext(), android.Manifest.permission.CAMERA) ==
                     PackageManager.PERMISSION_GRANTED) {
@@ -128,7 +131,7 @@ public class NewTravelImagesFragment extends Fragment {
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageUri);
             cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            mGetContent.launch(cameraIntent);
+            mGetContentFromCam.launch(cameraIntent);
 
         });
 
@@ -146,7 +149,8 @@ public class NewTravelImagesFragment extends Fragment {
         String fileName = dir + count + ".png";
         File newFile = new File(fileName);
         try {
-            newFile.createNewFile();
+            if(newFile.createNewFile())
+                Log.d(TAG, "File created");
         } catch (Exception e) {
             Log.d(TAG, "Error creating file");
         }
@@ -155,8 +159,8 @@ public class NewTravelImagesFragment extends Fragment {
     private void makeFolder(String dir) {
         File newFolder = new File(dir);
         if(!newFolder.exists()){
-            newFolder.mkdir();
-            Log.d(TAG, "Folder created");
+            if(!newFolder.mkdir())
+                Log.e(TAG, "Error creating folder");
         }else{
             Log.d(TAG, "Folder already exists");
         }
@@ -166,7 +170,6 @@ public class NewTravelImagesFragment extends Fragment {
     private void displayPicture(Uri uri, View view){
         if(view == null){
             Log.d(TAG, "View is null");
-            return;
         }else if(view instanceof ImageView){
             ((ImageView) view).setImageURI(uri);
         }
