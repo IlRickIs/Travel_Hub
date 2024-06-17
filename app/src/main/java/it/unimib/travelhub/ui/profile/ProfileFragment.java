@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -51,6 +53,7 @@ public class ProfileFragment extends Fragment {
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
     private TravelsViewModel travelsViewModel;
+    private ActivityResultLauncher<Intent> profileUpdateLauncher;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -82,6 +85,18 @@ public class ProfileFragment extends Fragment {
             sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
         }
 
+        profileUpdateLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == SettingsActivity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null && data.getBooleanExtra("profile_updated", false)) {
+                            setProfileView();
+                        }
+                    }
+                }
+        );
+
     }
 
     @Override
@@ -89,6 +104,11 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false);
+        setProfileView();
+        return binding.getRoot();
+    }
+
+    private void setProfileView() {
         try {
             username = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
@@ -121,7 +141,6 @@ public class ProfileFragment extends Fragment {
         binding.textViewUsername.setText(username);
         binding.textViewName.setText(name);
         binding.textViewSurname.setText(surname);
-        return binding.getRoot();
     }
 
     @Override
@@ -162,9 +181,9 @@ public class ProfileFragment extends Fragment {
                     }
                 });
 
-        binding.buttonMenu.setOnClickListener(view1 -> {
-            Intent intent = new Intent(requireContext(), SettingsActivity.class);
-            startActivity(intent);
+        binding.settingsButton.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), SettingsActivity.class);
+            profileUpdateLauncher.launch(intent);
         });
 
     }
