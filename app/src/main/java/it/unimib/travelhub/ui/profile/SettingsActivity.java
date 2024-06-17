@@ -310,9 +310,10 @@ public class SettingsActivity extends AppCompatActivity {
             });
         });
 
-        binding.buttonBack.setOnClickListener(v -> this.getOnBackPressedDispatcher().onBackPressed());
-
         binding.buttonBack.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("profile_updated", true);
+            setResult(RESULT_OK, resultIntent);
             finish();
             this.getOnBackPressedDispatcher().onBackPressed();
         });

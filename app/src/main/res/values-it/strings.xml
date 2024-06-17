@@ -148,6 +148,8 @@
     <string name="status_ongoing">In Corso</string>
     <string name="status_future">In Programma</string>
     <string name="travels_number">Viaggi</string>
+    <string name="background">sfondo</string>
+    <string name="travel_status">Stato viaggio</string>
 
 
 </resources>

@@ -126,29 +126,11 @@ public class TravelDashboardFragment extends Fragment {
 
         binding.travelDuration.setText(String.valueOf(diff / (1000 * 60 * 60 * 24)));
         binding.travelStart.setText(travel.getDestinations().get(0).getLocation());
-        binding.travelDestinations.setText(String.valueOf(travel.getDestinations().size()));
+        binding.travelDestinations.setText(String.valueOf((travel.getDestinations().size() - 1)));
         binding.travelParticipants.setText(String.valueOf(travel.getMembers().size()));
         binding.progressBar.setProgress(progress);
 
 
-        RecyclerView recyclerView = binding.friendsRecyclerView;
-        mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
-        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, requireActivity(),
-                (travelMember, seg_long_button) -> {
-                    PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
-                    popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
-                    popupMenu.setOnMenuItemClickListener(item -> {
-                        // Toast message on menu item clicked
-                        if (item.getItemId() == R.id.delete_segment) {
-                            remove_participant(travelMember);
-                        }
-                        return true;
-                    });
-                    popupMenu.show();
-            }, userRepository);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(usersRecyclerAdapter);
     }
 
     private void editTravel() {
@@ -189,6 +171,10 @@ public class TravelDashboardFragment extends Fragment {
         ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
         UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, requireActivity(),
                 (travelMember, seg_long_button) -> {
+                    if (getContext() == null) {
+                        Log.e(TAG, "Context is null");
+                        return;
+                    }
                     PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
                     popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(item -> {

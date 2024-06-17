@@ -249,5 +249,9 @@
     <string name="status_ongoing">Ongoing</string>
     <string name="status_future">Scheduled</string>
     <string name="travels_number">Travels</string>
+    <string name="travel_hub" translatable="false">Travel Hub</string>
+    <string name="app_logo" translatable="false">App logo</string>
+    <string name="background">background</string>
+    <string name="travel_status">Travel status</string>
 
 </resources>

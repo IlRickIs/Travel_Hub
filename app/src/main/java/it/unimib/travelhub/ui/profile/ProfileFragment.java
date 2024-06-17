@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -45,12 +47,13 @@ import it.unimib.travelhub.util.SharedPreferencesUtil;
  */
 public class ProfileFragment extends Fragment {
     private final String TAG = ProfileFragment.class.getSimpleName();
-    private String name, surname, username, email;
+    private String name, surname, username;
     private FragmentProfileBinding binding;
     private DataEncryptionUtil dataEncryptionUtil;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
     private TravelsViewModel travelsViewModel;
+    private ActivityResultLauncher<Intent> profileUpdateLauncher;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -67,7 +70,6 @@ public class ProfileFragment extends Fragment {
                 ServiceLocator.getInstance().getTravelsRepository(
                         requireActivity().getApplication()
                 );
-
         if (travelsRepository != null) {
             // This is the way to create a ViewModel with custom parameters
             // (see NewsViewModelFactory class for the implementation details)
@@ -82,6 +84,18 @@ public class ProfileFragment extends Fragment {
             sharedPreferencesUtil = new SharedPreferencesUtil(requireActivity().getApplication());
         }
 
+        profileUpdateLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == SettingsActivity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null && data.getBooleanExtra("profile_updated", false)) {
+                            setProfileView();
+                        }
+                    }
+                }
+        );
+
     }
 
     @Override
@@ -89,6 +103,11 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false);
+        setProfileView();
+        return binding.getRoot();
+    }
+
+    private void setProfileView() {
         try {
             username = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "username");
@@ -96,8 +115,6 @@ public class ProfileFragment extends Fragment {
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_name");
             surname = dataEncryptionUtil.
                     readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "user_surname");
-            email = dataEncryptionUtil.
-                    readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, "email_address");
         } catch (Exception e) {
             String TAG = "ProfileFragment";
             Log.e(TAG, "Error while reading data from encrypted shared preferences", e);
@@ -119,7 +136,6 @@ public class ProfileFragment extends Fragment {
         binding.textViewUsername.setText("@" + username);
         binding.textViewName.setText(name);
         binding.textViewSurname.setText(surname);
-        return binding.getRoot();
     }
 
     @Override
@@ -161,14 +177,13 @@ public class ProfileFragment extends Fragment {
                         binding.viewPagerProfile.setAdapter(myFragmentAdapter);
 
                     } else {
-                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+                        binding.textViewTravelNumber.setText("0");
                     }
                 });
 
-        binding.buttonMenu.setOnClickListener(view1 -> {
-            Intent intent = new Intent(requireContext(), SettingsActivity.class);
-            startActivity(intent);
+        binding.settingsButton.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), SettingsActivity.class);
+            profileUpdateLauncher.launch(intent);
         });
 
     }

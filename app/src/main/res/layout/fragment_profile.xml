@@ -48,7 +48,7 @@
         </androidx.cardview.widget.CardView>
 
         <Button
-            android:id="@+id/buttonMenu"
+            android:id="@+id/settingsButton"
             style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

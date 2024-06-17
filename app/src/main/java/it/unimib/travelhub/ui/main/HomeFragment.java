@@ -36,6 +36,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
@@ -43,8 +47,10 @@ import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
+import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
@@ -97,20 +103,6 @@ public class HomeFragment extends Fragment {
                         requireActivity().getApplication()
                 );
 
-        userRepository =
-                ServiceLocator.getInstance().getUserRepository(
-                        requireActivity().getApplication()
-                );
-
-        if (userRepository != null) {
-            userViewModel = new ViewModelProvider(
-                    requireActivity(),
-                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-        } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
-        }
-
         if (travelsRepository != null) {
             // This is the way to create a ViewModel with custom parameters
             // (see NewsViewModelFactory class for the implementation details)
@@ -122,7 +114,7 @@ public class HomeFragment extends Fragment {
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
-        IUserRepository userRepository = ServiceLocator.getInstance().
+        userRepository = ServiceLocator.getInstance().
                 getUserRepository(requireActivity().getApplication());
 
         if (sharedPreferencesUtil == null) {
@@ -191,7 +183,6 @@ public class HomeFragment extends Fragment {
                     getString(R.string.travel_added_success),
                     Snackbar.LENGTH_SHORT).show();
             intent.removeExtra(TRAVEL_ADDED);
-            sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_IMAGE_UPDATE, null);
         }
 
         if (intent.getBooleanExtra(TRAVEL_DELETED, false)) {
@@ -199,19 +190,11 @@ public class HomeFragment extends Fragment {
                     getString(R.string.travel_deleted_success),
                     Snackbar.LENGTH_SHORT).show();
             intent.removeExtra(TRAVEL_DELETED);
-            sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_IMAGE_UPDATE, null);
         }
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE) != null) {
             lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE);
-        }
-
-        String lastImagesUpdate;
-        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_IMAGE_UPDATE) != null) {
-            lastImagesUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, LAST_IMAGE_UPDATE);
-        } else {
-            lastImagesUpdate = "0";
         }
 
         friendsRecyclerView = binding.friendsRecyclerView;
@@ -229,9 +212,6 @@ public class HomeFragment extends Fragment {
                     Log.d(TAG, "TravelsResponse: " + ((Result.TravelsResponseSuccess) result).getData());
                     travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
 
-                    Log.d(TAG, "TravelsResponse: " + travelsResponse.getDoneTravelsList());
-
-                    Log.d(TAG, "Setting home view");
                     onGoingTravel = travelsResponse.getOnGoingTravel();
                     futureTravel = travelsResponse.getFutureTravel();
                     doneTravel = travelsResponse.getDoneTravel();
@@ -328,14 +308,13 @@ public class HomeFragment extends Fragment {
 
         binding.homeOngoingTitle.setText(onGoingTravel.getTitle());
         binding.homeOngoingLocation.setText(onGoingTravel.getDestinations().get(0).getLocation());
-        binding.homeOngoingDates.setText(
+        String dates = new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
+                .format(onGoingTravel.getStartDate()) + " - " +
                 new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                        .format(onGoingTravel.getStartDate()) + " - " +
-                        new SimpleDateFormat("dd/MM/yyyy", requireActivity().getResources().getConfiguration().getLocales().get(0))
-                                .format(onGoingTravel.getEndDate())
-        );
-
-        binding.homeOngoingNsegremts.setText(onGoingTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
+                        .format(onGoingTravel.getEndDate());
+        binding.homeOngoingDates.setText(dates);
+        String destinations = (onGoingTravel.getDestinations().size() - 1) + " " + getResources().getString(R.string.travel_segment_number);
+        binding.homeOngoingNSegments.setText(destinations);
     }
 
     private void setFutureView(Travels futureTravel) {
@@ -359,7 +338,8 @@ public class HomeFragment extends Fragment {
                 new SimpleDateFormat("dd/MM", requireActivity().getResources().getConfiguration().getLocales().get(0))
                         .format(futureTravel.getStartDate())
         );
-        travel_destinations.setText(futureTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
+        String destinations = (futureTravel.getDestinations().size() - 1) + " " + getResources().getString(R.string.travel_segment_number);
+        travel_destinations.setText(destinations);
 
     }
     private void setPastView(Travels pastTravel) {
@@ -382,7 +362,8 @@ public class HomeFragment extends Fragment {
                 new SimpleDateFormat("dd/MM", requireActivity().getResources().getConfiguration().getLocales().get(0))
                         .format(pastTravel.getEndDate())
         );
-        travel_destinations.setText(pastTravel.getDestinations().size() + " " + getResources().getString(R.string.travel_segment_number));
+        String destinations = (pastTravel.getDestinations().size() - 1) + " " + getResources().getString(R.string.travel_segment_number);
+        travel_destinations.setText(destinations);
 
     }
 
