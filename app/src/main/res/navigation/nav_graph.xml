@@ -59,29 +59,6 @@
         android:name="it.unimib.travelhub.ui.travels.AddTravelActivity"
         android:label="AddTravelActivity"
         tools:layout="@layout/activity_add_travel"/>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="it.unimib.travelhub.ui.profile.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
-    <fragment
-        android:id="@+id/subscriptionFragment"
-        android:name="it.unimib.travelhub.ui.profile.SubscriptionFragment"
-        android:label="fragment_subscription"
-        tools:layout="@layout/fragment_subscription" />
-    <fragment
-        android:id="@+id/privacyAndSecurityFragment"
-        android:name="it.unimib.travelhub.ui.profile.PrivacyAndSecurityFragment"
-        android:label="fragment_privacy_and_security"
-        tools:layout="@layout/fragment_privacy_and_security" />
-    <fragment
-        android:id="@+id/personalInfoFragment"
-        android:name="it.unimib.travelhub.ui.profile.PersonalInfoFragment"
-        android:label="PersonalInfoFragment" >
-        <action
-            android:id="@+id/action_personalInfoFragment_to_welcomeActivity"
-            app:destination="@id/welcomeActivity" />
-    </fragment>
     <activity
         android:id="@+id/travelActivity"
         android:name="it.unimib.travelhub.ui.travels.TravelActivity"

@@ -133,7 +133,8 @@ public class ProfileFragment extends Fragment {
                 Log.d(TAG, "Error while reading profile image", e);
             }
         }
-        binding.textViewUsername.setText("@" + username);
+        String atUsername = "@" + username;
+        binding.textViewUsername.setText(atUsername);
         binding.textViewName.setText(name);
         binding.textViewSurname.setText(surname);
     }
@@ -156,7 +157,7 @@ public class ProfileFragment extends Fragment {
                         binding.textViewTravelNumber.setText(String.valueOf(travelsResponse.getTravelsList().size()));
                         int totDestinations = 0;
                         for(Travels travel: travelsResponse.getTravelsList()){
-                            totDestinations += travel.getDestinations().size();
+                            totDestinations += (travel.getDestinations().size() - 1);
                         }
                         binding.textViewDestinationsNumber.setText(String.valueOf(totDestinations));
 
