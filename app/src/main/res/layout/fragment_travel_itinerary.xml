@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:visibility="gone"
-        android:text="@string/travel_add_segment"
+        android:text="@string/add_destination"
         app:icon="@drawable/baseline_add_34"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

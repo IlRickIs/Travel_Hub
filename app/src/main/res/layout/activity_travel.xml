@@ -87,7 +87,7 @@
                         android:background="@null"
                         android:drawablePadding="12dp"
                         android:focusable="false"
-                        android:text="@string/travel_title"
+                        android:text="@string/title"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@id/travel_data"

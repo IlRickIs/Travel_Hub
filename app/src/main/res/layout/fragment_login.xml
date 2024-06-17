@@ -32,7 +32,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:hint="@string/app_login_user_hint"
+                    android:hint="@string/email"
                     android:inputType="textWebEmailAddress"
                     android:textColorHint="@color/material_dynamic_neutral70"
                     tools:ignore="VisualLintTextFieldSize" />

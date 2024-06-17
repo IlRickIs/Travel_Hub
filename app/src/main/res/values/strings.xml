@@ -1,20 +1,14 @@
 <resources>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
 
-    <string name="app_name">Travel Hub</string>
-    <string name="app_login_user_hint">Email</string>
-    <string name="app_login_pwd_hint">Password</string>
-    <string name="community_nav">Community</string>
+    <string name="app_name" translatable="false">Travel Hub</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="app_login_pwd_hint" translatable="false">Password</string>
     <string name="map_nav">Map</string>
     <string name="profile_nav">Profile</string>
-    <string name="home_nav">Home</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="add_nav">Add</string>
+    <string name="home_nav" translatable="false">Home</string>
 
-    <string name="forgot_password">Forgot password?</string>
     <string name="login">Login</string>
-    <string name="logout">Logout</string>
+    <string name="logout" translatable="false">Logout</string>
     <string name="logout_message">Are you sure you want to logout?</string>
     <string name="txt_or">or</string>
     <string name="google_login">Login with Google</string>
@@ -22,7 +16,7 @@
     <string name="new_account">New to Travel Hub?</string>
 
     <string name="error_email">Email format not valid</string>
-    <string name="check_login_data_message">data may be wrong</string>
+    <string name="check_login_data_message">Data may be wrong</string>
 
     <string name="pwd_error_numberOfcharacters">Password must be 6 characters or more</string>
     <string name="pwd_error_capitalLetter">The password must contain at least one capital letter</string>
@@ -31,24 +25,18 @@
     <string name="pwd_error_specialCharacter">The password must contain at least one special character</string>
     <string name="pwd_valid">Password is valid</string>
     <string name="mail_valid">Mail is valid</string>
-    <string name="name_register">Username</string>
-    <string name="email_register">Email</string>
-    <string name="register_buttonRegister">Register</string>
-    <string name="error_login_password_message">the password is invalid</string>
-    <string name="error_login_user_message">there is no user record corresponding to this identifier</string>
-    <string name="unexpected_error">unexpected error</string>
-    <string name="error_user_collision_message">this email address is already in use by another account</string>
-    <string name="error_empty_username">empty username</string>
+    <string name="error_login_password_message">The password is invalid</string>
+    <string name="error_login_user_message">There is no user record corresponding to this identifier</string>
+    <string name="unexpected_error" translatable="false">unexpected error</string>
+    <string name="error_user_collision_message">This email address is already in use by another account</string>
+    <string name="error_empty_username">Empty username</string>
     <string name="error_no_google_account_found_message">No Google accounts have been found</string>
-    <string name="error_username_not_available">username already taken</string>
+    <string name="error_username_not_available">Username already taken</string>
 
-    <string name="viewProfile">View Profile</string>
-    <string name="personal_informations">Personal Informations</string>
     <string name="username" translatable="false">Username</string>
     <string name="user_name">Name</string>
     <string name="user_surname">Surname</string>
     <string name="user_birth">Birth</string>
-    <string name="user_email" translatable="false">Email*</string>
 
 
     <!-- Travel -->
@@ -56,60 +44,22 @@
     <string name="travel_tab_dashboard">Dashboard</string>
     <string name="travel_tab_itinerary">Itinerary</string>
 
-    <string name="travel_title">Title*</string>
-    <string name="travel_title_hint">Title</string>
-    <string name="travel_no_description">Scrivi una descrizione del tuo viaggio. Raccontaci qualcosa a riguardo!</string>
+    <string name="travel_no_description">Write a description of your trip. Tell us something about it!</string>
     <string name="travel_edit">Edit Travel</string>
     <string name="travel_delete">Delete Travel</string>
     <string name="travel_departure">Departure</string>
-    <string name="travel_departure_hint">Departure</string>
-    <string name="add_travel">Add Travel</string>
-    <string name="travel_no_title">Travel has no title</string>
-    <string name="travel_description_hint">Descriprion</string>
     <string name="travel_duration">Duration</string>
     <string name="travel_progress">Progress</string>
     <string name="travel_participants">Participants</string>
-    <string name="travel_description">Description</string>
 
     <string name="travel_segment_number">Destinations</string>
     <string name="travel_segment_no_date">No date</string>
 
 
     <string name="error_delete_participant">Error deleting participant, cannot delete the travel Creator</string>
-
-
-    <!-- Travel -->
-
-
-
-    <string name="subscription">Subscription</string>
-    <string name="settings">Settings</string>
-    <string name="general">General</string>
-    <string name="theme">Theme</string>
-    <string name="language">Language</string>
-    <string name="notifications">Notifications</string>
-    <string name="push_notifications">Push Notifications</string>
-    <string name="email_notifications">Email Notifications</string>
-    <string name="new_message">New Message</string>
-    <string name="new_updates">New Updates</string>
-    <string name="Advertising">Advertising</string>
     <string name="saveSettings">Save Settings</string>
 
-    <string name="privacyAndSecurity">Privacy and Security</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="return_to_the_previous_screen">Return to the previous screen</string>
     <string name="from">From</string>
     <string name="to">To</string>
@@ -119,80 +69,25 @@
     <string name="from_need">From*</string>
     <string name="description">Description</string>
     <string name="title_activity_add_travel" translatable="false">AddTravel</string>
-    <string name="title_home" translatable="false">Home</string>
-    <string name="title_dashboard" translatable="false">Dashboard</string>
-    <string name="title_notifications" translatable="false">Notifications</string>
     <string name="travel_images">Travel images</string>
     <string name="edit">Edit</string>
     <string name="map_preview">Map preview</string>
 
-    <string name="ongoing_travel">Ongoing Travel</string>
     <string name="other_travels">Other Travels</string>
 
-
-
-    <string name="dash">-</string>
     <string name="destination">Destination</string>
     <string name="add_destination">Add destination</string>
-    <string name="add_friends_username">Add friends usernames</string>
-    <string name="update_from_gallery">Update from gallery</string>
-    <string name="open_camera" translatable="false">open camera</string>
-    <string name="title_empty_error" translatable="false">Empty title</string>
-    <string name="date_empty_error" translatable="false">Date is missing</string>
-    <string name="departure_empty_error" translatable="false">Empty departure location</string>
-    <string name="destination_error" translatable="false">Empty destination location</string>
-    <string name="personal_info_description">In this section you can view your personal information, such as name, email address and telephone number. If you wish to update or change this information, you can do so easily by clicking on the different text fields. Keep your data always up to date for a better and personalized experience.</string>
+    <string name="title_empty_error">Empty title</string>
+    <string name="date_empty_error">Date is missing</string>
+    <string name="departure_empty_error">Empty departure location</string>
+    <string name="destination_error">Empty destination location</string>
     <string name="departure_needed">Departure*</string>
     <string name="departure">Departure</string>
-    <string name="date_over_limit" translatable="false">This date exceeds the travel end date</string>
-    <string name="date_under_limit" translatable="false">This date is before the travel start date</string>
-    <string name="title_activity_edit_travel" translatable="false">EditTravelActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label" translatable="false">First Fragment</string>
-    <string name="second_fragment_label" translatable="false">Second Fragment</string>
-    <string name="next" translatable="false">Next</string>
-    <string name="previous" translatable="false">Previous</string>
+    <string name="date_over_limit">This date exceeds the travel end date</string>
+    <string name="date_under_limit">This date is before the travel start date</string>
 
-    <string name="lorem_ipsum" translatable="false">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
-        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
-        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
-        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
-        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
-        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
-        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
-        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
-        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
-        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
-        bibendum, vel congue leo egestas.\n\n
-        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
-        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
-        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
-        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
-        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
-        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
-        est.\n\n
-        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
-        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
-        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
-        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
-        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
-        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
-        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
-        convallis.\n\n
-        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
-        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
-        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
-        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
-        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
-        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
-    </string>
-
-    <string name="travel_added_success" translatable="false">TRAVEL ADDED SUCCESSFULLY</string>
-    <string name="travel_updated_success" translatable="false">TRAVEL UPDATED SUCCESSFULLY</string>
-    <string name="travel_deleted_success" translatable="false">TRAVEL DELETED SUCCESSFULLY</string>
+    <string name="travel_added_success">Travel added successfully</string>
+    <string name="travel_deleted_success">Travel deleted successfully</string>
 
     <!--Personal Information-->
     <string name="personal_info_saved">Personal information saved correctly</string>
@@ -205,12 +100,11 @@
     <string name="select_location">Select Location</string>
 
     <!--Design-->
-    <string name="settings_btn_desc" translatable="false">Settings</string>
-    <string name="star_desc" translatable="false">Creator</string>
+    <string name="settings_btn_desc">Settings</string>
+    <string name="star_desc">Creator</string>
     <string name="add">Add</string>
 
     <string name="ongoing_travels">Ongoing Travels</string>
-    <string name="terminated_travel">Past Travel</string>
     <string name="terminated_travels">Past Travels</string>
     <string name="no_travels_msg">It appears you have no other trips planned. Create a new one!</string>
     <string name="go_to_travel">Open Travel</string>
@@ -219,11 +113,9 @@
     <string name="status_ongoing">Ongoing</string>
     <string name="status_future">Scheduled</string>
     <string name="travels_number">Travels</string>
-    <string name="travel_hub" translatable="false">Travel Hub</string>
     <string name="app_logo" translatable="false">App logo</string>
     <string name="background">background</string>
     <string name="travel_status">Travel status</string>
-    <string name="travel_add_segment">Add Destination</string>
     <string name="travel_updated_success_msg">Travel updated successfully</string>
     <string name="edit_dialog_msg">To edit trip items, press and hold the field you want to edit.</string>
     <string name="delete_travel_dialog_msg">Are you sure you want to cancel your trip?</string>

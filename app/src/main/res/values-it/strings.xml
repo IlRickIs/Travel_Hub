@@ -1,29 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="yes">Si</string>
-    <string name="no">No</string>
+    <string name="map_nav">Mappa</string>
+    <string name="profile_nav">Profilo</string>
 
-    <string name="app_name">Travel Hub</string>
-    <string name="app_login_user_hint">Username or Email</string>
-    <string name="app_login_pwd_hint">Password</string>
-    <string name="community_nav">Community</string>
-    <string name="map_nav">Map</string>
-    <string name="profile_nav">Profile</string>
-    <string name="home_nav">Home</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="add_nav">Aggiungi</string>
-
-    <string name="forgot_password">Password dimenticata?</string>
     <string name="login">Accedi</string>
-    <string name="logout">Logout</string>
     <string name="logout_message">Sei sicuro di voler uscire?</string>
-    <string name="txt_or">or</string>
+    <string name="txt_or">o</string>
     <string name="google_login">Accedi con Google</string>
-    <string name="register">Register</string>
-    <string name="new_account">New to Travel Hub?</string>
+    <string name="register">Registrati</string>
+    <string name="new_account">Nuovo in Travel Hub?</string>
 
     <string name="error_email">Formato mail non valido</string>
-    <string name="check_login_data_message">i dati potrebbero non essere corretti</string>
+    <string name="check_login_data_message">I dati potrebbero non essere corretti</string>
     <string name="pwd_error_numberOfcharacters">La password deve essere lunga almeno 6 caratteri</string>
     <string name="pwd_error_capitalLetter">La password deve contenere almeno una lettera maiuscola</string>
     <string name="pwd_error_lowerCaseLetter">La password deve contenere almeno una lettera minuscola</string>
@@ -31,19 +19,13 @@
     <string name="pwd_error_specialCharacter">La password deve contenere almeno un carattere speciale</string>
     <string name="pwd_valid">La password è valida</string>
     <string name="mail_valid">La mail è valida</string>
-    <string name="name_register">Username</string>
-    <string name="email_register">Email</string>
-    <string name="register_buttonRegister">Registrati</string>
-    <string name="error_login_password_message">the password is invalid</string>
-    <string name="error_login_user_message">there is no user record corresponding to this identifier</string>
-    <string name="unexpected_error">unexpected error</string>
-    <string name="error_user_collision_message">this email address is already in use by another account</string>
-    <string name="error_empty_username">empty username</string>
-    <string name="error_no_google_account_found_message">No Google accounts have been found</string>
-    <string name="error_username_not_available">username already taken</string>
+    <string name="error_login_password_message">La password non è valida</string>
+    <string name="error_login_user_message">Non esiste alcun record utente corrispondente a questo identificatore</string>
+    <string name="error_user_collision_message">Questo indirizzo email è già utilizzato da un altro account</string>
+    <string name="error_empty_username">Username vuoto</string>
+    <string name="error_no_google_account_found_message">Nessun account Google trovato</string>
+    <string name="error_username_not_available">Username già preso</string>
 
-    <string name="viewProfile">View Profile</string>
-    <string name="personal_informations">Personal Informations</string>
     <string name="user_name">Nome</string>
     <string name="user_surname">Cognome</string>
     <string name="user_birth">Data di nascita</string>
@@ -53,67 +35,27 @@
     <string name="travel_tab_dashboard">Panoramica</string>
     <string name="travel_tab_itinerary">Itinerario</string>
 
-    <string name="travel_title">Viaggi</string>
-    <string name="add_travel">Aggiungi viaggio</string>
-    <string name="travel_no_title">Il viaggio non ha un titolo</string>
-    <string name="travel_no_description">Clicca sul pulsante in basso per aggiungere un nuovo viaggio</string>
+    <string name="travel_no_description">Scrivi una descrizione del tuo viaggio. Raccontaci qualcosa a riguardo!</string>
     <string name="travel_edit">Modifica viaggio</string>
     <string name="travel_delete">Cancella viaggio</string>
-    <string name="travel_title_hint">Titolo</string>
-    <string name="travel_description_hint">Descrizione</string>
     <string name="travel_departure">Partenza</string>
     <string name="travel_duration">Durata</string>
-    <string name="travel_departure_hint">Partenza</string>
     <string name="travel_progress">Progresso</string>
     <string name="travel_participants">Partecipanti</string>
-    <string name="travel_description">Descrizione</string>
     <string name="travel_segment_number">Destinazioni</string>
     <string name="travel_segment_no_date">Nessuna data</string>
 
-    <string name="error_delete_participant">Error deleting participant, cannot delete the travel Creator</string>
+    <string name="error_delete_participant">Errore durante l\'eliminazione del partecipante, impossibile eliminare il creatore del viaggio</string>
 
-
-
-    <string name="subscription">Subscription</string>
-    <string name="settings">Settings</string>
-    <string name="general">Generali</string>
-    <string name="theme">Tema</string>
-    <string name="language">Lingua</string>
-    <string name="notifications">Notifiche</string>
-    <string name="push_notifications">Notifiche Push</string>
-    <string name="email_notifications">Notifiche Email</string>
-    <string name="new_message">Nuovo Messaggio</string>
-    <string name="new_updates">Nuovi Aggiornamenti</string>
-    <string name="Advertising">Pubblicità</string>
-    <string name="saveSettings">Salva Impostazioni</string>
-
-    <string name="privacyAndSecurity">Terms of Privacy</string>
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="dash">-</string>
     <string name="ongoing_travels">Viaggi in corso</string>
-    <string name="ongoing_travel">Viaggio in corso</string>
-
-    <string name="terminated_travel">Viaggio passato</string>
     <string name="terminated_travels">Viaggi passati</string>
 
 
 
     <string name="other_travels">Altri viaggi</string>
-    <string name="return_to_the_previous_screen">Return to the previous screen</string>
-    <string name="add_friends_username">Aggiungi username amici</string>
+    <string name="return_to_the_previous_screen">Ritorna alla schermata precedente</string>
     <string name="title">Titolo*</string>
     <string name="from">Da</string>
     <string name="to">A</string>
@@ -126,9 +68,7 @@
     <string name="departure_needed">Partenza*</string>
     <string name="travel_images">Immagini viaggio</string>
     <string name="edit">Modifica</string>
-    <string name="map_preview">map preview</string>
-    <string name="update_from_gallery">Update from gallery</string>
-    <string name="personal_info_description">In questa sezione puoi visualizzare le tue informazioni personali, come nome, indirizzo email e numero di telefono. Se desideri aggiornare o modificare queste informazioni, puoi farlo facilmente cliccando sui diversi campi di testo. Mantieni i tuoi dati sempre aggiornati per un\'esperienza migliore e personalizzata.</string>
+    <string name="map_preview">Anteprima mappa</string>
 
     <!--Personal info-->
     <string name="personal_info_saved">Informazioni personali salvate correttamente</string>
@@ -137,9 +77,9 @@
     <string name="take_a_picture">Scatta una foto</string>
     <string name="choose_from_gallery">Scegli dalla galleria</string>
     <string name="error_upload_image">Errore aggiornando l\'immagine</string>
-    <string name="cannot_remove_creator">You can not remove Creator of the Travel</string>
-    <string name="select_location">Select Location</string>
-    <string name="add">Add</string>
+    <string name="cannot_remove_creator">Non è possibile rimuovere il creatore del viaggio</string>
+    <string name="select_location">Seleziona Posizione</string>
+    <string name="add">Aggiungi</string>
     <string name="no_travels_msg">Sembra tu non abbia altri viaggi in programma. Creane uno nuovo!</string>
     <string name="go_to_travel">Vai al Viaggio</string>
     <string name="create_travel">Crea un Viaggio</string>
@@ -149,7 +89,6 @@
     <string name="travels_number">Viaggi</string>
     <string name="background">sfondo</string>
     <string name="travel_status">Stato viaggio</string>
-    <string name="travel_add_segment">Aggiungi Destinazione</string>
     <string name="travel_updated_success_msg">Viaggio aggiornato con successo</string>
     <string name="edit_dialog_msg">Per modificare gli elementi del viaggio, tieni premuto sul campo da modificare.</string>
     <string name="delete_travel_dialog_msg">Sei sicuro di voler cancellare il viaggio?</string>
@@ -161,6 +100,17 @@
     <string name="departure">Partenza</string>
     <string name="return_string">Ritorno</string>
     <string name="create_destination">Crea Destinazione</string>
+    <string name="saveSettings">Salva impostazioni</string>
+    <string name="title_empty_error">Titolo vuoto</string>
+    <string name="date_empty_error">Manca la data</string>
+    <string name="departure_empty_error">Località di partenza vouta</string>
+    <string name="destination_error">Località di destinazione vouta</string>
+    <string name="date_over_limit">Questa data supera la data di fine del viaggio</string>
+    <string name="date_under_limit">Questa data è precedente alla data di inizio del viaggio</string>
+    <string name="travel_added_success">Viaggio aggiunto con successo</string>
+    <string name="travel_deleted_success">Viaggio eliminato con successo</string>
+    <string name="settings_btn_desc">Impostazioni</string>
+    <string name="star_desc">Creatore</string>
 
 
 </resources>

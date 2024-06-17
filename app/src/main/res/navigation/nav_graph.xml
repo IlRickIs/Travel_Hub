@@ -23,18 +23,6 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
-            android:id="@+id/action_profileFragment_to_privacyAndSecurityFragment"
-            app:destination="@id/privacyAndSecurityFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_subscriptionFragment"
-            app:destination="@id/subscriptionFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_personalInfoFragment"
-            app:destination="@id/personalInfoFragment" />
-        <action
             android:id="@+id/action_profileFragment_to_travelActivity"
             app:destination="@id/travelActivity" />
         <action
