@@ -54,7 +54,8 @@
         app:tint="@color/md_theme_primaryFixed"
         app:layout_constraintEnd_toEndOf="@+id/cardView2"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_stars_24"/>
+        app:srcCompat="@drawable/baseline_stars_24"
+        android:contentDescription="@string/star_desc" />
 
     <TextView
         android:id="@+id/participant_name"

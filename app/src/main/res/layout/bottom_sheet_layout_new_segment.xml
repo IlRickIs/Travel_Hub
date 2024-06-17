@@ -10,8 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -20,7 +18,7 @@
             android:id="@+id/seg_add_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Aggiungi Destinazione"
+            android:text="@string/add_destination"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +42,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/autocomplete_fragment"
             android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
             android:layout_width="match_parent"
@@ -58,7 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            android:hint="Partenza"
+            android:hint="@string/departure"
             app:layout_constraintEnd_toStartOf="@id/seg_date_to_text_field"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment"
@@ -80,7 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:hint="Ritorno"
+            android:hint="@string/return_string"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/seg_date_from_text_field"
             app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment"
@@ -106,7 +104,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:drawablePadding="4dp"
-            android:text="Descrizione"
+            android:text="@string/description"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seg_date_from_text_field"
@@ -135,15 +133,13 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:backgroundTint="@color/colorPrimaryDark"
-            android:text="Crea Destinazione"
+            android:text="@string/create_destination"
             android:textColor="#DBFFDD"
             app:icon="@drawable/baseline_add_34"
             app:iconTint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seg_description_text_field" />
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

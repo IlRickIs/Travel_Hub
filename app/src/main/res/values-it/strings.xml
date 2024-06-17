@@ -11,7 +11,7 @@
     <string name="profile_nav">Profile</string>
     <string name="home_nav">Home</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="add_nav">Add</string>
+    <string name="add_nav">Aggiungi</string>
 
     <string name="forgot_password">Password dimenticata?</string>
     <string name="login">Accedi</string>
@@ -123,7 +123,7 @@
     <string name="destination">Destinazione</string>
     <string name="add_destination">Aggiungi destinazione</string>
     <string name="description">Descrizione</string>
-    <string name="departure">Partenza*</string>
+    <string name="departure_needed">Partenza*</string>
     <string name="travel_images">Immagini viaggio</string>
     <string name="edit">Modifica</string>
     <string name="map_preview">map preview</string>
@@ -156,6 +156,11 @@
     <string name="select_start_date_error">Seleziona una data di inizio</string>
     <string name="select_end_date_error">Seleziona una data di fine</string>
     <string name="select_location_error">Inserisci una località</string>
+    <string name="more_button">Bottone altro</string>
+    <string name="add_participants">Aggiungi Partecipante</string>
+    <string name="departure">Partenza</string>
+    <string name="return_string">Ritorno</string>
+    <string name="create_destination">Crea Destinazione</string>
 
 
 </resources>

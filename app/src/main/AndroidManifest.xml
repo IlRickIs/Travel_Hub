@@ -35,11 +35,6 @@
             android:name=".ui.profile.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.travels.EditTravelActivity"
-            android:exported="false"
-            android:label="@string/title_activity_edit_travel"
-            android:theme="@style/Theme.TravelHub" />
-        <activity
             android:name=".ui.travels.TravelActivity"
             android:exported="true" />
         <activity

@@ -17,11 +17,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_images"
-        android:name="it.unimib.travelhub.ui.travels.NewTravelImagesFragment"
-        tools:layout="@layout/fragment_edit_travel_images" />
-
-    <fragment
         android:id="@+id/navigation_map_preview"
         android:name="it.unimib.travelhub.ui.travels.MapPreviewFragment"
         tools:layout="@layout/fragment_map_preview" />

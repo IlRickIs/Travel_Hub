@@ -30,7 +30,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/travel_background"
                     android:id="@+id/travel_image"
-                    />
+                    android:contentDescription="@string/background" />
 
             </androidx.cardview.widget.CardView>
 
@@ -63,18 +63,19 @@
                     android:id="@+id/imageView_dot"
                     android:layout_width="5dp"
                     android:layout_height="5dp"
-                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/travel_date"
                     app:layout_constraintTop_toBottomOf="@id/travel_title"
-                    app:srcCompat="@drawable/baseline_circle_24" />
+                    app:srcCompat="@drawable/baseline_circle_24"
+                    android:contentDescription="@string/point" />
 
 
                 <TextView
                     android:id="@+id/travel_destinations"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageView_dot"
                     app:layout_constraintTop_toBottomOf="@+id/travel_title" />
