@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import it.unimib.travelhub.ui.profile.ProfileFragment;
 
 public class MainFragmentAdapter extends FragmentStateAdapter{
+
     public MainFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
     }
