@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "416441635828",
+    "firebase_url": "https://travelhub-9bc21-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "travelhub-9bc21",
+    "storage_bucket": "travelhub-9bc21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416441635828:android:79321ae9908e2fd6f29fa1",
+        "android_client_info": {
+          "package_name": "it.unimib.travelhub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "416441635828-6bufr4otoeh8r557vfddce60mp9nc0g8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.unimib.travelhub",
+            "certificate_hash": "8b390448c4f363b94934f7a4bb45c545bd82bd5f"
+          }
+        },
+        {
+          "client_id": "416441635828-a5kipmve2jqmben2g1a23sh2mpn6cc3o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.unimib.travelhub",
+            "certificate_hash": "f862d28322cd264a600ac5e5b39a44869bfb125d"
+          }
+        },
+        {
+          "client_id": "416441635828-0so2jh25mvslga9ia2momnrpun34mm5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1y-JZC1_ODrqw9AOkZac_qrbhAv_qTbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "416441635828-0so2jh25mvslga9ia2momnrpun34mm5l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
