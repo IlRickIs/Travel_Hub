@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,9 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.AddRecyclerAdapter;
 import it.unimib.travelhub.databinding.FragmentAddBinding;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
@@ -28,9 +25,7 @@ import it.unimib.travelhub.ui.travels.AddTravelActivity;
  */
 public class AddFragment extends Fragment {
     private FragmentAddBinding binding;
-    private AddRecyclerAdapter addRecyclerAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-
     private static final String TAG = AddFragment.class.getSimpleName();
     public AddFragment() {
         // Required empty public constructor
@@ -62,11 +57,8 @@ public class AddFragment extends Fragment {
         String[] localDataset = {"activity 1", "activity 2", "activity 3"};
         mLayoutManager = new LinearLayoutManager(getActivity());
 
-        addRecyclerAdapter = new AddRecyclerAdapter(localDataset, new AddRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
+        AddRecyclerAdapter addRecyclerAdapter = new AddRecyclerAdapter(localDataset, position -> {
 
-            }
         });
         binding.ongoingActivitiesRecyclerView.setLayoutManager(mLayoutManager);
         binding.ongoingActivitiesRecyclerView.setAdapter(addRecyclerAdapter);

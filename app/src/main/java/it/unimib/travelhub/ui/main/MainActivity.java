@@ -5,10 +5,6 @@ import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
@@ -20,20 +16,13 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.Objects;
-
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.databinding.ActivityMainBinding;
-import it.unimib.travelhub.databinding.ActivityTravelBinding;
-import it.unimib.travelhub.ui.profile.ProfileFragmentAdapter;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private MainFragmentAdapter myFragmentAdapter;
-
     private ActivityMainBinding binding;
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
@@ -47,21 +36,13 @@ public class MainActivity extends AppCompatActivity {
         binding.viewPagerMain.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                if (position == 1){
-                    binding.viewPagerMain.setUserInputEnabled(false);
-                } else {
-                    binding.viewPagerMain.setUserInputEnabled(true);
-                }
+                binding.viewPagerMain.setUserInputEnabled(position != 1);
                 bottom_menu.getMenu().getItem(position).setChecked(true);
             }
         });
 
         binding.viewPagerMain.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_MOVE) {
-                binding.viewPagerMain.setUserInputEnabled(false);
-            } else {
-                binding.viewPagerMain.setUserInputEnabled(true);
-            }
+            binding.viewPagerMain.setUserInputEnabled(event.getAction() != MotionEvent.ACTION_MOVE);
             return false;
         });
 
@@ -95,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        myFragmentAdapter = new MainFragmentAdapter(fragmentManager, getLifecycle());
+        MainFragmentAdapter myFragmentAdapter = new MainFragmentAdapter(fragmentManager, getLifecycle());
         binding.viewPagerMain.setAdapter(myFragmentAdapter);
         }
 

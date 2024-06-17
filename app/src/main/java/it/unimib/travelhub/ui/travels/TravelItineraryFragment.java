@@ -53,7 +53,7 @@ import it.unimib.travelhub.util.ServiceLocator;
 
 public class TravelItineraryFragment extends Fragment {
 
-
+    private static final String TAG = TravelItineraryFragment.class.getSimpleName();
     private FragmentTravelItineraryBinding binding;
     protected RecyclerView.LayoutManager travelLayoutManager;
     private static final String TRAVEL = "travel";
@@ -251,7 +251,7 @@ public class TravelItineraryFragment extends Fragment {
             if (result != null && result.isSuccess()) {
                 Result.TravelsResponseSuccess travelResponse = (Result.TravelsResponseSuccess) result;
                 Travels travelUpdated = travelResponse.getData().getTravelsList().get(0);
-                Log.d("CommunityFragment", "Travel updated: " + travelUpdated);
+                Log.d(TAG, "Travel updated: " + travelUpdated);
                     Intent intent = new Intent(requireActivity(), TravelActivity.class);
                     intent.putExtra("travel", travelUpdated);
                     intent.putExtra(TRAVEL_UPDATED, true);
@@ -260,7 +260,7 @@ public class TravelItineraryFragment extends Fragment {
 
             } else {
                 Result.Error error = (Result.Error) result;
-                Log.d("CommunityFragment", "Travel not updated, Error: " + error.getMessage());
+                Log.d(TAG, "Travel not updated, Error: " + error.getMessage());
             }
         });
 

@@ -19,8 +19,6 @@ public class MainFragmentAdapter extends FragmentStateAdapter{
     public Fragment createFragment(int position) {
         if (position == 1) {
             return new MapFragment();
-//        } else if (position == 2) {
-//            return new CommunityFragment();
         } else if (position == 2) {
             return new ProfileFragment();
         } else {

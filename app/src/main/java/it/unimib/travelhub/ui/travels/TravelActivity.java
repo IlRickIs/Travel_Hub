@@ -233,10 +233,10 @@ public class TravelActivity extends AppCompatActivity {
                 if (result != null && result.isSuccess()) {
                     Result.TravelsResponseSuccess travelResponse = (Result.TravelsResponseSuccess) result;
                     Travels travelDeleted = travelResponse.getData().getTravelsList().get(0);
-                    Log.d("CommunityFragment", "Travel deleted: " + travelDeleted);
+                    Log.d(TAG, "Travel deleted: " + travelDeleted);
                 } else {
                     Result.Error error = (Result.Error) result;
-                    Log.d("CommunityFragment", "Travel not deleted, Error: " + error.getMessage());
+                    Log.d(TAG, "Travel not deleted, Error: " + error.getMessage());
                 }
                 travelsViewModel.deleteTravel(travel).removeObserver(this);
             }
@@ -274,7 +274,7 @@ public class TravelActivity extends AppCompatActivity {
             if (result != null && result.isSuccess()) {
                 Result.TravelsResponseSuccess travelResponse = (Result.TravelsResponseSuccess) result;
                 Travels travelUpdated = travelResponse.getData().getTravelsList().get(0);
-                Log.d("CommunityFragment", "Travel updated: " + travelUpdated);
+                Log.d(TAG, "Travel updated: " + travelUpdated);
                 Intent intent = new Intent(TravelActivity.this, TravelActivity.class);
                 intent.putExtra("travel", travelUpdated);
                 intent.putExtra(TRAVEL_UPDATED, true);
@@ -283,7 +283,7 @@ public class TravelActivity extends AppCompatActivity {
                 finish();
             } else {
                 Result.Error error = (Result.Error) result;
-                Log.d("CommunityFragment", "Travel not updated, Error: " + error.getMessage());
+                Log.d(TAG, "Travel not updated, Error: " + error.getMessage());
             }
         });
 
