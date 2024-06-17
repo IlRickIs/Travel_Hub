@@ -239,7 +239,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
                             startActivity(intent);
-                            this.finish(); // TODO: the main activity should be finished
+                            this.finish();
                         } else {
                             Snackbar.make(findViewById(android.R.id.content),
                                     this.getString(R.string.unexpected_error),
