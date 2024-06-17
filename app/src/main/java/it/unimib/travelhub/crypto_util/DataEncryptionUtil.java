@@ -1,7 +1,6 @@
 package it.unimib.travelhub.crypto_util;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.security.crypto.EncryptedFile;
@@ -26,8 +25,6 @@ public class DataEncryptionUtil {
      * @param sharedPreferencesFileName the name of the SharedPreferences file where to write the data
      * @param key The key associated with the value
      * @param value The value to be written
-     * @throws GeneralSecurityException
-     * @throws IOException
      */
     public void writeSecretDataWithEncryptedSharedPreferences(String sharedPreferencesFileName,
                                                               String key, String value)
@@ -57,8 +54,6 @@ public class DataEncryptionUtil {
      * @param sharedPreferencesFileName the name of the SharedPreferences file where data are saved
      * @param key The key associated with the value to be read
      * @return The decrypted value
-     * @throws GeneralSecurityException
-     * @throws IOException
      */
     public String readSecretDataWithEncryptedSharedPreferences(String sharedPreferencesFileName,
                                                                String key)
@@ -96,7 +91,9 @@ public class DataEncryptionUtil {
 
         // File cannot exist before using openFileOutput
         if (fileToWrite.exists()) {
-            fileToWrite.delete();
+            if (!fileToWrite.delete()) {
+                throw new IOException("Cannot delete file: " + fileToWrite.getAbsolutePath());
+            }
         }
 
         byte[] fileContent = data.getBytes(StandardCharsets.UTF_8);
