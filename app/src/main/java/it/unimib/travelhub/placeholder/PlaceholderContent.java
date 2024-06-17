@@ -1,5 +1,7 @@
 package it.unimib.travelhub.placeholder;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,17 +13,17 @@ import java.util.Map;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class PlaceholderContent {
+public class PlaceholderContent { //FIXME: What is this class for?
 
     /**
      * An array of sample (placeholder) items.
      */
-    public static final List<PlaceholderItem> ITEMS = new ArrayList<PlaceholderItem>();
+    public static final List<PlaceholderItem> ITEMS = new ArrayList<>();
 
     /**
      * A map of sample (placeholder) items, by ID.
      */
-    public static final Map<String, PlaceholderItem> ITEM_MAP = new HashMap<String, PlaceholderItem>();
+    public static final Map<String, PlaceholderItem> ITEM_MAP = new HashMap<>();
 
     private static final int COUNT = 25;
 
@@ -64,6 +66,7 @@ public class PlaceholderContent {
             this.details = details;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return content;
