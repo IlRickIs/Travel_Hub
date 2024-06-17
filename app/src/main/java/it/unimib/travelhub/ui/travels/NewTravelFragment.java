@@ -465,6 +465,7 @@ public class NewTravelFragment extends Fragment {
 
         start.setLatLng(lat, lng);
         start.setDateTo(parseStringToDate(Objects.requireNonNull(binding.editTxtFromForm.getText()) + " 00:00:00"));
+        start.setDateFrom(parseStringToDate(Objects.requireNonNull(binding.editTxtFromForm.getText()) + " 00:00:00"));
         destinations.add(start);
         return destinations;
     }

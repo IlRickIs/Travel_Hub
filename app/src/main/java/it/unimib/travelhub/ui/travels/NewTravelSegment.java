@@ -244,7 +244,6 @@ public class NewTravelSegment extends Fragment {
             if(checkNulls()){
                 return;
             }
-            travel.getDestinations().get(0).setDateTo(null);
             travel.getDestinations().add(buildTravelSegment());
             Log.d(TAG, "TRAVEL TO CREATE: " + travel);
             //add the travel
