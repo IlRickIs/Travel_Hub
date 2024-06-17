@@ -6,10 +6,13 @@ import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
 import static it.unimib.travelhub.util.Constants.PROFILE_PICTURE_FILE_NAME;
 import static it.unimib.travelhub.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -19,10 +22,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -33,6 +32,7 @@ import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.databinding.FragmentProfileBinding;
 import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
@@ -133,9 +133,7 @@ public class ProfileFragment extends Fragment {
                 Log.d(TAG, "Error while reading profile image", e);
             }
         }
-
-        binding.textViewUsername.setText(username);
-        binding.textViewUsername.setText(username);
+        binding.textViewUsername.setText("@" + username);
         binding.textViewName.setText(name);
         binding.textViewSurname.setText(surname);
     }
@@ -156,6 +154,12 @@ public class ProfileFragment extends Fragment {
                     if (result.isSuccess()) {
                         travelsResponse = ((Result.TravelsResponseSuccess) result).getData();
                         binding.textViewTravelNumber.setText(String.valueOf(travelsResponse.getTravelsList().size()));
+                        int totDestinations = 0;
+                        for(Travels travel: travelsResponse.getTravelsList()){
+                            totDestinations += travel.getDestinations().size();
+                        }
+                        binding.textViewDestinationsNumber.setText(String.valueOf(totDestinations));
+
                         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                             @Override
                             public void onTabSelected(TabLayout.Tab tab) {

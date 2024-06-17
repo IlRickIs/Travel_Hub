@@ -1,6 +1,7 @@
 package it.unimib.travelhub.ui.main;
 
 import static it.unimib.travelhub.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.travelhub.util.Constants.LAST_IMAGE_UPDATE;
 import static it.unimib.travelhub.util.Constants.LAST_UPDATE;
 import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
 import static it.unimib.travelhub.util.Constants.PROFILE_PICTURE_FILE_NAME;
@@ -35,6 +36,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.R;
 import it.unimib.travelhub.adapter.UsersRecyclerAdapter;
@@ -42,14 +47,18 @@ import it.unimib.travelhub.crypto_util.DataEncryptionUtil;
 import it.unimib.travelhub.data.repository.travels.ITravelsRepository;
 import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
+import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.databinding.FragmentHomeBinding;
 import it.unimib.travelhub.model.Result;
+import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.ui.travels.TravelActivity;
 import it.unimib.travelhub.ui.travels.TravelsViewModel;
 import it.unimib.travelhub.ui.travels.TravelsViewModelFactory;
+import it.unimib.travelhub.ui.welcome.UserViewModel;
+import it.unimib.travelhub.ui.welcome.UserViewModelFactory;
 import it.unimib.travelhub.util.ServiceLocator;
 import it.unimib.travelhub.util.SharedPreferencesUtil;
 
@@ -65,12 +74,13 @@ public class HomeFragment extends Fragment {
     private TravelsViewModel travelsViewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private TravelsResponse travelsResponse;
-    private IUserRepository userRepository;
     private Travels onGoingTravel;
     private Travels futureTravel;
     private Travels doneTravel;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected RecyclerView friendsRecyclerView;
+    private UserViewModel userViewModel;
+    private IUserRepository userRepository;
     public HomeFragment() {
         // Required empty public constructor
     }
