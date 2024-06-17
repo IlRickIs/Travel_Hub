@@ -7,10 +7,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import it.unimib.travelhub.model.TravelMember;
 import it.unimib.travelhub.model.TravelSegment;

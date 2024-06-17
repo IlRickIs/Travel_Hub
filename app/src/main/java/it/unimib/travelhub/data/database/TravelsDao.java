@@ -16,17 +16,11 @@ public interface TravelsDao {
     @Query("SELECT * FROM travels") // ORDER BY startDate DESC
     List<Travels> getAll();
 
-    @Query("SELECT * FROM travels WHERE id = :id")
-    Travels getTravel(long id);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertTravelsList(List<Travels> travelsList);
 
     @Update
     int updateSingleTravel(Travels travels);
-
-    @Update
-    int updateListTravels(List<Travels> travels);
 
     @Delete
     int delete(Travels travels);
