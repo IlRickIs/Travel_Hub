@@ -54,12 +54,7 @@ public class NewTravelSegment extends Fragment {
     private TravelsViewModel travelsViewModel;
 
     final Calendar myCalendar= Calendar.getInstance();
-    private String destinationName;
-    private String dateFrom;
-    private String dateTo;
-
     Button saveTravelBtn;
-    private String description;
 
     private static final String TAG = NewTravelSegment.class.getSimpleName();
 
@@ -68,8 +63,7 @@ public class NewTravelSegment extends Fragment {
     }
 
     public static NewTravelSegment newInstance() {
-        NewTravelSegment fragment = new NewTravelSegment();
-        return fragment;
+        return new NewTravelSegment();
     }
 
     @Override
@@ -98,7 +92,7 @@ public class NewTravelSegment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentEditTravelSegmentBinding.inflate(inflater, container, false);
@@ -217,14 +211,13 @@ public class NewTravelSegment extends Fragment {
         binding.showAutocompleteLocatorLayout.setOnClickListener(v -> {
             Log.d("TravelItineraryFragment", "autocompleteNewLayout clicked");
             binding.autocompleteNewLayout.setVisibility(View.VISIBLE);
-            binding.autocompleteNewLayout.setOnClickListener(v1 -> {
-                binding.autocompleteNewLayout.setVisibility(View.GONE);
-            });
+            binding.autocompleteNewLayout.setOnClickListener(v1 -> binding.autocompleteNewLayout.setVisibility(View.GONE));
         });
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(view.findViewById(R.id.autocomplete_new_fragment).getId());
         Log.d("TravelItineraryFragment", "autocompleteFragment: " + autocompleteFragment);
+        assert autocompleteFragment != null;
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
 
@@ -239,7 +232,7 @@ public class NewTravelSegment extends Fragment {
             public void onPlaceSelected(@NonNull Place place) {
                 Log.d("TravelItineraryFragment", "Place: " + place.getLatLng());
                 binding.destinationEditText.setText(place.getName());
-                binding.latitudeEditText.setText(String.valueOf(place.getLatLng().latitude));
+                binding.latitudeEditText.setText(String.valueOf(Objects.requireNonNull(place.getLatLng()).latitude));
                 binding.longitudeEditText.setText(String.valueOf(place.getLatLng().longitude));
                 binding.autocompleteNewLayout.setVisibility(View.GONE);
             }
@@ -262,13 +255,13 @@ public class NewTravelSegment extends Fragment {
 
     private TravelSegment buildTravelSegment() {
         TravelSegment travelSegment = new TravelSegment();
-        travelSegment.setLocation(binding.destinationEditText.getText().toString());
-        travelSegment.setDescription(binding.descriptionEditText.getText().toString());
-        String dateFrom = binding.fromEditText.getText().toString() + " 00:00:00";
-        String dateTo = binding.toEditText.getText().toString() + " 23:59:59";
+        travelSegment.setLocation(Objects.requireNonNull(binding.destinationEditText.getText()).toString());
+        travelSegment.setDescription(Objects.requireNonNull(binding.descriptionEditText.getText()).toString());
+        String dateFrom = Objects.requireNonNull(binding.fromEditText.getText()) + " 00:00:00";
+        String dateTo = Objects.requireNonNull(binding.toEditText.getText()) + " 23:59:59";
 
-        travelSegment.setLatLng(Double.parseDouble(binding.latitudeEditText.getText().toString()),
-                Double.parseDouble(binding.longitudeEditText.getText().toString()));
+        travelSegment.setLatLng(Double.parseDouble(Objects.requireNonNull(binding.latitudeEditText.getText()).toString()),
+                Double.parseDouble(Objects.requireNonNull(binding.longitudeEditText.getText()).toString()));
         //TODO: what if the date is empty?
         travelSegment.setDateFrom(parseStringToDate(dateFrom));
         travelSegment.setDateTo(parseStringToDate(dateTo));
@@ -277,18 +270,24 @@ public class NewTravelSegment extends Fragment {
 
     private boolean checkNulls(){
         boolean isNull = false;
-        if (binding.destinationEditText.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(binding.destinationEditText.getText()).toString().isEmpty()) {
             binding.destinationEditText.setError(getString(R.string.destination_error));
             isNull = true;
-        }else{
+        } else if (Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty()) {
+            binding.fromEditText.setError(getString(R.string.from_need));
+            isNull = true;
+        } else if (Objects.requireNonNull(binding.toEditText.getText()).toString().isEmpty()) {
+            binding.toEditText.setError(getString(R.string.to_need));
+            isNull = true;
+        } else{
             binding.destinationEditText.setError(null);
         }
         Date dateFrom = null;
         Date dateTo = null;
-        if (!binding.fromEditText.getText().toString().isEmpty())
+        if (!Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty())
             dateFrom = parseStringToDate(binding.fromEditText.getText().toString() + " 00:00:00");
         Date startDate = travel.getStartDate();
-        if (!binding.toEditText.getText().toString().isEmpty())
+        if (!Objects.requireNonNull(binding.toEditText.getText()).toString().isEmpty())
             dateTo = parseStringToDate(binding.toEditText.getText().toString() + " 23:59:59");
         Date endDate = travel.getEndDate();
         if (dateFrom != null) {

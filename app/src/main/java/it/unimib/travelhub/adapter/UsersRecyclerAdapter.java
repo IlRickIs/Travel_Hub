@@ -34,6 +34,8 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
     private final String TAG = UsersRecyclerAdapter.class.getSimpleName();
     Activity activity;
 
+    String color = null;
+
     public interface OnLongButtonClickListener {
         void onLongButtonItemClick(TravelMember travelMember, ImageView seg_long_button);
     }
@@ -46,6 +48,16 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         this.type = type;
         this.userRepository = userRepository;
     }
+
+    public UsersRecyclerAdapter(List<TravelMember> data, int type, Activity activity, OnLongButtonClickListener onLongButtonClickListener, IUserRepository userRepository, String color) {
+        UsersRecyclerAdapter.onLongButtonClickListener = onLongButtonClickListener;
+        this.activity = activity;
+        this.data = data;
+        this.type = type;
+        this.userRepository = userRepository;
+        this.color = color;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -90,6 +102,10 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
 
             if (travelMember.getRole() == TravelMember.Role.CREATOR) {
                 participant_creator.setVisibility(View.VISIBLE);
+            }
+
+            if (color != null) {
+                participant_name.setTextColor(android.graphics.Color.parseColor(color));
             }
 
             if (activity instanceof TravelActivity){
