@@ -3,7 +3,6 @@ package it.unimib.travelhub.adapter;
 import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +16,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.travelhub.GlobalClass;
 import it.unimib.travelhub.R;
@@ -28,14 +24,12 @@ import it.unimib.travelhub.data.repository.user.IUserRepository;
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.model.TravelMember;
-import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.ui.travels.TravelActivity;
-import it.unimib.travelhub.util.ServiceLocator;
 
 public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdapter.ViewHolder> {
     List<TravelMember> data;
-    private IUserRepository userRepository;
+    private final IUserRepository userRepository;
     int type;
     private final String TAG = UsersRecyclerAdapter.class.getSimpleName();
     Activity activity;
@@ -126,6 +120,10 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
 
                 if (profileImagesURL != null) {
                     try {
+                        File dir = new File(GlobalClass.getContext().getFilesDir() + PICS_FOLDER);
+                        if (!dir.exists())
+                            if(!dir.mkdir())
+                                Log.e(TAG, "Error creating profile image folder");
                         File file = new File(GlobalClass.getContext().getFilesDir() + PICS_FOLDER + travelMember.getIdToken() + ".webp");
                         if (!file.exists())
                             if(!file.createNewFile())
