@@ -262,7 +262,6 @@ public class NewTravelSegment extends Fragment {
 
         travelSegment.setLatLng(Double.parseDouble(Objects.requireNonNull(binding.latitudeEditText.getText()).toString()),
                 Double.parseDouble(Objects.requireNonNull(binding.longitudeEditText.getText()).toString()));
-        //TODO: what if the date is empty?
         travelSegment.setDateFrom(parseStringToDate(dateFrom));
         travelSegment.setDateTo(parseStringToDate(dateTo));
         return travelSegment;
@@ -273,14 +272,20 @@ public class NewTravelSegment extends Fragment {
         if (Objects.requireNonNull(binding.destinationEditText.getText()).toString().isEmpty()) {
             binding.destinationEditText.setError(getString(R.string.destination_error));
             isNull = true;
-        } else if (Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty()) {
+        } else {
+            binding.destinationEditText.setError(null);
+        }
+        if (Objects.requireNonNull(binding.fromEditText.getText()).toString().isEmpty()) {
             binding.fromEditText.setError(getString(R.string.from_need));
             isNull = true;
-        } else if (Objects.requireNonNull(binding.toEditText.getText()).toString().isEmpty()) {
+        } else {
+            binding.fromEditText.setError(null);
+        }
+        if (Objects.requireNonNull(binding.toEditText.getText()).toString().isEmpty()) {
             binding.toEditText.setError(getString(R.string.to_need));
             isNull = true;
         } else{
-            binding.destinationEditText.setError(null);
+            binding.fromEditText.setError(null);
         }
         Date dateFrom = null;
         Date dateTo = null;

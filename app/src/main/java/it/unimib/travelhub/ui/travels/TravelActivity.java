@@ -100,7 +100,6 @@ public class TravelActivity extends AppCompatActivity {
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
-        //TODO add check if user is travel creator
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -321,8 +320,8 @@ public class TravelActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(TravelActivity.this);
 
         buttonEdit.setOnClickListener(view2 -> {
-
-            //TODO check if user is travel creator
+            if (!isTravelCreator)
+                return;
             builder.setMessage("Per modificare gli elementi del viaggio, tieni premuto sul campo da modificare.");
             builder.setCancelable(true);
             builder.setPositiveButton(
@@ -336,8 +335,8 @@ public class TravelActivity extends AppCompatActivity {
         });
 
         buttonDelete.setOnClickListener(view2 -> {
-
-            //TODO check if user is travel creator
+            if (!isTravelCreator)
+                return;
             builder.setMessage("Sei sicuro di voler cancellare il viaggio?");
             builder.setCancelable(true);
 

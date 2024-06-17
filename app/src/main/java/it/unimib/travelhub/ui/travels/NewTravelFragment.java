@@ -74,11 +74,7 @@ import it.unimib.travelhub.util.ServiceLocator;
 
 public class NewTravelFragment extends Fragment {
     private FragmentEditTravelBinding binding;
-
     private TextBoxesRecyclerAdapter textBoxesRecyclerAdapter;
-
-
-
     private TextBoxesRecyclerAdapter friendTextBoxesRecyclerAdapter;
     private static final String TAG = NewTravelFragment.class.getSimpleName();
     final Calendar myCalendar= Calendar.getInstance();

@@ -78,7 +78,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
     }
 
     @Override
-    public void addTravel(Travels travel) { //TODO add callback onfailure
+    public void addTravel(Travels travel) {
         try {
             String idToken = dataEncryptionUtil.readSecretDataWithEncryptedSharedPreferences(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN);
             databaseReference.child("travels").child(Long.toString(travel.getId())).setValue(travel)
@@ -122,7 +122,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                     }
                     travelsIdList.add((long) travelId);
 
-                    databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").setValue(travelsIdList) //TODO add the travel to the members
+                    databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").setValue(travelsIdList)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -162,7 +162,7 @@ public class TravelsRemoteDataSource extends BaseTravelsRemoteDataSource {
                         }
                         travelsIdList.add((long) travelId);
 
-                        databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").setValue(travelsIdList) //TODO add the travel to the members
+                        databaseReference.child(FIREBASE_USERS_COLLECTION).child(userId).child("travels").setValue(travelsIdList)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {

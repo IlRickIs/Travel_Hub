@@ -73,7 +73,6 @@ public class AddFragment extends Fragment {
         binding.buttonAddActivity.setOnClickListener(v ->{
             Intent intent = new Intent(getActivity(), AddTravelActivity.class);
             startActivity(intent);
-           // requireActivity().finish(); TODO: fix this
         });
     }
 

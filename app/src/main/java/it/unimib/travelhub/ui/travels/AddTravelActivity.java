@@ -53,16 +53,6 @@ public class AddTravelActivity extends AppCompatActivity {
                 ).addTravel(myTravel);
             }
         });
-
-    //        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) { TODO: check if this is needed
-    //            @Override
-    //            public void handleOnBackPressed() {
-    //                // Back is pressed... Finishing the activity
-    //                Intent intent = new Intent(AddTravelActivity.this, MainActivity.class);
-    //                startActivity(intent);
-    //                finish();
-    //            }
-    //        });
     }
 
 
