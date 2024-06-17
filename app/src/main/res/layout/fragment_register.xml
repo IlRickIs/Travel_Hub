@@ -33,7 +33,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/username"
                     android:inputType="textWebEmailAddress"
-                    android:textColorHint="@color/material_dynamic_neutral70"
+                    android:textColorHint="@color/md_color_textHint"
                     tools:ignore="VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,7 +51,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/email"
                     android:inputType="textWebEmailAddress"
-                    android:textColorHint="@color/material_dynamic_neutral70"
+                    android:textColorHint="@color/md_color_textHint"
                     tools:ignore="VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,7 +70,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/app_login_pwd_hint"
                     android:inputType="textPassword"
-                    android:textColorHint="@color/material_dynamic_neutral70"
+                    android:textColorHint="@color/md_color_textHint"
                     tools:ignore="VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 

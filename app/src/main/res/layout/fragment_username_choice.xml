@@ -37,7 +37,7 @@
             android:fontFamily="sans-serif"
             android:hint="@string/username"
             android:inputType="text|textPersonName"
-            android:textColorHint="@color/material_dynamic_neutral70"
+            android:textColorHint="@color/md_color_textHint"
             android:layout_margin="5dp"
             tools:ignore="VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
