@@ -30,7 +30,7 @@ public abstract class TravelsRoomDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             TravelsRoomDatabase.class, TRAVELS_DATABASE_NAME)
-                            .fallbackToDestructiveMigration().build(); // TODO: remove fallbackToDestructiveMigration
+                            .fallbackToDestructiveMigration().build();
                 }
             }
         }
