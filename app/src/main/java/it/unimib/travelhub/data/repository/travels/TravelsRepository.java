@@ -66,11 +66,6 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
         return travelsMutableLiveData;
     }
 
-    @Override
-    public void addTravels(List<Travels> travelsList) {
-        travelsLocalDataSource.insertTravels(travelsList);
-    }
-
     public MutableLiveData<Result> addTravel(Travels travel) {
         travelsRemoteDataSource.addTravel(travel);
         return travelsMutableLiveData;
@@ -98,7 +93,7 @@ public class TravelsRepository implements ITravelsRepository, TravelsCallback {
     @Override
     public void onSuccessFromLocal(TravelsResponse travelsResponse) {
         if (travelsMutableLiveData.getValue() != null && travelsMutableLiveData.getValue().isSuccess()) {
-            ArrayList<Travels> travelsList = addDifferentTravels( //TODO: Viene fatto sia da insert che da get
+            ArrayList<Travels> travelsList = addDifferentTravels(
                     ((Result.TravelsResponseSuccess)travelsMutableLiveData.getValue()).getData().getTravelsList(),
                     travelsResponse.getTravelsList());
             travelsResponse.setTravelsList(travelsList);

@@ -6,8 +6,6 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import it.unimib.travelhub.data.source.BaseRemoteFileStorageSource;
 import it.unimib.travelhub.data.source.RemoteFileStorageCallback;
@@ -28,7 +26,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
     private final BaseUserDataRemoteDataSource userDataRemoteDataSource;
     private final BaseRemoteFileStorageSource remoteFileStorageSource;
     private final MutableLiveData<Result> userMutableLiveData;
-    private final MutableLiveData<Result> userPreferencesMutableLiveData;
 
     public UserRepository
             (BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
@@ -41,7 +38,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
         this.userDataRemoteDataSource.setUserResponseCallback(this);
         this.remoteFileStorageSource.setRemoteFileStorageCallback(this);
         this.userMutableLiveData = new MutableLiveData<>();
-        this.userPreferencesMutableLiveData = new MutableLiveData<>();
     }
 
     @Override
@@ -68,11 +64,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
     public MutableLiveData<Result> getGoogleUser(User user) {
         signInWithGoogle(user);
         return userMutableLiveData;
-    }
-
-    @Override
-    public MutableLiveData<Result> getUserPreferences(String idToken) {
-        return null;
     }
 
     @Override
@@ -112,9 +103,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
     }
 
     @Override
-    public MutableLiveData<Result> isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback userDataCallback) {
+    public void isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback userDataCallback) {
         userDataRemoteDataSource.isUserRegistered(username, userDataCallback);
-        return userMutableLiveData;
     }
     @Override
     public void updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback) {
@@ -139,7 +129,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
     @Override
     public void onSuccessFromAuthentication(User user) {
         if (user != null) {
-            Log.d(TAG, "user: " + user.toString());
+            Log.d(TAG, "user: " + user);
             userDataRemoteDataSource.saveUserData(user);
         }
     }
@@ -154,11 +144,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
     public void onSuccessFromRemoteDatabase(User user) {
         Result.UserResponseSuccess result = new Result.UserResponseSuccess(user);
         userMutableLiveData.postValue(result);
-    }
-
-    @Override
-    public void onSuccessFromGettingUserPreferences() {
-
     }
 
     @Override

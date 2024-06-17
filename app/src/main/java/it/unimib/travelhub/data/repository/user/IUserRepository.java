@@ -5,8 +5,6 @@ import android.net.Uri;
 import androidx.lifecycle.MutableLiveData;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import it.unimib.travelhub.data.source.RemoteFileStorageSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
@@ -17,16 +15,15 @@ import it.unimib.travelhub.model.User;
 
 public interface IUserRepository {
     MutableLiveData<Result> getUser(String email, String password, boolean isUserRegistered);
-    public MutableLiveData<Result> getUser(String username, String email, String password, boolean isUserRegistered);
+    MutableLiveData<Result> getUser(String username, String email, String password, boolean isUserRegistered);
     MutableLiveData<Result> getGoogleUser(User user);
-    MutableLiveData<Result> getUserPreferences(String idToken);
     MutableLiveData<Result> logout();
     User getLoggedUser();
     void signUp(String email, String password);
     void signIn(String email, String password);
     void signInWithGoogle(User user);
 
-    MutableLiveData<Result> isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
+    void isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
 
     void updateUserData(User user, UserDataRemoteDataSource.UserCallback userCallback);
     void getUserProfileImage(String id, UserRemoteFirestoreDataSource.getProfileImagesCallback callback);
