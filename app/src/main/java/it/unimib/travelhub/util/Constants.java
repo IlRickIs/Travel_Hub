@@ -27,8 +27,6 @@ public class Constants {
 
     public static final String FIREBASE_TRAVELS_COLLECTION = "travels";
 
-    public static final String FIREBASE_TRAVELS_MEMBERS_COLLECTION = "travels_members";
-
     public static final String UNEXPECTED_ERROR = "unexpected_error";
     public static final String INVALID_USER_ERROR = "invalidUserError";
     public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
@@ -36,11 +34,6 @@ public class Constants {
     public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
     public static final String USERNAME_NOT_AVAILABLE = "Username already taken";
     public static final String TRAVELS_TEST_JSON_FILE = "travels_data.json";
-    public static final String TRAVEL_TITLE = "title";
-    public static final String TRAVEL_DESCRIPTION = "description";
-
-    public static final String DESTINATION = "first_destination";
-    public static final String FRIEND = "first_friend";
     public static final String TRAVEL_ADDED = "TRAVEL_ADDED";
     public static final String TRAVEL_DELETED = "TRAVEL_DELETED";
 
@@ -49,7 +42,6 @@ public class Constants {
     public static final int TRAVELS_DATABASE_VERSION = 2;
     public static final String TRAVELS_DATABASE_NAME = "travels_database";
     public static final String LAST_UPDATE = "last_update";
-    public static final String LAST_IMAGE_UPDATE = "last_image_update";
     public static final long FRESH_TIMEOUT = 60 * 60 * 1000; // 1 hour
 
     //Images

@@ -10,18 +10,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.model.TravelsResponse;
 
 public class JSONParserUtil {
-
-    private static final String TAG = JSONParserUtil.class.getSimpleName();
-
     private final Context context;
 
     public JSONParserUtil(Application application) {

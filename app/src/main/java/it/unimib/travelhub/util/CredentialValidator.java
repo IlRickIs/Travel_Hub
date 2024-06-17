@@ -14,13 +14,9 @@ import it.unimib.travelhub.model.ValidationResult;
 public class CredentialValidator implements IValidator {
 
     private Context context;
-
     private static volatile CredentialValidator INSTANCE = null;
 
-    private CredentialValidator(){};
-    private CredentialValidator(Context context) {
-        this.context = context;
-    }
+    private CredentialValidator(){}
 
     public static CredentialValidator getInstance(){
         if(INSTANCE == null){
