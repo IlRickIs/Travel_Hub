@@ -1,7 +1,10 @@
 package it.unimib.travelhub.adapter;
 
+import static it.unimib.travelhub.util.Constants.PICS_FOLDER;
+
 import android.app.Activity;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,19 +13,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import it.unimib.travelhub.GlobalClass;
 import it.unimib.travelhub.R;
+import it.unimib.travelhub.data.repository.user.IUserRepository;
+import it.unimib.travelhub.data.source.RemoteFileStorageSource;
+import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.model.TravelMember;
+import it.unimib.travelhub.model.Travels;
 import it.unimib.travelhub.ui.travels.AddTravelActivity;
 import it.unimib.travelhub.ui.travels.TravelActivity;
+import it.unimib.travelhub.util.ServiceLocator;
 
 public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdapter.ViewHolder> {
     List<TravelMember> data;
+    private IUserRepository userRepository;
     int type;
-
+    private final String TAG = UsersRecyclerAdapter.class.getSimpleName();
     Activity activity;
 
     public interface OnLongButtonClickListener {
@@ -30,11 +45,12 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
     }
     private static OnLongButtonClickListener onLongButtonClickListener = null;
 
-    public UsersRecyclerAdapter(List<TravelMember> data, int type, Activity activity, OnLongButtonClickListener onLongButtonClickListener) {
+    public UsersRecyclerAdapter(List<TravelMember> data, int type, Activity activity, OnLongButtonClickListener onLongButtonClickListener, IUserRepository userRepository) {
         UsersRecyclerAdapter.onLongButtonClickListener = onLongButtonClickListener;
         this.activity = activity;
         this.data = data;
         this.type = type;
+        this.userRepository = userRepository;
     }
     @NonNull
     @Override
@@ -59,7 +75,7 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         }
         return 0;
     }
-    static class ViewHolder extends RecyclerView.ViewHolder {
+     class ViewHolder extends RecyclerView.ViewHolder {
         TextView participant_name;
         ImageView participant_image;
         ImageView participant_creator;
@@ -76,6 +92,7 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         }
         public void bind(TravelMember travelMember) {
             participant_name.setText(travelMember.getUsername());
+            setProfileImage(travelMember, participant_image);
 
             if (travelMember.getRole() == TravelMember.Role.CREATOR) {
                 participant_creator.setVisibility(View.VISIBLE);
@@ -98,6 +115,48 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
 
 
         }
+    }
+
+    private void setProfileImage(TravelMember travelMember, ImageView participant_image) {
+        // download the profile images of the members of the ongoing travel
+        userRepository.getUserProfileImage(travelMember.getIdToken(), new UserRemoteFirestoreDataSource.getProfileImagesCallback() {
+            @Override
+            public void onProfileImagesSuccess(String profileImagesURL) {
+                Log.d(TAG, "Profile images URLs: " + profileImagesURL);
+
+                if (profileImagesURL != null) {
+                    try {
+                        File file = new File(GlobalClass.getContext().getFilesDir() + PICS_FOLDER + travelMember.getIdToken() + ".webp");
+                        if (!file.exists())
+                            if(!file.createNewFile())
+                                Log.e(TAG, "Error creating profile image file");
+                        else {
+                            participant_image.setImageURI(Uri.fromFile(file));
+                        }
+                        userRepository.downloadProfileImage(profileImagesURL, file, new RemoteFileStorageSource.downloadCallback() {
+                            @Override
+                            public void onSuccessDownload(String url) {
+                                Log.d(TAG, "Profile image downloaded successfully");
+                                participant_image.setImageURI(Uri.fromFile(file));
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.e(TAG, "Error downloading profile image: " + e.getMessage());
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error creating profile image file: " + e.getMessage());
+                    }
+                }
+
+            }
+            @Override
+            public void onProfileImagesFailure(Exception e) {
+                Log.e(TAG, "Error getting profile images URLs: " + e.getMessage());
+                participant_image.setImageDrawable(AppCompatResources.getDrawable(GlobalClass.getContext(), R.drawable.baseline_person_24));
+            }
+        });
     }
 
 }

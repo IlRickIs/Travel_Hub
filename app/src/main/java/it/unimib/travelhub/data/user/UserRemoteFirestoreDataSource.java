@@ -6,10 +6,12 @@ import static it.unimib.travelhub.util.Constants.USERNAME_NOT_AVAILABLE;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import it.unimib.travelhub.model.Result;
@@ -71,6 +73,22 @@ public class UserRemoteFirestoreDataSource extends BaseUserDataRemoteDataSource{
                         Log.d(TAG, "Error adding document", task.getException());
                     }
                 });
+    }
+
+    public interface getProfileImagesCallback {
+        void onProfileImagesSuccess(String profileImagesURL);
+        void onProfileImagesFailure(Exception e);
+    }
+
+    @Override
+    public void getUserProfileImage(String id, getProfileImagesCallback getProfileImagesCallback) {
+        db.runTransaction(transaction -> {
+            String profileImagesURL = null;
+            DocumentReference docRef = db.collection(FIREBASE_USERS_COLLECTION).document(id);
+            profileImagesURL = transaction.get(docRef).getString("photoUrl");
+            return profileImagesURL;
+        }).addOnSuccessListener(getProfileImagesCallback::onProfileImagesSuccess)
+                .addOnFailureListener(getProfileImagesCallback::onProfileImagesFailure);
     }
 
     @Override

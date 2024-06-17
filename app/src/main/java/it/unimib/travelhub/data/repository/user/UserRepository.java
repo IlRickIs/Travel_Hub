@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import it.unimib.travelhub.data.source.BaseRemoteFileStorageSource;
 import it.unimib.travelhub.data.source.RemoteFileStorageCallback;
@@ -14,6 +16,7 @@ import it.unimib.travelhub.data.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.BaseUserDataRemoteDataSource;
 import it.unimib.travelhub.data.user.UserAuthenticationRemoteDataSource;
 import it.unimib.travelhub.data.user.UserDataRemoteDataSource;
+import it.unimib.travelhub.data.user.UserRemoteFirestoreDataSource;
 import it.unimib.travelhub.model.Result;
 import it.unimib.travelhub.model.User;
 
@@ -126,6 +129,11 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Re
     @Override
     public void downloadProfileImage(String url, File file, RemoteFileStorageSource.downloadCallback downloadCallback) {
         remoteFileStorageSource.download(url, file, downloadCallback);
+    }
+
+    @Override
+    public void getUserProfileImage(String id, UserRemoteFirestoreDataSource.getProfileImagesCallback callback) {
+        userDataRemoteDataSource.getUserProfileImage(id, callback);
     }
 
     @Override

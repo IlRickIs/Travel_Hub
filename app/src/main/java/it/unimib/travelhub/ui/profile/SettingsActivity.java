@@ -128,6 +128,8 @@ public class SettingsActivity extends AppCompatActivity {
         profileImagePath = dir + PROFILE_PICTURE_FILE_NAME;
         tempProfileImagePath = dir + PROFILE_PICTURE_TEMP_FILE_NAME;
 
+        Log.d(TAG, "Profile image path: " + profileImagePath);
+
         dataEncryptionUtil = new DataEncryptionUtil(this.getApplication());
 
         userRepository = ServiceLocator.getInstance().

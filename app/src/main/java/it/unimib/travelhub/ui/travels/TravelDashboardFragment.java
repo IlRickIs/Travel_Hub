@@ -50,6 +50,7 @@ public class TravelDashboardFragment extends Fragment {
     private FragmentTravelDashboardBinding binding;
     private Travels travel;
     private UserViewModel userViewModel;
+    private IUserRepository userRepository;
     private static final String TAG = TravelDashboardFragment.class.getSimpleName();
 
     public TravelDashboardFragment(Travels travel) {
@@ -70,7 +71,7 @@ public class TravelDashboardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        IUserRepository userRepository =
+        userRepository =
                 ServiceLocator.getInstance().getUserRepository(
                         requireActivity().getApplication()
                 );
@@ -130,6 +131,24 @@ public class TravelDashboardFragment extends Fragment {
         binding.progressBar.setProgress(progress);
 
 
+        RecyclerView recyclerView = binding.friendsRecyclerView;
+        mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        ArrayList<TravelMember> dataSource = new ArrayList<>(travel.getMembers());
+        UsersRecyclerAdapter usersRecyclerAdapter = new UsersRecyclerAdapter(dataSource, 2, requireActivity(),
+                (travelMember, seg_long_button) -> {
+                    PopupMenu popupMenu = new PopupMenu(getContext(), seg_long_button);
+                    popupMenu.getMenuInflater().inflate(R.menu.edit_travel_segment, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(item -> {
+                        // Toast message on menu item clicked
+                        if (item.getItemId() == R.id.delete_segment) {
+                            remove_participant(travelMember);
+                        }
+                        return true;
+                    });
+                    popupMenu.show();
+            }, userRepository);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(usersRecyclerAdapter);
     }
 
     private void editTravel() {

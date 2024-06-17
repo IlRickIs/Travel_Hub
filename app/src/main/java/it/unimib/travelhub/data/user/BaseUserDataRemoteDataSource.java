@@ -1,5 +1,7 @@
 package it.unimib.travelhub.data.user;
 
+import java.util.ArrayList;
+
 import it.unimib.travelhub.data.repository.user.UserResponseCallback;
 import it.unimib.travelhub.model.User;
 
@@ -24,4 +26,6 @@ public abstract class BaseUserDataRemoteDataSource {
 
     public abstract void isUserRegistered(String username, UserDataRemoteDataSource.UsernameCheckCallback callback);
     public abstract void updateUserData(User user, final UserDataRemoteDataSource.UserCallback userCallback);
+
+    public abstract void getUserProfileImage(String id, UserRemoteFirestoreDataSource.getProfileImagesCallback getProfileImagesCallback);
 }
