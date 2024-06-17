@@ -15,9 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="10dp"
-
+        android:background="@color/md_theme_background"
         android:visibility="gone">
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/autocomplete_new_fragment"
             android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
             android:layout_width="match_parent"
@@ -118,7 +118,7 @@
                 android:id="@+id/from_form"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="3dp"
+                android:layout_marginEnd="3dp"
                 android:hint="@string/from"
                 app:layout_constraintEnd_toStartOf="@id/to_form"
                 app:layout_constraintStart_toStartOf="parent"
@@ -142,7 +142,7 @@
                 android:id="@+id/to_form"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
                 android:hint="@string/to"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/from_form"

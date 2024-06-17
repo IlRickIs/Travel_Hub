@@ -205,22 +205,6 @@ public class TravelItineraryFragment extends Fragment {
                 }
             });
 
-            seg_location.getEditText().addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    travel.setTitle(s.toString());
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
-
-
-
             MaterialButton createButton = view1.findViewById(R.id.button_create_segment);
             createButton.setOnClickListener(view22 -> {
                 travelSegment.setLocation(Objects.requireNonNull(seg_location.getEditText()).getText().toString());

@@ -22,7 +22,8 @@
             android:id="@+id/home_layout_in_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
             
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,11 +34,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
                     app:layout_constraintBottom_toTopOf="@+id/home_layout_standard"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="12dp">
 
                     <ImageView
                         android:id="@+id/imageView3"
@@ -66,16 +67,17 @@
                     android:id="@+id/divider_head"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="6dp"/>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/home_card_ongoing"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_marginTop="12dp"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="12dp">
 
                     <ImageView
                         android:id="@+id/home_ongoing_image"
@@ -157,7 +159,7 @@
                             android:id="@+id/cardView_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             app:cardCornerRadius="100dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
@@ -197,7 +199,7 @@
                             android:id="@+id/home_ongoing_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Vai al Viaggio"
+                            android:text="@string/go_to_travel"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent" />
@@ -212,8 +214,8 @@
                     android:id="@+id/home_card_no_travel"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
+                    android:layout_marginVertical="12dp"
                     android:layout_marginHorizontal="12dp"
-                    android:layout_marginTop="12dp"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -256,7 +258,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="0dp"
                             android:minWidth="0dp"
-                            android:text="Crea un viaggio"
+                            android:text="@string/create_travel"
                             android:textStyle="bold"
                             app:icon="@drawable/baseline_edit_24"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -272,14 +274,13 @@
                     android:id="@+id/home_layout_other"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="12dp"
                     android:layout_marginTop="12dp">
 
                     <TextView
                         android:id="@+id/home_text_future"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Altri viaggi"
+                        android:text="@string/other_travels"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -295,14 +296,14 @@
                         android:minWidth="0dp"
                         android:minHeight="0dp"
                         android:padding="0dp"
-                        android:text="Vedi tutti"
+                        android:text="@string/see_all"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
-                    android:layout_marginVertical="6dp"
+                    android:layout_marginTop="12dp"
                     android:id="@+id/homeCardOther"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
